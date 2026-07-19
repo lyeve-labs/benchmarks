@@ -1,0 +1,72 @@
+{
+  "version": "0.3.0",
+  "note": "Machine-readable scenario definitions. harness/k6/scenario.js reads this plus targets.json to run any (target, scenario) pair. Static metrics (cold start, memory, image size) are collected by run.sh around every scenario and are not listed here.",
+  "scenarios": [
+    {
+      "id": "S01",
+      "slug": "content-read-by-id",
+      "title": "Read one content record by ID",
+      "category": "read",
+      "intent": "The single most common CMS request: a client fetches one record by its primary key and gets JSON back. Exercises routing, auth check, one indexed point lookup, and JSON marshaling.",
+      "behavior": "GET a single record by id, expect 200 + JSON body",
+      "k6": { "executor": "constant-arrival-rate", "rate": 500, "timeUnit": "1s", "duration": "60s", "preAllocatedVUs": 50, "maxVUs": 200 },
+      "thresholds": { "p95_ms": 50, "error_rate": 0.01 },
+      "primaryMetric": "p99_ms",
+      "lowerIsBetter": true
+    },
+    {
+      "id": "S02",
+      "slug": "content-list-50",
+      "title": "List 50 records (page 1)",
+      "category": "read",
+      "intent": "The list view behind every admin table and public index page. Exercises a bounded, ordered scan plus serializing 50 rows.",
+      "behavior": "GET the first page of 50 records ordered by created time, expect 200 + array of 50",
+      "k6": { "executor": "constant-arrival-rate", "rate": 300, "timeUnit": "1s", "duration": "60s", "preAllocatedVUs": 50, "maxVUs": 200 },
+      "thresholds": { "p95_ms": 80, "error_rate": 0.01 },
+      "primaryMetric": "p99_ms",
+      "lowerIsBetter": true
+    },
+    {
+      "id": "S03",
+      "slug": "content-create",
+      "title": "Create one record",
+      "category": "write",
+      "intent": "The write path: validate a body, insert one row, fire lifecycle hooks, return the created record. The scenario that stresses the DB write side and any hook/event machinery.",
+      "behavior": "POST a valid record body, expect 201/200 + created record with an id",
+      "k6": { "executor": "constant-arrival-rate", "rate": 100, "timeUnit": "1s", "duration": "60s", "preAllocatedVUs": 30, "maxVUs": 150 },
+      "thresholds": { "p95_ms": 120, "error_rate": 0.01 },
+      "primaryMetric": "p99_ms",
+      "lowerIsBetter": true
+    },
+    {
+      "id": "S04",
+      "slug": "content-filter-query",
+      "title": "Filter by an indexed field",
+      "category": "read",
+      "intent": "A query with a WHERE clause on an indexed column plus pagination, the shape most real API reads take. Catches missing indexes and N+1 relation loading.",
+      "behavior": "GET records filtered by an indexed field (e.g. category slug), paginated to 25, expect 200 + array",
+      "k6": { "executor": "constant-arrival-rate", "rate": 200, "timeUnit": "1s", "duration": "60s", "preAllocatedVUs": 40, "maxVUs": 200 },
+      "thresholds": { "p95_ms": 90, "error_rate": 0.01 },
+      "primaryMetric": "p99_ms",
+      "lowerIsBetter": true
+    },
+    {
+      "id": "S05",
+      "slug": "auth-login",
+      "title": "Authenticate (token issuance)",
+      "category": "auth",
+      "intent": "Login deliberately runs a slow password hash (bcrypt or argon2), and this scenario measures how gracefully each platform absorbs a burst of logins without the hash starving everything else.",
+      "behavior": "POST valid credentials, expect 200 + a bearer token/session",
+      "k6": { "executor": "constant-arrival-rate", "rate": 20, "timeUnit": "1s", "duration": "60s", "preAllocatedVUs": 20, "maxVUs": 100 },
+      "thresholds": { "p95_ms": 1000, "error_rate": 0.01 },
+      "primaryMetric": "p99_ms",
+      "lowerIsBetter": true
+    }
+  ],
+  "staticMetrics": [
+    { "id": "M-cold", "title": "Cold start", "unit": "ms", "lowerIsBetter": true, "how": "docker start of the stopped container to the first 200 on the target's readyPath, polled every 50 ms" },
+    { "id": "M-mem-idle", "title": "Idle memory", "unit": "MB", "lowerIsBetter": true, "how": "container RSS at rest, empty DB, default config" },
+    { "id": "M-mem-peak", "title": "Peak memory", "unit": "MB", "lowerIsBetter": true, "how": "max container RSS sampled during S02 at sustained rate" },
+    { "id": "M-image", "title": "Container image size", "unit": "MB", "lowerIsBetter": true, "how": "docker image inspect Size of the pinned published image" }
+  ]
+}
