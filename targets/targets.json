@@ -1,0 +1,129 @@
+{
+  "version": "0.3.0",
+  "note": "The vendor registry. Each target declares its runtime, how it is deployed, and the idiomatic endpoint it maps every scenario to. 'kind' = self-host (run through our identical rig, fully comparable) vs hosted (runs on the vendor's own infra; context only, never in a 'measured on the reference host' column). harness/k6/scenario.js and tools/generate-report.mjs both read this file.",
+  "reference": {
+    "host": "local-rig",
+    "hostSpec": "Intel Core Ultra 5 125H (18 threads), 32 GB RAM, NVMe, Ubuntu 26.04, Docker 29.8",
+    "database": "PostgreSQL 16, one container per target on the same host",
+    "staticHost": "Every figure in the head-to-head, the static metrics and the S01 to S05 latencies alike, was measured on this one rig, each target and its own PostgreSQL side by side, so the A/B is valid. The load generator runs on the same machine. No figure here comes from the Hetzner reference host. The sustained-throughput rows stay targets until that sweep runs.",
+    "comparisonSet": ["lyeve", "strapi", "directus", "payload"],
+    "contextOnly": []
+  },
+  "targets": [
+    {
+      "id": "lyeve",
+      "name": "LyEve",
+      "runtime": "Go",
+      "runtimeDetail": "single compiled binary",
+      "kind": "self-host",
+      "site": "https://lyeve.com",
+      "image": "ghcr.io/lyeve-labs/lyeve-core:0.51.2",
+      "versionPin": "0.51.2",
+      "imageNote": "The column is measured on a tagged release, the published image as it ships, so anyone can pull the same bytes. Re-measuring a new release means naming its tag in LYEVE_IMAGE (or here) and running the sweep again. The run date is recorded with every result.",
+      "imageAvailability": "official",
+      "defaultPasswordHash": "bcrypt (cost 10)",
+      "compose": "harness/compose/lyeve.yml",
+      "baseUrlEnv": "LYEVE_BASE_URL",
+      "healthPath": "/readyz",
+      "readyPath": "/api/admin/setup",
+      "pendingNotes": { "S05": "the free tier allows five logins per fifteen minutes per address and refuses the rest with 429. Changing the limit needs a license" },
+      "readyNote": "/readyz is a probe and can answer before the application does; /api/admin/setup answers 503 until the engine serves, so cold start is timed against it.",
+      "notes": "Every plugin compiled into one binary, activated per license; with no license the free baseline starts. No subprocess, no CDN plugin fetch.",
+      "auth": { "type": "bearer", "loginScenario": "S05", "tokenPath": "token", "login": { "path": "/api/admin/auth/login", "body": { "email": "{email}", "password": "{password}" }, "tokenPath": "token" } },
+      "listProbe": { "path": "/api/v1/content/article?limit=200", "itemsPath": "", "idField": "id", "slugField": "data.category" },
+      "endpoints": {
+        "S01": { "method": "GET",  "path": "/api/v1/content/article/{id}" },
+        "S02": { "method": "GET",  "path": "/api/v1/content/article?limit=50" },
+        "S03": { "method": "POST", "path": "/api/v1/content/article", "body": "article" },
+        "S04": { "method": "GET",  "path": "/api/v1/content/article?filters[category]={slug}&limit=25" },
+        "S05": { "method": "POST", "path": "/api/admin/auth/login", "body": "login" }
+      }
+    },
+    {
+      "id": "strapi",
+      "name": "Strapi",
+      "runtime": "Node.js",
+      "runtimeDetail": "Node.js + admin bundle",
+      "kind": "self-host",
+      "site": "https://strapi.io",
+      "image": "built:strapi/strapi (v5, create-strapi-app)",
+      "imageLocal": "bench-strapi:local",
+      "versionPin": "5.x",
+      "imageAvailability": "built",
+      "imageNote": "Strapi v4/v5 does not ship a canonical runtime image; the harness builds one from a pinned create-strapi-app via harness/compose/strapi.yml.",
+      "defaultPasswordHash": "bcrypt",
+      "compose": "harness/compose/strapi.yml",
+      "baseUrlEnv": "STRAPI_BASE_URL",
+      "healthPath": "/_health",
+      "pendingNotes": { "S05": "the stock users-permissions plugin rate-limits /api/auth/local and refuses the burst with 429" },
+      "notes": "REST via the content-type API; auth via users-permissions plugin.",
+      "auth": { "type": "bearer", "login": { "path": "/api/auth/local", "body": { "identifier": "{email}", "password": "{password}" }, "tokenPath": "jwt" } },
+      "listProbe": { "path": "/api/articles?populate=category&pagination[pageSize]=200", "itemsPath": "data", "idField": "documentId", "slugField": "category.slug" },
+      "endpoints": {
+        "S01": { "method": "GET",  "path": "/api/articles/{id}" },
+        "S02": { "method": "GET",  "path": "/api/articles?pagination[pageSize]=50&sort=createdAt:desc" },
+        "S03": { "method": "POST", "path": "/api/articles", "body": "article", "envelope": "data" },
+        "S04": { "method": "GET",  "path": "/api/articles?filters[category][slug][$eq]={slug}&pagination[pageSize]=25" },
+        "S05": { "method": "POST", "path": "/api/auth/local", "body": "login" }
+      }
+    },
+    {
+      "id": "directus",
+      "name": "Directus",
+      "runtime": "Node.js",
+      "runtimeDetail": "Node.js data platform",
+      "kind": "self-host",
+      "site": "https://directus.io",
+      "image": "directus/directus:11",
+      "versionPin": "11.x",
+      "imageAvailability": "official",
+      "defaultPasswordHash": "argon2",
+      "compose": "harness/compose/directus.yml",
+      "baseUrlEnv": "DIRECTUS_BASE_URL",
+      "healthPath": "/server/health",
+      "notes": "Official image. REST via the items API; auth returns access + refresh tokens.",
+      "auth": { "type": "bearer", "login": { "path": "/auth/login", "body": { "email": "{email}", "password": "{password}" }, "tokenPath": "data.access_token" } },
+      "listProbe": { "path": "/items/article?limit=200", "itemsPath": "data", "idField": "id", "slugField": "category" },
+      "endpoints": {
+        "S01": { "method": "GET",  "path": "/items/article/{id}" },
+        "S02": { "method": "GET",  "path": "/items/article?limit=50&sort=-id" },
+        "S03": { "method": "POST", "path": "/items/article", "body": "article" },
+        "S04": { "method": "GET",  "path": "/items/article?filter[category][_eq]={slug}&limit=25" },
+        "S05": { "method": "POST", "path": "/auth/login", "body": "login" }
+      }
+    },
+    {
+      "id": "payload",
+      "name": "Payload",
+      "runtime": "Node.js",
+      "runtimeDetail": "Node.js / Next.js app",
+      "kind": "self-host",
+      "site": "https://payloadcms.com",
+      "image": "built:node (payload v3 app)",
+      "imageLocal": "bench-payload:local",
+      "versionPin": "3.x",
+      "imageAvailability": "built",
+      "imageNote": "Payload is a framework embedded in a Node/Next app; the harness builds a minimal pinned app via harness/compose/payload.yml.",
+      "defaultPasswordHash": "pbkdf2 (crypto)",
+      "compose": "harness/compose/payload.yml",
+      "baseUrlEnv": "PAYLOAD_BASE_URL",
+      "healthPath": "/api/access",
+      "notes": "REST auto-generated per collection; auth on the users collection.",
+      "auth": { "type": "bearer", "login": { "path": "/api/users/login", "body": { "email": "{email}", "password": "{password}" }, "tokenPath": "token" } },
+      "listProbe": { "path": "/api/articles?limit=200&depth=0", "itemsPath": "docs", "idField": "id", "slugField": "category" },
+      "endpoints": {
+        "S01": { "method": "GET",  "path": "/api/articles/{id}?depth=0" },
+        "S02": { "method": "GET",  "path": "/api/articles?limit=50&sort=-createdAt&depth=0" },
+        "S03": { "method": "POST", "path": "/api/articles", "body": "article" },
+        "S04": { "method": "GET",  "path": "/api/articles?where[category][equals]={slug}&limit=25&depth=0" },
+        "S05": { "method": "POST", "path": "/api/users/login", "body": "login" }
+      }
+    }
+  ],
+  "candidates": [
+    { "id": "wordpress", "name": "WordPress (WP REST)", "runtime": "PHP", "kind": "self-host", "status": "candidate", "notes": "The incumbent many customers migrate from; headless via the WP REST API. Add when the sweep expands." },
+    { "id": "contentful", "name": "Contentful", "runtime": "SaaS (hosted)", "kind": "hosted", "status": "candidate", "notes": "Hosted; runs on the vendor's own infra, so vendor-published context only." },
+    { "id": "ghost", "name": "Ghost", "runtime": "Node.js", "kind": "self-host", "status": "candidate", "notes": "Publishing-focused; Content API. Add when the sweep expands." },
+    { "id": "keystone", "name": "Keystone", "runtime": "Node.js", "kind": "self-host", "status": "candidate", "notes": "Code-first Node CMS/GraphQL; add when the sweep expands." }
+  ]
+}
