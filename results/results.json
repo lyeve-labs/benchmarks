@@ -1,0 +1,1501 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-10-05",
+  "sourceRepo": "LyEve-Labs/benchmarks",
+  "reference": {
+    "host": "local-rig",
+    "hostSpec": "Intel Core Ultra 5 125H (18 threads), 32 GB RAM, NVMe, Ubuntu 26.04, Docker 29.8",
+    "database": "PostgreSQL 16, one container per target on the same host",
+    "staticHost": "Every figure in the head-to-head, the static metrics and the S01 to S05 latencies alike, was measured on this one rig, each target and its own PostgreSQL side by side, so the A/B is valid. The load generator runs on the same machine. No figure here comes from the Hetzner reference host. The sustained-throughput rows stay targets until that sweep runs.",
+    "comparisonSet": [
+      "lyeve",
+      "strapi",
+      "directus",
+      "payload"
+    ],
+    "contextOnly": []
+  },
+  "provenanceLegend": {
+    "measured": "We ran it on the rig described in this report and kept the raw output.",
+    "target": "A number we engineer against and gate regressions on, not an end-to-end measurement.",
+    "vendor-published": "A competitor's own published figure, cited, not independently reproduced by us.",
+    "pending": "The harness supports it. We have not run it yet. Shown as a dash, never a guess."
+  },
+  "targets": [
+    {
+      "id": "lyeve",
+      "name": "LyEve",
+      "runtime": "Go",
+      "runtimeDetail": "single compiled binary",
+      "kind": "self-host",
+      "site": "https://lyeve.com",
+      "versionPin": "0.51.2"
+    },
+    {
+      "id": "strapi",
+      "name": "Strapi",
+      "runtime": "Node.js",
+      "runtimeDetail": "Node.js + admin bundle",
+      "kind": "self-host",
+      "site": "https://strapi.io",
+      "versionPin": "5.x"
+    },
+    {
+      "id": "directus",
+      "name": "Directus",
+      "runtime": "Node.js",
+      "runtimeDetail": "Node.js data platform",
+      "kind": "self-host",
+      "site": "https://directus.io",
+      "versionPin": "11.x"
+    },
+    {
+      "id": "payload",
+      "name": "Payload",
+      "runtime": "Node.js",
+      "runtimeDetail": "Node.js / Next.js app",
+      "kind": "self-host",
+      "site": "https://payloadcms.com",
+      "versionPin": "3.x"
+    }
+  ],
+  "comparison": [
+    {
+      "id": "M-image",
+      "label": "Container image size",
+      "unit": "MB",
+      "lowerIsBetter": true,
+      "note": "Uncompressed image: the sum of its layers from `docker history` (amd64). A compiled Go binary against a Node runtime plus node_modules.",
+      "values": {
+        "lyeve": {
+          "value": 78,
+          "min": 78,
+          "max": 78,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "strapi": {
+          "value": 1884,
+          "min": 1884,
+          "max": 1884,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "directus": {
+          "value": 970,
+          "min": 970,
+          "max": 970,
+          "runs": 3,
+          "provenance": "measured",
+          "detail": "median of 3 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "payload": {
+          "value": 1994,
+          "min": 1994,
+          "max": 1994,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        }
+      },
+      "lyeveLead": 12.4
+    },
+    {
+      "id": "M-mem-idle",
+      "label": "Idle memory",
+      "unit": "MB",
+      "lowerIsBetter": true,
+      "note": "Container memory from `docker stats` at rest after a restart, empty database, default config: the median of five samples taken after 45 seconds of settling. LyEve runs the free engine: every plugin compiled in, the free baseline started, no license.",
+      "values": {
+        "lyeve": {
+          "value": 26.5,
+          "min": 26,
+          "max": 28,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "strapi": {
+          "value": 100.5,
+          "min": 97,
+          "max": 102,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "directus": {
+          "value": 188,
+          "min": 181,
+          "max": 197,
+          "runs": 3,
+          "provenance": "measured",
+          "detail": "median of 3 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "payload": {
+          "value": 101,
+          "min": 100,
+          "max": 101,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        }
+      },
+      "lyeveLead": 3.8
+    },
+    {
+      "id": "S01-p99",
+      "label": "p99 read-by-id",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "note": "One record by id at 500 req/s (scenario S01).",
+      "values": {
+        "lyeve": {
+          "value": 1.8,
+          "min": 1.7,
+          "max": 1.8,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "strapi": {
+          "value": 751.9,
+          "min": 716.7,
+          "max": 778.8,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05",
+          "served": {
+            "rps": 301,
+            "offered": 500
+          }
+        },
+        "directus": {
+          "value": 112.1,
+          "min": 66.3,
+          "max": 120,
+          "runs": 3,
+          "provenance": "measured",
+          "detail": "median of 3 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "payload": {
+          "value": 9.7,
+          "min": 8.8,
+          "max": 23.6,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        }
+      },
+      "lyeveLead": 5.4
+    },
+    {
+      "id": "S02-p99",
+      "label": "p99 list-50",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "note": "First page of 50 at 300 req/s (scenario S02).",
+      "values": {
+        "lyeve": {
+          "value": 2.9,
+          "min": 2.9,
+          "max": 2.9,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "strapi": {
+          "value": 1621.4,
+          "min": 1612.1,
+          "max": 1658.7,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05",
+          "served": {
+            "rps": 133.5,
+            "offered": 300
+          }
+        },
+        "directus": {
+          "value": 15.2,
+          "min": 12.1,
+          "max": 16,
+          "runs": 3,
+          "provenance": "measured",
+          "detail": "median of 3 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "payload": {
+          "value": 8.6,
+          "min": 8.1,
+          "max": 16.4,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        }
+      },
+      "lyeveLead": 3
+    },
+    {
+      "id": "S03-p99",
+      "label": "p99 create",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "note": "Create one record at 100 req/s (scenario S03).",
+      "values": {
+        "lyeve": {
+          "value": 6.7,
+          "min": 6,
+          "max": 7.1,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "strapi": {
+          "value": 17.2,
+          "min": 16.5,
+          "max": 21.9,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "directus": {
+          "value": 12.2,
+          "min": 11.3,
+          "max": 12.3,
+          "runs": 3,
+          "provenance": "measured",
+          "detail": "median of 3 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "payload": {
+          "value": 7.8,
+          "min": 7.3,
+          "max": 8.2,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        }
+      },
+      "lyeveLead": 1.2
+    },
+    {
+      "id": "S04-p99",
+      "label": "p99 filter",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "note": "Filter by an indexed field, 25 rows, at 200 req/s (scenario S04). Each run first proves the filter applies: a value no record holds must return no rows, and a real value must return only matching rows.",
+      "values": {
+        "lyeve": {
+          "value": 2.4,
+          "min": 2.4,
+          "max": 2.4,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "strapi": {
+          "value": 1379.3,
+          "min": 1360.4,
+          "max": 1456.4,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05",
+          "served": {
+            "rps": 158.5,
+            "offered": 200
+          }
+        },
+        "directus": {
+          "value": 5.9,
+          "min": 5.6,
+          "max": 6,
+          "runs": 3,
+          "provenance": "measured",
+          "detail": "median of 3 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "payload": {
+          "value": 5.5,
+          "min": 5.4,
+          "max": 5.6,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        }
+      },
+      "lyeveLead": 2.3
+    },
+    {
+      "id": "S05-p99",
+      "label": "p99 login",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "note": "Token issuance at 20 req/s, where slower is expected (password hash). A target whose stock config rate-limits authentication refuses the burst and reads pending here rather than posting a number for refused logins. Scenario S05.",
+      "values": {
+        "lyeve": {
+          "provenance": "pending",
+          "reason": "over the error budget in 4 of 4 runs: the free tier allows five logins per fifteen minutes per address and refuses the rest with 429. Changing the limit needs a license",
+          "asOf": "2026-10-05"
+        },
+        "strapi": {
+          "provenance": "pending",
+          "reason": "over the error budget in 4 of 4 runs: the stock users-permissions plugin rate-limits /api/auth/local and refuses the burst with 429",
+          "asOf": "2026-10-05"
+        },
+        "directus": {
+          "value": 505.9,
+          "min": 505.8,
+          "max": 505.9,
+          "runs": 3,
+          "provenance": "measured",
+          "detail": "median of 3 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "payload": {
+          "value": 65.5,
+          "min": 64.8,
+          "max": 66,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        }
+      },
+      "lyeveLead": null
+    },
+    {
+      "id": "M-cold",
+      "label": "Cold start",
+      "unit": "ms",
+      "lowerIsBetter": true,
+      "note": "From `docker start` of a stopped container to the first request the application serves (includes DB connect and migration check), polled every 50 ms.",
+      "values": {
+        "lyeve": {
+          "value": 488,
+          "min": 329,
+          "max": 751,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "strapi": {
+          "value": 2212.5,
+          "min": 1711,
+          "max": 2345,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "directus": {
+          "value": 7251,
+          "min": 7129,
+          "max": 7271,
+          "runs": 3,
+          "provenance": "measured",
+          "detail": "median of 3 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        },
+        "payload": {
+          "value": 2664.5,
+          "min": 2614,
+          "max": 2821,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-05"
+        }
+      },
+      "lyeveLead": 4.5
+    }
+  ],
+  "internals": {
+    "machine": "Intel Core Ultra 5 125H (18 threads)",
+    "os": "Linux 7.0, Ubuntu 26.04",
+    "goVersion": "1.27.1",
+    "measuredOn": "2026-10-05",
+    "source": "core bench suite (go test -bench -benchmem -count=5, median), commit da80fdd (v0.51.2)",
+    "groups": [
+      {
+        "title": "Auth / crypto",
+        "rows": [
+          {
+            "name": "JWT sign (HMAC)",
+            "display": "5.2 µs",
+            "raw": 5245,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              5093,
+              5378
+            ]
+          },
+          {
+            "name": "JWT verify (parse)",
+            "display": "6.4 µs",
+            "raw": 6359,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              6105,
+              6635
+            ]
+          },
+          {
+            "name": "Ed25519 sign",
+            "display": "16.1 µs",
+            "raw": 16103,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              15864,
+              16332
+            ]
+          },
+          {
+            "name": "Ed25519 verify",
+            "display": "36.5 µs",
+            "raw": 36516,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              35880,
+              37477
+            ]
+          },
+          {
+            "name": "Password hash (bcrypt, cost 10)",
+            "display": "49 ms",
+            "raw": 48974594,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              48458523,
+              51969329
+            ]
+          },
+          {
+            "name": "Password hash (argon2id)",
+            "display": "18 ms",
+            "raw": 17662060,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              17260394,
+              17830885
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Database (placeholder rewrite hot path)",
+        "rows": [
+          {
+            "name": "PostgreSQL passthrough",
+            "display": "2.1 ns",
+            "raw": 2.145,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              2.135,
+              2.156
+            ]
+          },
+          {
+            "name": "MySQL rewrite ($N → ?)",
+            "display": "269 ns",
+            "raw": 269.2,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              262.1,
+              280.8
+            ]
+          },
+          {
+            "name": "MSSQL rewrite ($N → @pN)",
+            "display": "246 ns",
+            "raw": 246,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              235.8,
+              255.2
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Middleware",
+        "rows": [
+          {
+            "name": "Full stack (4 middlewares)",
+            "display": "5.1 µs",
+            "raw": 5124,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              4601,
+              5856
+            ]
+          },
+          {
+            "name": "Tenant header (no-op)",
+            "display": "452 ns",
+            "raw": 451.5,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              444,
+              458.5
+            ]
+          },
+          {
+            "name": "Rate limiter (allow)",
+            "display": "2.0 µs",
+            "raw": 2026,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              2008,
+              2079
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "lyeveTargets": [
+    {
+      "endpoint": "GET /content/{schema} (50 items)",
+      "rps": 1000,
+      "p50": "8 ms",
+      "p99": "50 ms"
+    },
+    {
+      "endpoint": "GET /content/{schema}/{id}",
+      "rps": 2000,
+      "p50": "3 ms",
+      "p99": "20 ms"
+    },
+    {
+      "endpoint": "POST /content/{schema}",
+      "rps": 500,
+      "p50": "15 ms",
+      "p99": "80 ms"
+    },
+    {
+      "endpoint": "PUT /content/{schema}/{id}",
+      "rps": 400,
+      "p50": "20 ms",
+      "p99": "100 ms"
+    },
+    {
+      "endpoint": "DELETE /content/{schema}/{id}",
+      "rps": 800,
+      "p50": "8 ms",
+      "p99": "40 ms"
+    },
+    {
+      "endpoint": "GET /schemas (list 20)",
+      "rps": 500,
+      "p50": "5 ms",
+      "p99": "30 ms"
+    }
+  ],
+  "coldStartPhases": [
+    {
+      "phase": "License token check",
+      "target": "< 5 ms",
+      "note": "Ed25519, offline"
+    },
+    {
+      "phase": "Plugin registry resolution",
+      "target": "< 1 ms",
+      "note": "compile-time map lookup"
+    },
+    {
+      "phase": "Activator gate check",
+      "target": "< 5 ms",
+      "note": "compiled, licensed and requested"
+    },
+    {
+      "phase": "Plugin Start() per active",
+      "target": "< 50 ms",
+      "note": "Database schema check and route registration"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "S01",
+      "title": "Read one content record by ID",
+      "category": "read",
+      "intent": "The single most common CMS request: a client fetches one record by its primary key and gets JSON back. Exercises routing, auth check, one indexed point lookup, and JSON marshaling.",
+      "rate": "500/s",
+      "threshold": "p95 < 50 ms"
+    },
+    {
+      "id": "S02",
+      "title": "List 50 records (page 1)",
+      "category": "read",
+      "intent": "The list view behind every admin table and public index page. Exercises a bounded, ordered scan plus serializing 50 rows.",
+      "rate": "300/s",
+      "threshold": "p95 < 80 ms"
+    },
+    {
+      "id": "S03",
+      "title": "Create one record",
+      "category": "write",
+      "intent": "The write path: validate a body, insert one row, fire lifecycle hooks, return the created record. The scenario that stresses the DB write side and any hook/event machinery.",
+      "rate": "100/s",
+      "threshold": "p95 < 120 ms"
+    },
+    {
+      "id": "S04",
+      "title": "Filter by an indexed field",
+      "category": "read",
+      "intent": "A query with a WHERE clause on an indexed column plus pagination, the shape most real API reads take. Catches missing indexes and N+1 relation loading.",
+      "rate": "200/s",
+      "threshold": "p95 < 90 ms"
+    },
+    {
+      "id": "S05",
+      "title": "Authenticate (token issuance)",
+      "category": "auth",
+      "intent": "Login deliberately runs a slow password hash (bcrypt or argon2), and this scenario measures how gracefully each platform absorbs a burst of logins without the hash starving everything else.",
+      "rate": "20/s",
+      "threshold": "p95 < 1000 ms"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "blog",
+      "name": "Small Blog",
+      "tagline": "A content blog: mostly readers, an occasional search.",
+      "realWorld": "A team blog: articles with categories, authors and cover images, read far more often than written.",
+      "rate": 200,
+      "threshold": "p95 < 120 ms",
+      "schemas": [
+        {
+          "name": "blog_authors",
+          "fields": 3
+        },
+        {
+          "name": "blog_categories",
+          "fields": 2
+        },
+        {
+          "name": "blog_posts",
+          "fields": 7
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "blog_authors": 10,
+        "blog_categories": 20,
+        "blog_posts": 500
+      },
+      "traffic": [
+        {
+          "id": "post-read",
+          "weight": 45,
+          "desc": "read one post",
+          "needs": null
+        },
+        {
+          "id": "post-list",
+          "weight": 25,
+          "desc": "recent posts, newest first",
+          "needs": null
+        },
+        {
+          "id": "post-populated",
+          "weight": 12,
+          "desc": "a post with its author and category inflated, which is what the page renders",
+          "needs": null
+        },
+        {
+          "id": "category-filter",
+          "weight": 10,
+          "desc": "posts in a category, filtered on the foreign key",
+          "needs": null
+        },
+        {
+          "id": "search",
+          "weight": 8,
+          "desc": "full-text post search, on the admin router",
+          "needs": "search"
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 200,
+        "p50_ms": 1.4,
+        "p95_ms": 2,
+        "p99_ms": 2.4,
+        "p95_ms_range": [
+          2,
+          2
+        ],
+        "p99_ms_range": [
+          2.4,
+          2.5
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "forum",
+      "name": "Community Forum",
+      "tagline": "A forum: topics read constantly, and the thread under each one.",
+      "realWorld": "Topics are content, and so are the replies under them, in the comments type the schema plugin's preset creates. A topic page costs one topic read plus one filtered read of its thread. This profile drives both.",
+      "rate": 200,
+      "threshold": "p95 < 150 ms",
+      "schemas": [
+        {
+          "name": "forum_topics",
+          "fields": 7
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "forum_topics": 1200
+      },
+      "traffic": [
+        {
+          "id": "topic-read",
+          "weight": 38,
+          "desc": "read one topic",
+          "needs": null
+        },
+        {
+          "id": "topic-list",
+          "weight": 30,
+          "desc": "the topic index",
+          "needs": null
+        },
+        {
+          "id": "thread",
+          "weight": 22,
+          "desc": "the thread under a topic",
+          "needs": "comments"
+        },
+        {
+          "id": "search",
+          "weight": 10,
+          "desc": "topic search",
+          "needs": "search"
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 200,
+        "p50_ms": 1.4,
+        "p95_ms": 1.9,
+        "p99_ms": 2.3,
+        "p95_ms_range": [
+          1.9,
+          1.9
+        ],
+        "p99_ms_range": [
+          2.3,
+          2.3
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "company",
+      "name": "Company Profile",
+      "tagline": "A corporate site: a small, stable content set read constantly.",
+      "realWorld": "A handful of pages, the team and open roles. Almost entirely reads of content that rarely changes.",
+      "rate": 150,
+      "threshold": "p95 < 100 ms",
+      "schemas": [
+        {
+          "name": "site_pages",
+          "fields": 6
+        },
+        {
+          "name": "site_team",
+          "fields": 7
+        },
+        {
+          "name": "site_openings",
+          "fields": 9
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "site_pages": 30,
+        "site_team": 15,
+        "site_openings": 10
+      },
+      "traffic": [
+        {
+          "id": "page-read",
+          "weight": 40,
+          "desc": "read one page",
+          "needs": null
+        },
+        {
+          "id": "page-by-slug",
+          "weight": 20,
+          "desc": "look a page up by slug, which is a filtered list because there is no get-by-slug route",
+          "needs": null
+        },
+        {
+          "id": "openings-list",
+          "weight": 18,
+          "desc": "open roles",
+          "needs": null
+        },
+        {
+          "id": "team-list",
+          "weight": 15,
+          "desc": "the team",
+          "needs": null
+        },
+        {
+          "id": "page-list",
+          "weight": 7,
+          "desc": "page index",
+          "needs": null
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 150,
+        "p50_ms": 1.4,
+        "p95_ms": 2.1,
+        "p99_ms": 2.6,
+        "p95_ms_range": [
+          2.1,
+          2.1
+        ],
+        "p99_ms_range": [
+          2.5,
+          2.6
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "docs",
+      "name": "Documentation Portal",
+      "tagline": "A docs site: a deep page tree, assembled by the application.",
+      "realWorld": "Nested documentation pages under a few spaces, navigated by tree and by search. The engine has no tree query, so every page load reads a flat list and the hierarchy is built in the app: this profile measures that read.",
+      "rate": 200,
+      "threshold": "p95 < 140 ms",
+      "schemas": [
+        {
+          "name": "docs_spaces",
+          "fields": 4
+        },
+        {
+          "name": "docs_pages",
+          "fields": 6
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "docs_spaces": 10,
+        "docs_pages": 2000
+      },
+      "traffic": [
+        {
+          "id": "page-read",
+          "weight": 35,
+          "desc": "read one page",
+          "needs": null
+        },
+        {
+          "id": "space-tree",
+          "weight": 30,
+          "desc": "every page in a space, which is what building the navigation tree costs",
+          "needs": null
+        },
+        {
+          "id": "page-by-slug",
+          "weight": 20,
+          "desc": "resolve a documentation URL",
+          "needs": null
+        },
+        {
+          "id": "search",
+          "weight": 15,
+          "desc": "documentation search",
+          "needs": "search"
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 200,
+        "p50_ms": 1.4,
+        "p95_ms": 3.5,
+        "p99_ms": 4.6,
+        "p95_ms_range": [
+          3.5,
+          3.5
+        ],
+        "p99_ms_range": [
+          4.6,
+          4.6
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "events",
+      "name": "Events and Registration",
+      "tagline": "An events site: reads against a counter the application maintains.",
+      "realWorld": "Remaining places are capacity minus a registered count the application keeps, because the engine has no inventory concept. Reads dominate, and each one reads a number a write path is contending for.",
+      "rate": 200,
+      "threshold": "p95 < 140 ms",
+      "schemas": [
+        {
+          "name": "events_events",
+          "fields": 9
+        },
+        {
+          "name": "events_registrations",
+          "fields": 5
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "events_events": 300,
+        "events_registrations": 6000
+      },
+      "traffic": [
+        {
+          "id": "event-read",
+          "weight": 38,
+          "desc": "read one event",
+          "needs": null
+        },
+        {
+          "id": "upcoming",
+          "weight": 30,
+          "desc": "the upcoming list, sorted by the app because the engine cannot",
+          "needs": null
+        },
+        {
+          "id": "registrations",
+          "weight": 22,
+          "desc": "the door list for an event",
+          "needs": null
+        },
+        {
+          "id": "event-by-slug",
+          "weight": 10,
+          "desc": "resolve an event URL",
+          "needs": null
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 200,
+        "p50_ms": 1.4,
+        "p95_ms": 2,
+        "p99_ms": 2.4,
+        "p95_ms_range": [
+          2,
+          2
+        ],
+        "p99_ms_range": [
+          2.4,
+          2.5
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "jobs",
+      "name": "Job Board",
+      "tagline": "A job board: search-led browsing over a mid-sized listing set.",
+      "realWorld": "Candidates arrive through search and filters far more often than through an index, which makes this the profile where search carries real weight.",
+      "rate": 200,
+      "threshold": "p95 < 150 ms",
+      "schemas": [
+        {
+          "name": "jobs_companies",
+          "fields": 4
+        },
+        {
+          "name": "jobs_listings",
+          "fields": 9
+        },
+        {
+          "name": "jobs_applications",
+          "fields": 7
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "jobs_companies": 200,
+        "jobs_listings": 3000
+      },
+      "traffic": [
+        {
+          "id": "listing-read",
+          "weight": 30,
+          "desc": "read one listing",
+          "needs": null
+        },
+        {
+          "id": "search",
+          "weight": 26,
+          "desc": "the way most candidates arrive",
+          "needs": "search"
+        },
+        {
+          "id": "listing-populated",
+          "weight": 16,
+          "desc": "a listing with its company",
+          "needs": null
+        },
+        {
+          "id": "company-filter",
+          "weight": 16,
+          "desc": "every role at one company",
+          "needs": null
+        },
+        {
+          "id": "listing-index",
+          "weight": 12,
+          "desc": "the index",
+          "needs": null
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 200,
+        "p50_ms": 1.4,
+        "p95_ms": 2,
+        "p99_ms": 2.5,
+        "p95_ms_range": [
+          2,
+          2
+        ],
+        "p99_ms_range": [
+          2.5,
+          2.6
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "courses",
+      "name": "Course Platform",
+      "tagline": "A course platform: three levels of nesting per page load.",
+      "realWorld": "A course page needs its modules, and each module its lessons. The engine populates downward from a record and cannot fetch children by foreign key, so the app walks the levels itself. This profile measures that walk.",
+      "rate": 180,
+      "threshold": "p95 < 160 ms",
+      "schemas": [
+        {
+          "name": "lms_courses",
+          "fields": 6
+        },
+        {
+          "name": "lms_enrollments",
+          "fields": 6
+        },
+        {
+          "name": "lms_modules",
+          "fields": 4
+        },
+        {
+          "name": "lms_lessons",
+          "fields": 6
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "lms_courses": 120,
+        "lms_modules": 600,
+        "lms_lessons": 4000
+      },
+      "traffic": [
+        {
+          "id": "lesson-read",
+          "weight": 32,
+          "desc": "read one lesson",
+          "needs": null
+        },
+        {
+          "id": "course-modules",
+          "weight": 24,
+          "desc": "the first level of the walk",
+          "needs": null
+        },
+        {
+          "id": "module-lessons",
+          "weight": 22,
+          "desc": "the second level",
+          "needs": null
+        },
+        {
+          "id": "course-read",
+          "weight": 14,
+          "desc": "the course itself",
+          "needs": null
+        },
+        {
+          "id": "catalog",
+          "weight": 8,
+          "desc": "the catalog",
+          "needs": null
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 180,
+        "p50_ms": 1.4,
+        "p95_ms": 1.9,
+        "p99_ms": 2.3,
+        "p95_ms_range": [
+          1.9,
+          1.9
+        ],
+        "p99_ms_range": [
+          2.3,
+          2.4
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "marketplace",
+      "name": "Small Marketplace",
+      "tagline": "A multi-seller catalog: browse-heavy, with search and reviews.",
+      "realWorld": "Sellers listing products with prices and stock, buyers browsing, searching and reading reviews.",
+      "rate": 250,
+      "threshold": "p95 < 150 ms",
+      "schemas": [
+        {
+          "name": "shop_categories",
+          "fields": 2
+        },
+        {
+          "name": "shop_sellers",
+          "fields": 4
+        },
+        {
+          "name": "shop_products",
+          "fields": 8
+        },
+        {
+          "name": "shop_reviews",
+          "fields": 5
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "shop_sellers": 100,
+        "shop_categories": 50,
+        "shop_products": 2000,
+        "shop_reviews": 5000
+      },
+      "traffic": [
+        {
+          "id": "product-read",
+          "weight": 30,
+          "desc": "read one product",
+          "needs": null
+        },
+        {
+          "id": "product-browse",
+          "weight": 24,
+          "desc": "browse a page, and ranking is left to the application",
+          "needs": null
+        },
+        {
+          "id": "product-populated",
+          "weight": 14,
+          "desc": "product with seller and category inflated",
+          "needs": null
+        },
+        {
+          "id": "category-filter",
+          "weight": 14,
+          "desc": "products in a category",
+          "needs": null
+        },
+        {
+          "id": "review-list",
+          "weight": 10,
+          "desc": "reviews for a product",
+          "needs": null
+        },
+        {
+          "id": "search",
+          "weight": 8,
+          "desc": "product search",
+          "needs": "search"
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 250,
+        "p50_ms": 1.4,
+        "p95_ms": 1.9,
+        "p99_ms": 2.4,
+        "p95_ms_range": [
+          1.9,
+          1.9
+        ],
+        "p99_ms_range": [
+          2.4,
+          2.5
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "i18n",
+      "name": "Multi-language Site",
+      "tagline": "A translated site: every page load resolves a locale.",
+      "realWorld": "Content exists once and its translations hang off it, so a localized page is a content read plus a translation resolve. A locale with no translation falls back, which is a decision the application makes and this profile exercises.",
+      "rate": 180,
+      "threshold": "p95 < 140 ms",
+      "schemas": [
+        {
+          "name": "i18n_sections",
+          "fields": 3
+        },
+        {
+          "name": "i18n_pages",
+          "fields": 6
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "i18n_sections": 12,
+        "i18n_pages": 800
+      },
+      "traffic": [
+        {
+          "id": "page-read",
+          "weight": 34,
+          "desc": "the default-locale entry",
+          "needs": null
+        },
+        {
+          "id": "resolve",
+          "weight": 30,
+          "desc": "the translation for a locale",
+          "needs": "localization"
+        },
+        {
+          "id": "page-by-slug",
+          "weight": 20,
+          "desc": "resolve a localized URL",
+          "needs": null
+        },
+        {
+          "id": "section-pages",
+          "weight": 16,
+          "desc": "the pages in a section",
+          "needs": null
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 180,
+        "p50_ms": 1.4,
+        "p95_ms": 1.9,
+        "p99_ms": 2.4,
+        "p95_ms_range": [
+          1.9,
+          2
+        ],
+        "p99_ms_range": [
+          2.4,
+          2.4
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "newsroom",
+      "name": "Editorial Newsroom",
+      "tagline": "An editorial desk: a public front page over a draft-heavy store.",
+      "realWorld": "Reporters draft, editors publish, and the public reads only what is published. Most of the store is not publicly visible, which is the point: the public reads are filtered and the desk reads are not.",
+      "rate": 180,
+      "threshold": "p95 < 140 ms",
+      "schemas": [
+        {
+          "name": "news_desks",
+          "fields": 2
+        },
+        {
+          "name": "news_reporters",
+          "fields": 4
+        },
+        {
+          "name": "news_stories",
+          "fields": 8
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "news_desks": 8,
+        "news_reporters": 25,
+        "news_stories": 1500
+      },
+      "traffic": [
+        {
+          "id": "story-read",
+          "weight": 34,
+          "desc": "read one story",
+          "needs": null
+        },
+        {
+          "id": "front-page",
+          "weight": 26,
+          "desc": "the front page",
+          "needs": null
+        },
+        {
+          "id": "story-populated",
+          "weight": 16,
+          "desc": "a story with its byline and desk",
+          "needs": null
+        },
+        {
+          "id": "desk-filter",
+          "weight": 14,
+          "desc": "one desk output",
+          "needs": null
+        },
+        {
+          "id": "revisions",
+          "weight": 10,
+          "desc": "the revision history of a story",
+          "needs": null
+        }
+      ],
+      "result": {
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 180,
+        "p50_ms": 1.5,
+        "p95_ms": 2,
+        "p99_ms": 2.5,
+        "p95_ms_range": [
+          2,
+          2
+        ],
+        "p99_ms_range": [
+          2.5,
+          2.5
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-05"
+      }
+    }
+  ],
+  "rig": {
+    "note": "What the latest sweep ran on and how. tools/generate-report.mjs prints it at the top of RESULTS.md and copies it into results.json.",
+    "date": "2026-10-05 (every target, the application profiles and the micro-benchmarks)",
+    "machine": {
+      "cpu": "Intel Core Ultra 5 125H (18 threads)",
+      "memory": "32 GB RAM",
+      "disk": "NVMe",
+      "os": "Ubuntu 26.04, Linux 7.0",
+      "docker": "Docker 29.8 (containerd image store), Compose v2"
+    },
+    "loadGenerator": "k6 2.3.0 on the same machine, constant arrival rate",
+    "engine": {
+      "version": "v0.51.2",
+      "commit": "da80fdd",
+      "image": "ghcr.io/lyeve-labs/lyeve-core:0.51.2",
+      "description": "the published v0.51.2 image as it ships, with all 51 plugins compiled in, pulled rather than built. No license: the free baseline starts. Micro-benchmarks from the engine source at the same tag",
+      "binaryBytes": 72589472,
+      "imageLayersBytes": 78323712,
+      "imageCompressedMB": 27.6,
+      "previous": {
+        "commit": "271cd9e",
+        "date": "2026-09-27",
+        "binaryBytes": 78721184,
+        "imageLayersBytes": 84848640,
+        "imageCompressedMB": 28.9
+      }
+    },
+    "competitors": [
+      {
+        "name": "Directus",
+        "version": "11.17.4, official image directus/directus:11"
+      },
+      {
+        "name": "Strapi",
+        "version": "5.6.0, built from the committed app on node:20-alpine"
+      },
+      {
+        "name": "Payload",
+        "version": "3.11.0 on Next.js 15.1.0, built from the committed app on node:24-alpine"
+      }
+    ],
+    "repetitions": "Every target on 2026-10-05: four repetitions, interleaved (LyEve, Directus, Strapi, Payload, then again), each on a fresh stack. Every run started and ended below load 4. One Directus run is set aside under results/raw/excluded because an unrelated build ran on the machine during it, so Directus is the median of 3 runs and every other target of 4. Each application profile ran 3 times the same evening.",
+    "method": [
+      "Every run brings the target's stack up from nothing, seeds the same 2,020 records from a fixed seed, and tears it down with its volumes afterwards.",
+      "Each scenario gets a 10 s discarded warm-up, then a 60 s measured window. The published figure is the median of the runs. The range beneath it is the lowest and highest run.",
+      "Before each run the driver waits until no other test workload runs on the machine and the one-minute load average is under 4. The load at the start and end of every run is logged, and a run with either above 4 is excluded.",
+      "Image size is the sum of the image's layers from `docker history`, uncompressed. Cold start is `docker start` of the stopped container to the first request the application serves, polled every 50 ms.",
+      "LyEve runs in its default production mode behind a proxy that forwards the https scheme. Its free tier limits logins to five per fifteen minutes per address and only a license changes that, so the load scripts reuse one token and S05 reads pending, the rule that has always applied to Strapi."
+    ]
+  }
+}

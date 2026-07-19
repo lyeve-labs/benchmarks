@@ -1,0 +1,17 @@
+{
+  "note": "Real measurements taken outside a full run.sh sweep (e.g. container image size obtained by pulling the official image and reading the `docker images` uncompressed size). Every entry cites its method and date. These are folded into results.json with provenance=measured. Strapi and Payload have no canonical published image (their content model is code), so their image size stays `pending` until the app scaffolds are built. We do not guess it.",
+  "method": {
+    "M-image": "docker images SIZE column (uncompressed, amd64). Corroborated by the docker history layer sum. `docker image inspect --format {{.Size}}` is NOT used, because it under-reports ~5x on Docker 29.x."
+  },
+  "entries": [
+    {
+      "target": "directus",
+      "metricId": "M-image",
+      "value": 1210,
+      "unit": "MB",
+      "provenance": "measured",
+      "detail": "directus/directus:11 official image, amd64, `docker images` = 1.21 GB (history layer sum 969 MB).",
+      "asOf": "2026-07-18"
+    }
+  ]
+}

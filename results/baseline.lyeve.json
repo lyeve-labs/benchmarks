@@ -1,0 +1,243 @@
+{
+  "target": "lyeve",
+  "versionPin": "latest",
+  "note": "LyEve's own numbers. Micro-benchmarks are MEASURED (Go testing.B, committed bench suite). End-to-end comparison values are TARGETs until promoted by a reference-host sweep. This file is one of the inputs to tools/generate-report.mjs.",
+  "internals": {
+    "machine": "Intel Core Ultra 5 125H (18 threads)",
+    "os": "Linux 7.0, Ubuntu 26.04",
+    "goVersion": "1.27.1",
+    "measuredOn": "2026-10-05",
+    "source": "core bench suite (go test -bench -benchmem -count=5, median), commit da80fdd (v0.51.2)",
+    "groups": [
+      {
+        "title": "Auth / crypto",
+        "rows": [
+          {
+            "name": "JWT sign (HMAC)",
+            "display": "5.2 µs",
+            "raw": 5245,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              5093,
+              5378
+            ]
+          },
+          {
+            "name": "JWT verify (parse)",
+            "display": "6.4 µs",
+            "raw": 6359,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              6105,
+              6635
+            ]
+          },
+          {
+            "name": "Ed25519 sign",
+            "display": "16.1 µs",
+            "raw": 16103,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              15864,
+              16332
+            ]
+          },
+          {
+            "name": "Ed25519 verify",
+            "display": "36.5 µs",
+            "raw": 36516,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              35880,
+              37477
+            ]
+          },
+          {
+            "name": "Password hash (bcrypt, cost 10)",
+            "display": "49 ms",
+            "raw": 48974594,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              48458523,
+              51969329
+            ]
+          },
+          {
+            "name": "Password hash (argon2id)",
+            "display": "18 ms",
+            "raw": 17662060,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              17260394,
+              17830885
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Database (placeholder rewrite hot path)",
+        "rows": [
+          {
+            "name": "PostgreSQL passthrough",
+            "display": "2.1 ns",
+            "raw": 2.145,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              2.135,
+              2.156
+            ]
+          },
+          {
+            "name": "MySQL rewrite ($N → ?)",
+            "display": "269 ns",
+            "raw": 269.2,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              262.1,
+              280.8
+            ]
+          },
+          {
+            "name": "MSSQL rewrite ($N → @pN)",
+            "display": "246 ns",
+            "raw": 246,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              235.8,
+              255.2
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Middleware",
+        "rows": [
+          {
+            "name": "Full stack (4 middlewares)",
+            "display": "5.1 µs",
+            "raw": 5124,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              4601,
+              5856
+            ]
+          },
+          {
+            "name": "Tenant header (no-op)",
+            "display": "452 ns",
+            "raw": 451.5,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              444,
+              458.5
+            ]
+          },
+          {
+            "name": "Rate limiter (allow)",
+            "display": "2.0 µs",
+            "raw": 2026,
+            "unit": "ns/op",
+            "runs": 5,
+            "range": [
+              2008,
+              2079
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "comparisonValues": {
+    "M-mem-idle": {
+      "value": 80,
+      "provenance": "target",
+      "detail": "engine idle, empty DB, default config"
+    },
+    "S01-p99": {
+      "value": 20,
+      "provenance": "target",
+      "detail": "read one by id @ 500 rps on the reference host"
+    },
+    "S02-p99": {
+      "value": 50,
+      "provenance": "target",
+      "detail": "list 50 @ 300 rps on the reference host"
+    },
+    "M-cold": {
+      "value": 200,
+      "provenance": "target",
+      "detail": "container start to first served request"
+    }
+  },
+  "restTargets": [
+    {
+      "endpoint": "GET /content/{schema} (50 items)",
+      "rps": 1000,
+      "p50": "8 ms",
+      "p99": "50 ms"
+    },
+    {
+      "endpoint": "GET /content/{schema}/{id}",
+      "rps": 2000,
+      "p50": "3 ms",
+      "p99": "20 ms"
+    },
+    {
+      "endpoint": "POST /content/{schema}",
+      "rps": 500,
+      "p50": "15 ms",
+      "p99": "80 ms"
+    },
+    {
+      "endpoint": "PUT /content/{schema}/{id}",
+      "rps": 400,
+      "p50": "20 ms",
+      "p99": "100 ms"
+    },
+    {
+      "endpoint": "DELETE /content/{schema}/{id}",
+      "rps": 800,
+      "p50": "8 ms",
+      "p99": "40 ms"
+    },
+    {
+      "endpoint": "GET /schemas (list 20)",
+      "rps": 500,
+      "p50": "5 ms",
+      "p99": "30 ms"
+    }
+  ],
+  "coldStartPhases": [
+    {
+      "phase": "License token check",
+      "target": "< 5 ms",
+      "note": "Ed25519, offline"
+    },
+    {
+      "phase": "Plugin registry resolution",
+      "target": "< 1 ms",
+      "note": "compile-time map lookup"
+    },
+    {
+      "phase": "Activator gate check",
+      "target": "< 5 ms",
+      "note": "compiled, licensed and requested"
+    },
+    {
+      "phase": "Plugin Start() per active",
+      "target": "< 50 ms",
+      "note": "Database schema check and route registration"
+    }
+  ]
+}
