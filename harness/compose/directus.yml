@@ -1,0 +1,43 @@
+# Directus stack, from the official image.
+# Admin user is created from env on first boot, so no separate bootstrap step.
+name: bench-directus
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: directus
+      POSTGRES_PASSWORD: directus
+      POSTGRES_DB: directus_bench
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U directus -d directus_bench"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  app:
+    image: directus/directus:11
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BENCH_PORT:-8080}:8055"
+    environment:
+      SECRET: "benchmark-secret-please-change"
+      DB_CLIENT: "pg"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_DATABASE: "directus_bench"
+      DB_USER: "directus"
+      DB_PASSWORD: "directus"
+      # Must be a valid-TLD email, because Directus rejects .local with FAILED_VALIDATION.
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-admin@lyeve.com}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-benchmark-Passw0rd!}"
+      WEBSOCKETS_ENABLED: "false"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8055/server/health || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+# Note: the 'article' collection + fields + index are created by the harness
+# bootstrap via Directus's schema API (see harness/seed/README.md) before seeding.

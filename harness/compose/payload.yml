@@ -1,0 +1,48 @@
+# Payload stack.
+#
+# Payload is a framework embedded in a Node/Next app. Like Strapi it has no
+# canonical runtime image and its collections are defined in payload.config. We
+# build a pinned minimal app from ./payload-app that ships the articles,
+# categories, and users collections (see harness/seed/README.md).
+name: bench-payload
+
+services:
+  db:
+    image: postgres:16-alpine
+    # Headroom over the default 100 so a request burst plus Payload's boot-time
+    # schema push never trips "too many clients".
+    command: ["postgres", "-c", "max_connections=200"]
+    environment:
+      POSTGRES_USER: payload
+      POSTGRES_PASSWORD: payload
+      POSTGRES_DB: payload_bench
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payload -d payload_bench"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  app:
+    # Distinct image tag so this build never collides with the Strapi app in the
+    # local Docker image store (both compose files live in this directory).
+    image: bench-payload:local
+    build:
+      context: ./payload-app
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BENCH_PORT:-8080}:3000"
+    environment:
+      DATABASE_URI: "postgres://payload:payload@db:5432/payload_bench"
+      PAYLOAD_SECRET: "benchmark-secret-please-change"
+      NODE_ENV: "production"
+    # First boot runs the schema push. If the initial request storm briefly trips
+    # the app, let it come back rather than leaving the stack down.
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/access || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+      start_period: 60s

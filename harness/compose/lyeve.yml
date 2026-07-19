@@ -1,0 +1,94 @@
+# LyEve stack for the benchmark harness.
+#
+# LyEve serves the admin API on :3001 and the content API on :3002. To present a
+# single base URL like every other target, a tiny Caddy proxy fronts both on
+# :8080 (/api/admin/* -> admin, everything else -> content). This keeps the rig
+# fair: one host, one URL, per target.
+#
+# Admin bootstrap: the seeder creates the first super_admin over /api/admin/setup
+# on a fresh database, then logs in with ADMIN_EMAIL / ADMIN_PASSWORD to create
+# the content. No separate bootstrap command. Setup demands the engine's setup
+# token, so run.sh exports LYEVE_SETUP_TOKEN (generated when unset) to both the
+# engine below and the seeder. Brought up by hand without it, the engine prints
+# a one-time token to its log instead. Export that before running the seeder.
+name: bench-lyeve
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: lyeve
+      POSTGRES_PASSWORD: lyeve
+      POSTGRES_DB: lyeve_bench
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lyeve -d lyeve_bench"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  app:
+    # Anonymous pulls of this package answer 403, so a reader outside the
+    # publishing org cannot run this file as written. Build the image from a
+    # source checkout and name it in LYEVE_IMAGE instead. See README.
+    image: ${LYEVE_IMAGE:-ghcr.io/lyeve-labs/lyeve-core:0.51.2}
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://lyeve:lyeve@db:5432/lyeve_bench?sslmode=disable"
+      # The image sets MIGRATIONS_PATH, STORAGE_LOCAL_PATH and both listen
+      # addresses itself. This file used to point MIGRATIONS_PATH at /migrations,
+      # which the image no longer ships, so the engine could not boot from it.
+      LYEVE_BASE_URL: "http://localhost:${BENCH_PORT:-8080}"
+      # The engine refuses a secret that reads as a placeholder ("change-me",
+      # "example" and the like) in any environment, so this one names its use
+      # instead. The stack is thrown away after every run.
+      JWT_SECRET: "benchmark-jwt-signing-key-0123456789abcdef"
+      # The engine refuses to boot when ENCRYPTION_KEY is missing or equal to
+      # JWT_SECRET: the two keys protect different things.
+      ENCRYPTION_KEY: "benchmark-encryption-key-distinct-0123456789abcdef"
+      # APP_ENV defaults to production, which refuses to boot without these
+      # three. Cookies are not used here (every request carries a bearer token),
+      # but the check is unconditional. The load comes from one address, so the
+      # per-address limit is set above any offered rate: a benchmark of the
+      # limiter's refusals would measure nothing else.
+      SECURE_COOKIE: "true"
+      # A placeholder of the 64 hex characters the engine requires. The stack and
+      # its audit chain are thrown away after every run.
+      LYEVE_AUDIT_HMAC_KEY: "1111111111111111111111111111111111111111111111111111111111111111"
+      RATE_LIMIT_RPS: "100000"
+      # The load scripts reuse the seeder's token for the whole run, which lasts
+      # longer than the default fifteen-minute token. 3600 is the production cap.
+      JWT_EXPIRY_SECS: "3600"
+      # Empty LYEVE_PLUGINS = every plugin compiled in may start; with no
+      # license only the free baseline does.
+      LYEVE_PLUGINS: ""
+      # The credential the first-admin setup call must present (16+ characters).
+      LYEVE_SETUP_TOKEN: "${LYEVE_SETUP_TOKEN:-}"
+    volumes:
+      # The Ed25519 signing key lives here. A named volume inherits the image's
+      # ownership of the directory, so the nonroot process can write it.
+      - lyeve-state:/var/lib/lyeve
+    # No container healthcheck: the core image is distroless (no shell/wget), so
+    # readiness is gated by the Caddy proxy's healthcheck below, which probes the
+    # app through :8080. This is why `--wait` keys off the proxy, not the app.
+
+  proxy:
+    image: caddy:2-alpine
+    depends_on:
+      app:
+        condition: service_started
+    ports:
+      - "${BENCH_PORT:-8080}:8080"
+    volumes:
+      - ./Caddyfile.lyeve:/etc/caddy/Caddyfile:ro
+    healthcheck:
+      # /api/v1/health requires a bearer token and answers 401, so probing it
+      # meant this service could never report healthy. /readyz is the public probe.
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/readyz || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+
+volumes:
+  lyeve-state:

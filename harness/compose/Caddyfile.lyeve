@@ -1,0 +1,25 @@
+# Fronts LyEve's two ports on a single :8080 so the harness treats it like any
+# other single-URL target. Admin API (login, admin CRUD, search) -> :3001;
+# content API, probes, JWKS -> :3002.
+#
+# The fallthrough carries /readyz, which is the only health probe that answers
+# without a token, and it is what the compose healthcheck uses.
+#
+# The engine runs in its production mode, which redirects plain HTTP to HTTPS.
+# A production deployment terminates TLS at a proxy like this one and forwards
+# the scheme, so the proxy says https and the benchmark measures the engine
+# rather than a redirect. TLS itself is not part of what is measured, for any
+# target.
+:8080 {
+	@admin path /api/admin/*
+	handle @admin {
+		reverse_proxy app:3001 {
+			header_up X-Forwarded-Proto https
+		}
+	}
+	handle {
+		reverse_proxy app:3002 {
+			header_up X-Forwarded-Proto https
+		}
+	}
+}

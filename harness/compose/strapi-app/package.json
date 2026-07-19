@@ -1,0 +1,19 @@
+{
+  "name": "strapi-bench-app",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Minimal Strapi 5 app used by the LyEve benchmark harness. Ships the article and category content types the scenarios need.",
+  "scripts": {
+    "build": "strapi build",
+    "start": "strapi start"
+  },
+  "dependencies": {
+    "@strapi/plugin-users-permissions": "5.6.0",
+    "@strapi/strapi": "5.6.0",
+    "pg": "8.13.1"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=22.x.x",
+    "npm": ">=6.0.0"
+  }
+}

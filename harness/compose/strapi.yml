@@ -1,0 +1,50 @@
+# Strapi stack.
+#
+# Strapi v4/v5 does not publish a canonical runtime image, because content types are
+# code, defined in the app. So we build a pinned app from strapi.Dockerfile that
+# ships the article and category content types (that's why the Strapi model is
+# built, not created over an API (see harness/seed/README.md).
+name: bench-strapi
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi
+      POSTGRES_DB: strapi_bench
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U strapi -d strapi_bench"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  app:
+    # Distinct image tag so this build never collides with the Payload app in the
+    # local Docker image store (both compose files live in this directory).
+    image: bench-strapi:local
+    build:
+      context: ./strapi-app
+      dockerfile: ../strapi.Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BENCH_PORT:-8080}:1337"
+    environment:
+      DATABASE_CLIENT: "postgres"
+      DATABASE_HOST: "db"
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: "strapi_bench"
+      DATABASE_USERNAME: "strapi"
+      DATABASE_PASSWORD: "strapi"
+      APP_KEYS: "benchKeyA,benchKeyB"
+      API_TOKEN_SALT: "benchmark-salt"
+      ADMIN_JWT_SECRET: "benchmark-admin-jwt"
+      JWT_SECRET: "benchmark-users-jwt"
+      NODE_ENV: "production"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:1337/_health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
