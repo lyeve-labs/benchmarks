@@ -1,0 +1,27 @@
+# Raw load-test output is large and machine-specific. We keep a curated copy of
+# the runs that back a published result under results/raw/<run-id>/ and ignore
+# the scratch output from ad-hoc local runs.
+results/raw/tmp/
+results/raw/**/*.tmp
+*.local.json
+
+# Node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+
+# k6 scratch output
+k6-*.json
+*.k6-out
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Full per-request k6 streams (--out json) are huge (tens of MB each) and not
+# needed to verify a published number: the aggregated *.summary.json + M-*.json
+# in each run dir are the evidence that backs the report. Keep those, drop these.
+results/raw/*/S[0-9][0-9].json
+results/raw/*/profile.json

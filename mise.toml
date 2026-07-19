@@ -1,0 +1,7 @@
+# Exact versions, never ranges. mise resolves a range to whichever patch is newest
+# when it installs, so one file can leave two machines, or a machine and CI, on
+# different toolchains. Bump here first, then the workflow and Dockerfile tags, so
+# local, CI and container runtimes stay aligned.
+[tools]
+node = "26.8.1"
+pnpm = "11.25.0"

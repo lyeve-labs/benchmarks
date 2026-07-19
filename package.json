@@ -1,0 +1,16 @@
+{
+  "name": "@lyeve-labs/benchmarks",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "description": "Reproducible performance benchmarks for LyEve Core and competitor comparison.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "report": "node tools/generate-report.mjs",
+    "collect": "node tools/collect.mjs",
+    "validate": "node tools/validate.mjs"
+  }
+}
