@@ -1,0 +1,43 @@
+name: benchmarks
+
+# Cheap static gate only (heavy load runs happen on a dedicated bench host, not
+# in CI). This verifies the registries are well-formed and that the published
+# results.json / RESULTS.md are in sync with their inputs, so a stale report
+# can never be merged.
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+
+      - name: Validate registries + results shape
+        run: node tools/validate.mjs
+
+      - name: Report is in sync with its inputs
+        run: |
+          # Regenerate with the committed date so only real content drift fails
+          # (generatedAt alone must not trip the check).
+          DATE=$(node -e "process.stdout.write(require('./results/results.json').generatedAt)")
+          BENCH_DATE="$DATE" node tools/generate-report.mjs
+          if ! git diff --exit-code -- results/results.json results/RESULTS.md; then
+            echo "::error::results are stale: run 'make report' and commit the result"
+            exit 1
+          fi
+
+  shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - name: Shell scripts parse
+        run: bash -n harness/run.sh harness/gen-license.sh
