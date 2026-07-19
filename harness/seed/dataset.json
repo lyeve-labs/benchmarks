@@ -1,0 +1,62 @@
+{
+  "seed": 42,
+  "totalRecords": 2020,
+  "note": "The shared dataset every target is seeded with before any scenario. Same description, same fixed seed, translated into each platform's content model by seed.mjs. The field mix is deliberately varied so the query planner can't cheat with a trivial table. 'slug' and 'category' are indexed on every target so nobody wins/loses S04 on a missing index. The three types below 'article' (author, product, page) are the catalog for future scenario expansion. They are not seeded by the current seed.mjs.",
+  "types": [
+    {
+      "name": "category",
+      "count": 20,
+      "fields": [
+        { "name": "name", "type": "string" },
+        { "name": "slug", "type": "string", "unique": true, "indexed": true }
+      ]
+    },
+    {
+      "name": "article",
+      "count": 2000,
+      "fields": [
+        { "name": "title", "type": "string" },
+        { "name": "slug", "type": "string", "unique": true, "indexed": true },
+        { "name": "body", "type": "text" },
+        { "name": "views", "type": "integer" },
+        { "name": "published", "type": "boolean" },
+        { "name": "meta", "type": "json" }
+      ],
+      "relations": [
+        { "field": "category", "to": "category", "indexed": true },
+        { "field": "author", "to": "author" }
+      ]
+    },
+    {
+      "name": "author",
+      "count": 100,
+      "_note": "cataloged for future scenario expansion, not seeded by seed.mjs",
+      "fields": [
+        { "name": "name", "type": "string" },
+        { "name": "email", "type": "string", "unique": true, "indexed": true },
+        { "name": "bio", "type": "text" }
+      ]
+    },
+    {
+      "name": "product",
+      "count": 1500,
+      "_note": "cataloged for future scenario expansion, not seeded by seed.mjs",
+      "fields": [
+        { "name": "name", "type": "string" },
+        { "name": "sku", "type": "string", "unique": true, "indexed": true },
+        { "name": "price_cents", "type": "integer" },
+        { "name": "in_stock", "type": "boolean" }
+      ]
+    },
+    {
+      "name": "page",
+      "count": 380,
+      "_note": "cataloged for future scenario expansion, not seeded by seed.mjs",
+      "fields": [
+        { "name": "title", "type": "string" },
+        { "name": "slug", "type": "string", "unique": true, "indexed": true },
+        { "name": "content", "type": "text" }
+      ]
+    }
+  ]
+}
