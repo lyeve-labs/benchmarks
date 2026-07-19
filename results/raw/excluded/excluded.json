@@ -1,0 +1,62 @@
+{
+  "note": "Runs kept as evidence but left out of the report. tools/generate-report.mjs reads only run directories directly under results/raw/.",
+  "rule": "A run is excluded when the one-minute load average at its start or end was above 4, the threshold the driver waits for before starting a run. The rule was set after the sweep, when the first repetition's ranges showed the disturbance. A replacement repetition made later the same day met the same load from other work and is excluded by the same rule, so LyEve's scenario figures are the median of three clean runs and each competitor's of four.",
+  "runs": [
+    {
+      "run": "20260925-045213-lyeve-all",
+      "reason": "first repetition; started with the five-minute load average at 14.6 from another workload on the machine"
+    },
+    {
+      "run": "20260925-045948-directus-all",
+      "reason": "first repetition; load 6.03 at its end"
+    },
+    {
+      "run": "20260925-050934-strapi-all",
+      "reason": "first repetition; load 13.93 at its end"
+    },
+    {
+      "run": "20260925-052150-payload-all",
+      "reason": "first repetition; load 5.47 at its end"
+    },
+    {
+      "run": "20260925-055022-lyeve-all",
+      "reason": "incomplete: the run stopped after the cold start and recorded no idle memory and no scenario"
+    },
+    {
+      "run": "20260925-090127-lyeve-all",
+      "reason": "replacement repetition; load 22.10 at its end"
+    },
+    {
+      "run": "20260925-092236-directus-all",
+      "reason": "replacement repetition; load 29.79 at its end"
+    },
+    {
+      "run": "20260925-093524-strapi-all",
+      "reason": "replacement repetition; five-minute load 11.24 at its start, 6.20 at its end"
+    },
+    {
+      "run": "20260925-094806-payload-all",
+      "reason": "replacement repetition; five-minute load 5.38 at its start and p99 read-by-id of 908.7 ms against 5.9 to 10.8 ms in the clean runs"
+    },
+    {
+      "run": "20260925-095533-lyeve-all",
+      "reason": "replacement repetition; load 23.23 at its end"
+    },
+    {
+      "run": "20260926-144455-lyeve-all",
+      "reason": "first repetition at lyeve-core 1ff134a; started at load 0.49, another workload took the load to 45.12 by its end"
+    },
+    {
+      "run": "20260926-151307-lyeve-all",
+      "reason": "replacement repetition at lyeve-core 1ff134a; started at load 1.66, other work that began mid-run took it to 16.44 by its end"
+    },
+    {
+      "run": "20260927-034624-lyeve-all",
+      "reason": "first repetition at lyeve-core 271cd9e; started at load 2.08, other work took it to 7.35 by its end"
+    },
+    {
+      "run": "20261005-191007-directus-all",
+      "reason": "first repetition of the v0.51.2 sweep; started at load 1.72 and ended at 2.29, inside the rule, but an unrelated build ran on the machine during it, so it is set aside"
+    }
+  ]
+}
