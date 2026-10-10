@@ -40,6 +40,11 @@ services:
       # addresses itself. This file used to point MIGRATIONS_PATH at /migrations,
       # which the image no longer ships, so the engine could not boot from it.
       LYEVE_BASE_URL: "http://localhost:${BENCH_PORT:-8080}"
+      # Password reset and magic-link sign-in are free plugins that refuse to
+      # start without the console's public URL, and production mode refuses one
+      # that is not https. Without it the engine runs two plugins short of the
+      # free baseline this stack claims to measure. No run follows the link.
+      LYEVE_CONSOLE_URL: "https://localhost"
       # The engine refuses a secret that reads as a placeholder ("change-me",
       # "example" and the like) in any environment, so this one names its use
       # instead. The stack is thrown away after every run.

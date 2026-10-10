@@ -38,6 +38,10 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ### Fixed
 
+- The LyEve stack set no `LYEVE_CONSOLE_URL`, so in production mode the
+  password reset and magic-link plugins refused to start and every figure
+  was measured two plugins short of the free baseline. The stack now names a
+  console URL and the whole baseline starts.
 - A `FULL=1` profile run never handed its license to the engine, because the
   compose file did not pass `LYEVE_LICENSE_KEY`, so the paid traffic met the
   free tier. The run also wrote the license token into its raw output under
