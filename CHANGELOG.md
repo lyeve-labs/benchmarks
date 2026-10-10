@@ -38,6 +38,11 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ### Fixed
 
+- A `FULL=1` profile run never handed its license to the engine, because the
+  compose file did not pass `LYEVE_LICENSE_KEY`, so the paid traffic met the
+  free tier. The run also wrote the license token into its raw output under
+  `results/`. The token now reaches the engine through the compose
+  environment and is never written to disk.
 - The LyEve compose file's `JWT_SECRET` contained "change-me", which v0.51.2
   refuses as a placeholder, so the engine could not boot from it.
 - `FULL=1` profile runs stopped before starting, because the harness read a

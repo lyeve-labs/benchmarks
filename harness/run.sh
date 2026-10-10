@@ -231,7 +231,15 @@ run_profile() {
   if [[ "$full" == "1" ]]; then
     local feats; feats="$(node -e 'const d=require(process.argv[1]);const p=d.profiles.find(x=>x.id===process.argv[2]);process.stdout.write([...new Set(p.traffic.map(t=>t.needs).filter(Boolean))].join(","))' "$PROFILES_JSON" "$profile")"
     log "[profile:$profile] FULL run also drives the traffic that needs: $feats, reading the dev license through harness/gen-license.sh"
-    "$HARNESS_DIR/gen-license.sh" "$feats" > "$out_dir/license.env" 2>/dev/null || warn "no license: set LYEVE_LICENSE_KEY and LICENSE_PUBLIC_KEY_HEX, and run an engine+plugins image built with that key"
+    # The token reaches the engine through the compose file's environment and
+    # never a file under results/, which is committed as evidence.
+    local lic
+    if lic="$("$HARNESS_DIR/gen-license.sh" "$feats" 2>/dev/null)"; then
+      LYEVE_LICENSE_KEY="$(printf '%s\n' "$lic" | sed -n 's/^LYEVE_LICENSE_KEY=//p')"
+      export LYEVE_LICENSE_KEY
+    else
+      warn "no license: set LYEVE_LICENSE_KEY and LICENSE_PUBLIC_KEY_HEX, and run an engine+plugins image built with that key"
+    fi
   fi
 
   log "[profile:$profile/$target] bringing up stack"

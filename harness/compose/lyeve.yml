@@ -65,6 +65,9 @@ services:
       LYEVE_PLUGINS: ""
       # The credential the first-admin setup call must present (16+ characters).
       LYEVE_SETUP_TOKEN: "${LYEVE_SETUP_TOKEN:-}"
+      # Empty on every run but a FULL profile, which exports the license the
+      # run was given. Empty means no license, so the free baseline starts.
+      LYEVE_LICENSE_KEY: "${LYEVE_LICENSE_KEY:-}"
     volumes:
       # The Ed25519 signing key lives here. A named volume inherits the image's
       # ownership of the directory, so the nonroot process can write it.
