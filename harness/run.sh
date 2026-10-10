@@ -99,6 +99,7 @@ doctor() {
 # ── run one (target, scenario) ───────────────────────────────────────────────
 run_one() {
   local target="$1" scenario="$2"
+  unset BENCH_LICENSE_KEY
   local idx; idx="$(jget "$TARGETS_JSON" "d.targets.findIndex(t=>t.id==='$target')")"
   [[ "$idx" == "-1" ]] && die "unknown target '$target' (see targets/targets.json)"
 
@@ -225,6 +226,7 @@ run_profile() {
   full="${FULL:-0}"
 
   local suffix=""; [[ "$full" == "1" ]] && suffix="-full"
+  unset BENCH_LICENSE_KEY
   local run_id="$(_now)-$target-profile-$profile$suffix"
   local out_dir="$RAW_DIR/$run_id"; mkdir -p "$out_dir"
 
@@ -232,11 +234,13 @@ run_profile() {
     local feats; feats="$(node -e 'const d=require(process.argv[1]);const p=d.profiles.find(x=>x.id===process.argv[2]);process.stdout.write([...new Set(p.traffic.map(t=>t.needs).filter(Boolean))].join(","))' "$PROFILES_JSON" "$profile")"
     log "[profile:$profile] FULL run also drives the traffic that needs: $feats, reading the dev license through harness/gen-license.sh"
     # The token reaches the engine through the compose file's environment and
-    # never a file under results/, which is committed as evidence.
+    # never a file under results/, which is committed as evidence. It travels
+    # as BENCH_LICENSE_KEY, which only this branch sets, so a LYEVE_LICENSE_KEY
+    # exported in the caller's shell cannot license a free run.
     local lic
     if lic="$("$HARNESS_DIR/gen-license.sh" "$feats" 2>/dev/null)"; then
-      LYEVE_LICENSE_KEY="$(printf '%s\n' "$lic" | sed -n 's/^LYEVE_LICENSE_KEY=//p')"
-      export LYEVE_LICENSE_KEY
+      BENCH_LICENSE_KEY="$(printf '%s\n' "$lic" | sed -n 's/^LYEVE_LICENSE_KEY=//p')"
+      export BENCH_LICENSE_KEY
     else
       warn "no license: set LYEVE_LICENSE_KEY and LICENSE_PUBLIC_KEY_HEX, and run an engine+plugins image built with that key"
     fi
