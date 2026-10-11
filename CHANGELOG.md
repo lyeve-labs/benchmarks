@@ -38,6 +38,14 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ### Fixed
 
+- The forum profile's thread read found nothing, so a licensed forum run
+  failed 21.6% of its requests. The replies live in the comments type the
+  schema plugin's preset creates, and the profile neither applied the preset
+  nor seeded any replies. The profile now names the preset and seeds 2400
+  replies under the topics, and the seeder applies `presets` before it creates
+  the types and fixes a field for every seeded row through `seedValues`. The
+  profiles file moves to format 0.4.0. Measured on 0.54.1 with a license, the
+  forum run fails none of 12,003 requests.
 - `harness/gen-license.sh` could not be parsed: an apostrophe inside a
   parameter default opened a quote bash never found closed. Every `FULL=1`
   profile run therefore started without a license and its paid traffic was
