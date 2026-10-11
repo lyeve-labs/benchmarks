@@ -65,8 +65,14 @@ make profile PROFILE=blog TARGET=lyeve
    run a signed **dev license** granting the profile's plugin features, which
    you supply in the environment and `harness/gen-license.sh` passes to the run).
    See [SECRETS.md](./SECRETS.md).
-2. **Schema:** creates the profile's content types over `POST /api/admin/schemas`.
-3. **Seed:** inserts the profile's seed volumes (deterministic, fixed seed).
+2. **Schema:** applies the schema plugin presets the profile names in
+   `presets` (`POST /api/admin/schemas/presets/{name}`), as the paired example
+   does, then creates the profile's content types over `POST /api/admin/schemas`.
+3. **Seed:** inserts the profile's seed volumes (deterministic, fixed seed). A
+   type's `seedValues` fixes a field for every row it seeds: a literal, `null`
+   to leave the field unset, or `{id:<type>}` for a row already seeded into that
+   type. That is how each forum reply names a real topic, so the thread read
+   finds rows.
 4. **Drive:** `harness/k6/profile.js` runs the weighted traffic mix at the
    profile's arrival rate. Reports throughput, p50/p95/p99, and error rate.
 
