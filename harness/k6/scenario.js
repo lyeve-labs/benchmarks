@@ -80,8 +80,9 @@ function login() {
 // Every target declares the article slug unique. __ITER counts per virtual
 // user, so about thirty users shared each value and a random suffix collided
 // about once in ten runs, which failed one create in 6,000 on every target.
-// The test-wide iteration number is unique within a run, and the run's start
-// time separates the measured run from its warm-up.
+// The test-wide iteration number is unique across virtual users within a
+// run. The prefix is when this virtual user loaded the script, which is after
+// the warm-up's separate process exited, so it keeps the two runs apart.
 const RUN_STARTED = Date.now();
 
 function articleBody(i) {

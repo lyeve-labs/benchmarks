@@ -43,7 +43,8 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   creates picked the same slug about once in ten runs, and every target
   declares the slug unique: one create in 6,000 failed with a conflict on
   LyEve, Strapi, Directus and Payload alike. Slugs now come from the
-  test-wide iteration number and the run's start time, and never collide.
+  test-wide iteration number, prefixed with the time the script loaded, and
+  never collide.
 - The forum profile's thread read found nothing, so a licensed forum run
   failed 21.6% of its requests. The replies live in the comments type the
   schema plugin's preset creates, and the profile neither applied the preset
