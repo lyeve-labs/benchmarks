@@ -237,13 +237,13 @@ run_profile() {
     # never a file under results/, which is committed as evidence. It travels
     # as BENCH_LICENSE_KEY, which only this branch sets, so a LYEVE_LICENSE_KEY
     # exported in the caller's shell cannot license a free run.
+    # A FULL run without its license measures the engine refusing the paid
+    # traffic, which reads as the product's fault, so it stops instead.
     local lic
-    if lic="$("$HARNESS_DIR/gen-license.sh" "$feats" 2>/dev/null)"; then
-      BENCH_LICENSE_KEY="$(printf '%s\n' "$lic" | sed -n 's/^LYEVE_LICENSE_KEY=//p')"
-      export BENCH_LICENSE_KEY
-    else
-      warn "no license: set LYEVE_LICENSE_KEY and LICENSE_PUBLIC_KEY_HEX, and run an engine+plugins image built with that key"
-    fi
+    lic="$("$HARNESS_DIR/gen-license.sh" "$feats")" \
+      || die "a FULL run needs a license: set LYEVE_LICENSE_KEY and LICENSE_PUBLIC_KEY_HEX, and run an engine image built with that key"
+    BENCH_LICENSE_KEY="$(printf '%s\n' "$lic" | sed -n 's/^LYEVE_LICENSE_KEY=//p')"
+    export BENCH_LICENSE_KEY
   fi
 
   log "[profile:$profile/$target] bringing up stack"

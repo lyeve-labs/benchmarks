@@ -20,7 +20,7 @@
 set -euo pipefail
 FEATURES="${1:-}"
 if [ -z "${LYEVE_LICENSE_KEY:-}" ] || [ -z "${LICENSE_PUBLIC_KEY_HEX:-}" ]; then
-  echo "gen-license: set LYEVE_LICENSE_KEY and LICENSE_PUBLIC_KEY_HEX to a license granting: ${FEATURES:-the profile's plugins}" >&2
+  echo "gen-license: set LYEVE_LICENSE_KEY and LICENSE_PUBLIC_KEY_HEX to a license granting: ${FEATURES:-the plugins the profile needs}" >&2
   exit 1
 fi
 printf 'LICENSE_PUBLIC_KEY_HEX=%s\nLYEVE_LICENSE_KEY=%s\n' "$LICENSE_PUBLIC_KEY_HEX" "$LYEVE_LICENSE_KEY"

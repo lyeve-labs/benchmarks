@@ -38,6 +38,11 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ### Fixed
 
+- `harness/gen-license.sh` could not be parsed: an apostrophe inside a
+  parameter default opened a quote bash never found closed. Every `FULL=1`
+  profile run therefore started without a license and its paid traffic was
+  refused. It parses and prints the license again, and a FULL run without a
+  license now stops with the script's own error instead of measuring refusals.
 - The LyEve stack set no `LYEVE_CONSOLE_URL`, so in production mode the
   password reset and magic-link plugins refused to start and every figure
   was measured two plugins short of the free baseline. The stack now names a
