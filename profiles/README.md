@@ -9,18 +9,30 @@ it hold up?"**
 
 Machine-readable definitions live in [`profiles.json`](./profiles.json).
 
-| Profile | What it is | Paired example | Seed |
-|---|---|---|---|
-| [Blog](./A1-blog.md) | Content blog | `apps/blog` | 530 rows |
-| [Marketplace](./A2-marketplace.md) | Multi-seller catalog | `apps/marketplace` | 7,150 rows |
-| [Company Profile](./A3-company-profile.md) | Corporate site | `apps/company-site` | 55 rows |
-| Documentation Portal | A deep page tree the app assembles | `apps/docs-portal` | 2,010 rows |
-| Editorial Newsroom | A public front page over a draft-heavy store | `apps/newsroom` | 1,533 rows |
-| Community Forum | Topics as content, threads from a plugin | `apps/community-forum` | 1,200 rows |
-| Job Board | Search-led browsing | `apps/jobs-board` | 3,200 rows |
-| Course Platform | Three levels of nesting per page | `apps/lms-courses` | 4,720 rows |
-| Events and Registration | Reads against an app-maintained counter | `apps/events-ticketing` | 6,300 rows |
-| Multi-language Site | Every page load resolves a locale | `apps/multi-language-site` | 812 rows |
+| Profile | What it is | Paired example | Seed | Paid traffic |
+|---|---|---|---|---|
+| [Blog](./A1-blog.md) | Content blog | `apps/blog` | 530 rows | search |
+| [Marketplace](./A2-marketplace.md) | Multi-seller catalog | `apps/marketplace` | 7,150 rows | search |
+| [Company Profile](./A3-company-profile.md) | Corporate site | `apps/company-site` | 55 rows | none |
+| Documentation Portal | A deep page tree the app assembles | `apps/docs-portal` | 2,010 rows | search |
+| Editorial Newsroom | A public front page over a draft-heavy store | `apps/newsroom` | 1,533 rows | none |
+| Community Forum | Topics as content, threads from the comments preset | `apps/community-forum` | 3,600 rows | search |
+| Job Board | Search-led browsing | `apps/jobs-board` | 3,200 rows | search |
+| Course Platform | Three levels of nesting per page | `apps/lms-courses` | 4,720 rows | none |
+| Events and Registration | Reads against an app-maintained counter | `apps/events-ticketing` | 6,300 rows | none |
+| Multi-language Site | Every page load resolves a locale | `apps/multi-language-site` | 812 rows | none |
+| GraphQL Storefront | The same catalog over GraphQL, one request per page | `apps/graphql-storefront` | 4,520 rows | graphql, every entry |
+| Photo Library | Deep albums, read constantly | `apps/media-library` | 4,040 rows | none |
+| Search-Heavy Knowledge Base | Almost every request is a search | `apps/search-console` | 5,020 rows | search |
+| Appointment Booking | Every page reads a practitioner's whole diary | `apps/booking` | 6,530 rows | none |
+| Support Helpdesk | The inbox reads every ticket and reply per view | `apps/helpdesk` | 4,000 rows | none |
+| Subscription Publication | Each signed-in page also reads the reader | `apps/subscription-gating` | 3,500 rows | none |
+| Operations Dashboard | The engine's own telemetry, not content | `apps/analytics-dashboard` | 500 rows | apianalytics |
+
+"Paid traffic" names the plugins a license has to grant for the full mix. A
+profile with none runs whole on the free engine, and so does every unpaid entry
+of the others. The GraphQL storefront has no free entry, so it runs only with a
+license.
 
 ### A POST entry can carry its own body
 
@@ -61,9 +73,9 @@ implement.
 make profile PROFILE=blog TARGET=lyeve
 ```
 
-1. **Secrets:** sets what's needed (a `JWT_SECRET`, and for the plugin-active
-   run a signed **dev license** granting the profile's plugin features, which
-   you supply in the environment and `harness/gen-license.sh` passes to the run).
+1. **Secrets:** sets what's needed (a `JWT_SECRET`, and for the licensed run a
+   signed **dev license** granting the profile's paid plugins, which you supply
+   in the environment and `harness/gen-license.sh` passes to the run).
    See [SECRETS.md](./SECRETS.md).
 2. **Schema:** applies the schema plugin presets the profile names in
    `presets` (`POST /api/admin/schemas/presets/{name}`), as the paired example
@@ -76,31 +88,41 @@ make profile PROFILE=blog TARGET=lyeve
 4. **Drive:** `harness/k6/profile.js` runs the weighted traffic mix at the
    profile's arrival rate. Reports throughput, p50/p95/p99, and error rate.
 
-## Content core vs. plugin features
+## Free and paid traffic
 
-Each traffic entry declares what it `needs`:
+Each traffic entry declares what it `needs` and, when it needs a plugin,
+whether that plugin is `paid`:
 
-- **`needs: null`**: pure content (CRUD / list / filter on a schema). Runs on the
+- **`needs: null`**: plain content (CRUD, list, filter on a type). Runs on the
   **free engine**, no license. This is the bulk of a blog or company site.
-- **`needs: "<feature>"`**: depends on something beyond the content core: the
-  `search` plugin, the `localization` plugin, or the schema plugin's `comments`
-  preset applied before the run. These entries run only with `FULL=1`. Without
-  it they are reported `pending` and their weight is renormalized, so the
-  content-core result is still valid.
+- **`needs: "<plugin>", paid: false`**: depends on a plugin every install runs
+  for free, such as the schema plugin's comments preset or `localization`.
+  Runs on the free engine too.
+- **`needs: "<plugin>", paid: true`**: depends on a plugin a license unlocks,
+  such as `search` or `graphql`. Runs only with `FULL=1` and a license granting
+  exactly those plugins. Without it the entry is reported `pending` and the
+  free entries' weights are renormalized, so the free result stays valid. A
+  profile whose every entry is paid is not run free at all, and its free run is
+  recorded `pending` with the reason `paid-only`.
 
-That split is deliberate and honest: we can measure the content core anywhere,
-and we never pretend a plugin ran when the plugin wasn't there.
+The mark is checked, not trusted. Before it seeds, the harness reads
+`GET /api/admin/plugins/status` on the engine about to be measured. On a free
+run, every plugin an unpaid entry needs must be entitled and running there, or
+the run stops and names the entry. On a licensed run the same holds for the
+paid entries. So a free figure never includes a request that needed a license,
+and a licensed figure never times the engine refusing one.
 
 ## Live-run status
 
 The harness runs a profile **end-to-end for real** on the free-engine image: it
 boots the engine, bootstraps the admin (`POST /api/admin/setup` with the
 run's `LYEVE_SETUP_TOKEN`),
-creates every schema (`POST /api/admin/schemas`, which applies the DDL), grants
-the role permission on each schema (`POST /api/admin/permissions`), seeds all rows
-(`POST /api/v1/content/{type}` with the `{ "data": {...} }` envelope), and drives
-the k6 traffic mix. The **content-core mix is measured**, while plugin-dependent traffic
-(`needs: "<feature>"`) stays `pending` until it runs with `FULL=1`.
+checks the paid condition, applies the presets, creates every schema
+(`POST /api/admin/schemas`, which applies the DDL), grants the role permission
+on each schema (`POST /api/admin/permissions`), seeds all rows through the
+admin content route (`POST /api/admin/content`, so search sees them), and
+drives the k6 traffic mix. The **free mix is measured** on every run, while paid
+traffic stays `pending` until it runs with `FULL=1`.
 
 Three API contract details the harness accounts for:
 

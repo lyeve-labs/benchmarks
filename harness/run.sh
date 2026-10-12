@@ -225,14 +225,28 @@ run_profile() {
   base_url="http://localhost:${BENCH_PORT:-8080}"
   full="${FULL:-0}"
 
+  # The license is asked only for what the profile marks paid. A free plugin
+  # runs without one, so its traffic belongs to the free run.
+  local feats; feats="$(node -e 'const d=require(process.argv[1]);const p=d.profiles.find(x=>x.id===process.argv[2]);process.stdout.write([...new Set(p.traffic.filter(t=>t.paid).map(t=>t.needs))].join(","))' "$PROFILES_JSON" "$profile")"
+  local unpaid; unpaid="$(node -e 'const d=require(process.argv[1]);const p=d.profiles.find(x=>x.id===process.argv[2]);process.stdout.write(String(p.traffic.filter(t=>!t.paid).length))' "$PROFILES_JSON" "$profile")"
+  if [[ "$full" != "1" && "$unpaid" == "0" ]]; then
+    warn "[profile:$profile] every entry needs a paid feature ($feats): run it with FULL=1 and a license"
+    local skip_dir="$RAW_DIR/$(_now)-$target-profile-$profile"; mkdir -p "$skip_dir"
+    echo "{\"profile\":\"$profile\",\"target\":\"$target\",\"mode\":\"free\",\"status\":\"pending\",\"reason\":\"paid-only\",\"paid\":\"$feats\"}" > "$skip_dir/profile.pending.json"
+    return 0
+  fi
+
   local suffix=""; [[ "$full" == "1" ]] && suffix="-full"
   unset BENCH_LICENSE_KEY
   local run_id="$(_now)-$target-profile-$profile$suffix"
   local out_dir="$RAW_DIR/$run_id"; mkdir -p "$out_dir"
 
   if [[ "$full" == "1" ]]; then
-    local feats; feats="$(node -e 'const d=require(process.argv[1]);const p=d.profiles.find(x=>x.id===process.argv[2]);process.stdout.write([...new Set(p.traffic.map(t=>t.needs).filter(Boolean))].join(","))' "$PROFILES_JSON" "$profile")"
-    log "[profile:$profile] FULL run also drives the traffic that needs: $feats, reading the dev license through harness/gen-license.sh"
+    if [[ -n "$feats" ]]; then
+      log "[profile:$profile] FULL run also drives the paid traffic ($feats), reading the dev license through harness/gen-license.sh"
+    else
+      log "[profile:$profile] no entry is paid, so the licensed run drives the same mix as the free one"
+    fi
     # The token reaches the engine through the compose file's environment and
     # never a file under results/, which is committed as evidence. It travels
     # as BENCH_LICENSE_KEY, which only this branch sets, so a LYEVE_LICENSE_KEY
@@ -253,7 +267,7 @@ run_profile() {
   _wait_health "$base_url$health" 180 || die "$target never healthy at $base_url$health"
 
   log "[profile:$profile] building schema + seeding"
-  if ! BASE_URL="$base_url" PROFILE="$profile" OUT_DIR="$out_dir" \
+  if ! BASE_URL="$base_url" PROFILE="$profile" OUT_DIR="$out_dir" FULL="$full" \
         ADMIN_EMAIL="${ADMIN_EMAIL:-admin@lyeve.com}" ADMIN_PASSWORD="${ADMIN_PASSWORD:-benchmark-Passw0rd!}" \
         node "$HARNESS_DIR/seed/seed-profile.mjs"; then
     warn "[profile:$profile] seed failed, recording pending"
@@ -269,7 +283,7 @@ run_profile() {
 
   log "[profile:$profile] warm-up 20s (discarded)"
   K6_QUIET=1 _kprofile "$profile" "$full" "$base_url" "20s" "/dev/null" || true
-  log "[profile:$profile] measuring ($([[ "$full" == '1' ]] && echo 'full mix' || echo 'content core'))"
+  log "[profile:$profile] measuring ($([[ "$full" == '1' ]] && echo 'full mix' || echo 'free mix'))"
   _kprofile "$profile" "$full" "$base_url" "60s" "$out_dir/profile.json" \
     || warn "[profile:$profile] k6 threshold breach, kept raw for the report to gate"
   log "[profile:$profile] done → $out_dir"

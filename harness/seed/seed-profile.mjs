@@ -88,6 +88,32 @@ async function applyPresets() {
   }
 }
 
+// The paid condition, checked against the engine about to be measured. A free
+// run drives every entry not marked paid, so each plugin those entries need has
+// to be running here without a license. A wrong mark would otherwise publish a
+// free figure that needed one, or time the engine refusing a request. A licensed
+// run checks the paid entries' plugins the same way.
+async function checkPaidCondition() {
+  const free = process.env.FULL !== '1';
+  const driven = profile.traffic.filter((t) => t.needs != null && (free ? !t.paid : true));
+  const plugins = [...new Set(driven.map((t) => t.needs))];
+  if (!plugins.length) return;
+  const res = await api('GET', '/api/admin/plugins/status');
+  if (!res.ok) fail(`cannot read /api/admin/plugins/status (${res.status}), so which plugins run cannot be checked`);
+  const report = await res.json();
+  const byName = new Map((report.plugins || []).map((p) => [p.name, p]));
+  for (const name of plugins) {
+    const p = byName.get(name);
+    if (p && p.entitled && p.active) continue;
+    const entries = driven.filter((t) => t.needs === name).map((t) => t.id).join(', ');
+    const why = p ? p.reason || p.last_error || p.phase : 'not compiled into this engine';
+    fail(free
+      ? `${entries} marked free, but ${name} does not run on this engine without a license (${why}). Mark the entry paid, or fix the engine.`
+      : `${entries} need ${name}, which does not run under this license (${why}). The licensed run would time refusals.`);
+  }
+  console.log(`  plugins checked (${free ? 'free run' : 'licensed run'}): ${plugins.join(', ')}`);
+}
+
 // ── 2. create schemas, with relations as real relation fields ────────────────
 async function createSchemas() {
   for (const sc of orderSchemas()) {
@@ -248,6 +274,7 @@ function orderSchemas() {
 
 // ── main ─────────────────────────────────────────────────────────────────────
 await auth();
+await checkPaidCondition();
 await applyPresets();
 await createSchemas();
 for (const sc of orderSchemas()) {

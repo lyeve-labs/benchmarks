@@ -10,7 +10,30 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ## [Unreleased]
 
+### Added
+
+- Seven application profiles, so they cover 17 of the example apps: a GraphQL
+  storefront, a photo library, a search-heavy knowledge base, appointment
+  booking, a support helpdesk, a subscription publication and an operations
+  dashboard over the engine's own telemetry.
+
 ### Changed
+
+- A traffic entry that depends on a plugin says whether that plugin needs a
+  paid license (`paid`), and the profiles file moves to format 0.5.0. A free
+  run now drives every entry that is not paid, so traffic on free plugins (the
+  comments preset, localization, analytics, usage) is measured on the free
+  engine instead of waiting for a licensed run. A licensed run asks the license
+  only for the paid plugins. A profile whose every entry is paid, the GraphQL
+  storefront, is recorded `pending` with the reason `paid-only` on a free run.
+- The seeder checks the mark against `GET /api/admin/plugins/status` before
+  it seeds: a plugin an entry relies on that is not running on the engine
+  being measured stops the run and names the entry.
+- `harness/compose/lyeve.yml` raises `PUBLIC_RATE_LIMIT_GLOBAL`, the per-address
+  cap every public route without a limit of its own shares, above any offered
+  rate, as `RATE_LIMIT_RPS` already was. The free i18n run on 0.54.1 still
+  fails about 12% of its requests, on the localization resolve route's own
+  limit of 30 a second.
 
 - The README and METHODOLOGY section 8 describe how results reach the website
   by what the page reads, `results/results.json` from a published release,
@@ -50,9 +73,9 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   schema plugin's preset creates, and the profile neither applied the preset
   nor seeded any replies. The profile now names the preset and seeds 2400
   replies under the topics, and the seeder applies `presets` before it creates
-  the types and fixes a field for every seeded row through `seedValues`. The
-  profiles file moves to format 0.4.0. Measured on 0.54.1 with a license, the
-  forum run fails none of 12,003 requests.
+  the types and fixes a field for every seeded row through `seedValues`.
+  Measured on 0.54.1 with a license, the forum run fails none of 12,003
+  requests.
 - `harness/gen-license.sh` could not be parsed: an apostrophe inside a
   parameter default opened a quote bash never found closed. Every `FULL=1`
   profile run therefore started without a license and its paid traffic was
