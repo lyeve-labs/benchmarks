@@ -62,6 +62,11 @@ services:
       # its audit chain are thrown away after every run.
       LYEVE_AUDIT_HMAC_KEY: "1111111111111111111111111111111111111111111111111111111111111111"
       RATE_LIMIT_RPS: "100000"
+      # The second per-address cap: every public route without a limit of its
+      # own shares this one, 50 a second with a burst of 100 by default. The
+      # i18n profile drives the localization resolve route at about 54 a second
+      # from one address, so without this line its failures were the limiter's.
+      PUBLIC_RATE_LIMIT_GLOBAL: "100000:200000"
       # The load scripts reuse the seeder's token for the whole run, which lasts
       # longer than the default fifteen-minute token. 3600 is the production cap.
       JWT_EXPIRY_SECS: "3600"

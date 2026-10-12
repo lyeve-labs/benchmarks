@@ -2,8 +2,9 @@
 //
 // Reads profiles/profiles.json, resolves the chosen PROFILE, and runs its
 // traffic mix at the profile's arrival rate. On the free engine (FULL != 1) it
-// runs only content-core entries (needs == null) and renormalizes weights; with
-// FULL=1 it runs the plugin-dependent entries too.
+// runs every entry that is not marked paid, plain content and free plugins
+// alike, and renormalizes the weights over them. With FULL=1 it runs the paid
+// entries too.
 //
 //   k6 run -e PROFILE=blog -e BASE_URL=http://localhost:8080 profile.js
 //
@@ -30,7 +31,10 @@ const ADMIN_PASSWORD = __ENV.ADMIN_PASSWORD || 'benchmark-Passw0rd!';
 const profile = profiles.profiles.find((p) => p.id === PROFILE_ID);
 if (!profile) throw new Error(`unknown profile ${PROFILE_ID}`);
 
-const active = profile.traffic.filter((t) => FULL || t.needs == null);
+const active = profile.traffic.filter((t) => FULL || !t.paid);
+// run.sh skips a free run of a profile whose every entry is paid, so an empty
+// mix here means the profile file and the runner disagree.
+if (!active.length) throw new Error(`profile ${PROFILE_ID} has no entry to drive without FULL=1`);
 const totalW = active.reduce((s, t) => s + t.weight, 0);
 const latency = new Trend('profile_latency', true);
 const okRate = new Rate('profile_ok');
@@ -53,7 +57,7 @@ export const options = {
     http_req_failed: [`rate<${profile.thresholds.error_rate}`],
   },
   summaryTrendStats: ['avg', 'min', 'med', 'p(95)', 'p(99)', 'max'],
-  tags: { profile: PROFILE_ID, mode: FULL ? 'full' : 'core' },
+  tags: { profile: PROFILE_ID, mode: FULL ? 'full' : 'free' },
 };
 
 function dget(o, p) { return p.split('.').reduce((x, k) => (x == null ? undefined : x[k]), o); }
