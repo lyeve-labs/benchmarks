@@ -124,7 +124,7 @@ const raw = indexRaw();
 function indexProfileRuns() {
   const idx = {};
   const runs = listRuns((name) => {
-    const m = name.match(/-profile-([a-z0-9]+)(-full)?$/);
+    const m = name.match(/-profile-([a-z0-9-]+?)(-full)?$/);
     return m ? `${m[1]}${m[2] || ''}` : null;
   });
   for (const [key, day] of Object.entries(newestDay(runs))) {
