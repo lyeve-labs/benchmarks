@@ -8,6 +8,22 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
+## [Unreleased]
+
+### Changed
+
+- Re-measured every figure on the v0.55.0 engine image: the head-to-head, the
+  application profiles and the micro-benchmarks. `results/ERRATA.md` section 14
+  says what moved and why.
+- Each free profile result says how much of its traffic mix needs a license and
+  was left out, and `results.json` marks every traffic entry `paid` or not.
+
+### Fixed
+
+- The report read no profile run whose id holds a hyphen, so the photo library,
+  the search-heavy knowledge base and the operations dashboard read as pending
+  although they were measured.
+
 ## [0.7.0] - 2026-10-20
 
 ### Added

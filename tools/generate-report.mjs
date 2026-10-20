@@ -124,7 +124,7 @@ const raw = indexRaw();
 function indexProfileRuns() {
   const idx = {};
   const runs = listRuns((name) => {
-    const m = name.match(/-profile-([a-z0-9]+)(-full)?$/);
+    const m = name.match(/-profile-([a-z0-9-]+?)(-full)?$/);
     return m ? `${m[1]}${m[2] || ''}` : null;
   });
   for (const [key, day] of Object.entries(newestDay(runs))) {
@@ -177,7 +177,7 @@ function buildProfiles() {
       schemas: p.schemas.map((s) => ({ name: s.name, fields: s.fields.length + (s.relations || []).length })),
       plugins: (p.plugins || []).map((x) => x.name),
       seed: p.seed,
-      traffic: p.traffic.map((t) => ({ id: t.id, weight: t.weight, desc: t.desc, needs: t.needs })),
+      traffic: p.traffic.map((t) => ({ id: t.id, weight: t.weight, desc: t.desc, needs: t.needs, paid: !!t.paid })),
       result,
     };
   });
@@ -391,7 +391,13 @@ function renderMarkdown(r) {
       const n = res.runs > 1 ? `, median of ${res.runs} runs` : '';
       const r95 = res.p95_ms_range && res.runs > 1 ? ` (${res.p95_ms_range[0]} to ${res.p95_ms_range[1]})` : '';
       const r99 = res.p99_ms_range && res.runs > 1 ? ` (${res.p99_ms_range[0]} to ${res.p99_ms_range[1]})` : '';
-      md += `- **Result** (${res.mode}${n}, ${res.asOf}): **${fmtNum(res.throughput_rps)} req/s**, p95 ${res.p95_ms} ms${r95}, p99 ${res.p99_ms} ms${r99}, ${(res.error_rate * 100).toFixed(2)}% err at worst (measured)\n`;
+      // A core run drives only the entries a free install serves, at the full
+      // rate, so the line says how much of the mix it left out.
+      const paid = p.traffic.filter((t) => t.paid);
+      const left = res.mode === 'core' && paid.length
+        ? `. Without a license, the ${paid.reduce((s, t) => s + t.weight, 0)}% of the mix that needs ${[...new Set(paid.map((t) => t.needs))].join(' or ')} is left out and the rest runs at the full rate.`
+        : '';
+      md += `- **Result** (${res.mode}${n}, ${res.asOf}): **${fmtNum(res.throughput_rps)} req/s**, p95 ${res.p95_ms} ms${r95}, p99 ${res.p99_ms} ms${r99}, ${(res.error_rate * 100).toFixed(2)}% err at worst (measured)${left}\n`;
     } else {
       md += `- **Result:** pending${res.reason ? ` (${res.reason})` : ''}\n`;
     }

@@ -29,7 +29,7 @@
       "runtimeDetail": "single compiled binary",
       "kind": "self-host",
       "site": "https://lyeve.com",
-      "versionPin": "0.51.2"
+      "versionPin": "0.55.0"
     },
     {
       "id": "strapi",
@@ -68,13 +68,13 @@
       "note": "Uncompressed image: the sum of its layers from `docker history` (amd64). A compiled Go binary against a Node runtime plus node_modules.",
       "values": {
         "lyeve": {
-          "value": 78,
-          "min": 78,
-          "max": 78,
+          "value": 83,
+          "min": 83,
+          "max": 83,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "strapi": {
           "value": 1884,
@@ -83,16 +83,16 @@
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "directus": {
           "value": 970,
           "min": 970,
           "max": 970,
-          "runs": 3,
+          "runs": 4,
           "provenance": "measured",
-          "detail": "median of 3 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-20"
         },
         "payload": {
           "value": 1994,
@@ -101,10 +101,10 @@
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         }
       },
-      "lyeveLead": 12.4
+      "lyeveLead": 11.7
     },
     {
       "id": "M-mem-idle",
@@ -114,43 +114,43 @@
       "note": "Container memory from `docker stats` at rest after a restart, empty database, default config: the median of five samples taken after 45 seconds of settling. LyEve runs the free engine: every plugin compiled in, the free baseline started, no license.",
       "values": {
         "lyeve": {
-          "value": 26.5,
-          "min": 26,
-          "max": 28,
+          "value": 27.5,
+          "min": 27,
+          "max": 29,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "strapi": {
-          "value": 100.5,
-          "min": 97,
-          "max": 102,
+          "value": 98,
+          "min": 98,
+          "max": 98,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "directus": {
-          "value": 188,
-          "min": 181,
-          "max": 197,
-          "runs": 3,
-          "provenance": "measured",
-          "detail": "median of 3 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
-        },
-        "payload": {
-          "value": 101,
-          "min": 100,
-          "max": 101,
+          "value": 212.5,
+          "min": 212,
+          "max": 213,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
+        },
+        "payload": {
+          "value": 103,
+          "min": 102,
+          "max": 103,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-20"
         }
       },
-      "lyeveLead": 3.8
+      "lyeveLead": 3.6
     },
     {
       "id": "S01-p99",
@@ -161,46 +161,46 @@
       "values": {
         "lyeve": {
           "value": 1.8,
-          "min": 1.7,
-          "max": 1.8,
+          "min": 1.8,
+          "max": 1.9,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "strapi": {
-          "value": 751.9,
-          "min": 716.7,
-          "max": 778.8,
+          "value": 719.2,
+          "min": 698.2,
+          "max": 755.7,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05",
+          "asOf": "2026-10-20",
           "served": {
-            "rps": 301,
+            "rps": 306,
             "offered": 500
           }
         },
         "directus": {
-          "value": 112.1,
-          "min": 66.3,
-          "max": 120,
-          "runs": 3,
-          "provenance": "measured",
-          "detail": "median of 3 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
-        },
-        "payload": {
-          "value": 9.7,
-          "min": 8.8,
-          "max": 23.6,
+          "value": 67.6,
+          "min": 33.1,
+          "max": 88.2,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
+        },
+        "payload": {
+          "value": 8,
+          "min": 6.8,
+          "max": 10.9,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-20"
         }
       },
-      "lyeveLead": 5.4
+      "lyeveLead": 4.4
     },
     {
       "id": "S02-p99",
@@ -210,47 +210,47 @@
       "note": "First page of 50 at 300 req/s (scenario S02).",
       "values": {
         "lyeve": {
-          "value": 2.9,
-          "min": 2.9,
+          "value": 2.8,
+          "min": 2.8,
           "max": 2.9,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "strapi": {
-          "value": 1621.4,
-          "min": 1612.1,
-          "max": 1658.7,
+          "value": 1615.8,
+          "min": 1546.6,
+          "max": 1769.6,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05",
+          "asOf": "2026-10-20",
           "served": {
-            "rps": 133.5,
+            "rps": 131,
             "offered": 300
           }
         },
         "directus": {
-          "value": 15.2,
-          "min": 12.1,
-          "max": 16,
-          "runs": 3,
-          "provenance": "measured",
-          "detail": "median of 3 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
-        },
-        "payload": {
-          "value": 8.6,
-          "min": 8.1,
-          "max": 16.4,
+          "value": 12.5,
+          "min": 11.4,
+          "max": 17.7,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
+        },
+        "payload": {
+          "value": 9.4,
+          "min": 8.1,
+          "max": 16.2,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-20"
         }
       },
-      "lyeveLead": 3
+      "lyeveLead": 3.4
     },
     {
       "id": "S03-p99",
@@ -260,43 +260,43 @@
       "note": "Create one record at 100 req/s (scenario S03).",
       "values": {
         "lyeve": {
-          "value": 6.7,
-          "min": 6,
-          "max": 7.1,
+          "value": 7.6,
+          "min": 6.2,
+          "max": 8.4,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "strapi": {
-          "value": 17.2,
-          "min": 16.5,
-          "max": 21.9,
+          "value": 18.4,
+          "min": 17.9,
+          "max": 29.1,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "directus": {
-          "value": 12.2,
-          "min": 11.3,
-          "max": 12.3,
-          "runs": 3,
+          "value": 11,
+          "min": 9.5,
+          "max": 12.9,
+          "runs": 4,
           "provenance": "measured",
-          "detail": "median of 3 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-20"
         },
         "payload": {
           "value": 7.8,
-          "min": 7.3,
-          "max": 8.2,
+          "min": 7.6,
+          "max": 8.6,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         }
       },
-      "lyeveLead": 1.2
+      "lyeveLead": 1
     },
     {
       "id": "S04-p99",
@@ -306,47 +306,47 @@
       "note": "Filter by an indexed field, 25 rows, at 200 req/s (scenario S04). Each run first proves the filter applies: a value no record holds must return no rows, and a real value must return only matching rows.",
       "values": {
         "lyeve": {
-          "value": 2.4,
-          "min": 2.4,
-          "max": 2.4,
+          "value": 2.5,
+          "min": 2.5,
+          "max": 2.5,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "strapi": {
-          "value": 1379.3,
-          "min": 1360.4,
-          "max": 1456.4,
+          "value": 1479.9,
+          "min": 1363.7,
+          "max": 2412,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05",
+          "asOf": "2026-10-20",
           "served": {
-            "rps": 158.5,
+            "rps": 149,
             "offered": 200
           }
         },
         "directus": {
           "value": 5.9,
-          "min": 5.6,
-          "max": 6,
-          "runs": 3,
-          "provenance": "measured",
-          "detail": "median of 3 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
-        },
-        "payload": {
-          "value": 5.5,
-          "min": 5.4,
-          "max": 5.6,
+          "min": 5.7,
+          "max": 6.3,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
+        },
+        "payload": {
+          "value": 6,
+          "min": 5.9,
+          "max": 6,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-20"
         }
       },
-      "lyeveLead": 2.3
+      "lyeveLead": 2.4
     },
     {
       "id": "S05-p99",
@@ -358,30 +358,30 @@
         "lyeve": {
           "provenance": "pending",
           "reason": "over the error budget in 4 of 4 runs: the free tier allows five logins per fifteen minutes per address and refuses the rest with 429. Changing the limit needs a license",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "strapi": {
           "provenance": "pending",
           "reason": "over the error budget in 4 of 4 runs: the stock users-permissions plugin rate-limits /api/auth/local and refuses the burst with 429",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "directus": {
-          "value": 505.9,
-          "min": 505.8,
-          "max": 505.9,
-          "runs": 3,
-          "provenance": "measured",
-          "detail": "median of 3 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
-        },
-        "payload": {
-          "value": 65.5,
-          "min": 64.8,
-          "max": 66,
+          "value": 505.6,
+          "min": 505.5,
+          "max": 505.8,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
+        },
+        "payload": {
+          "value": 63,
+          "min": 61.8,
+          "max": 65,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-20"
         }
       },
       "lyeveLead": null
@@ -394,119 +394,119 @@
       "note": "From `docker start` of a stopped container to the first request the application serves (includes DB connect and migration check), polled every 50 ms.",
       "values": {
         "lyeve": {
-          "value": 488,
-          "min": 329,
-          "max": 751,
+          "value": 335,
+          "min": 323,
+          "max": 345,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "strapi": {
-          "value": 2212.5,
-          "min": 1711,
-          "max": 2345,
+          "value": 2377.5,
+          "min": 1699,
+          "max": 2795,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
         },
         "directus": {
-          "value": 7251,
-          "min": 7129,
-          "max": 7271,
-          "runs": 3,
-          "provenance": "measured",
-          "detail": "median of 3 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
-        },
-        "payload": {
-          "value": 2664.5,
-          "min": 2614,
-          "max": 2821,
+          "value": 5027.5,
+          "min": 4987,
+          "max": 5135,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-05"
+          "asOf": "2026-10-20"
+        },
+        "payload": {
+          "value": 2721,
+          "min": 2636,
+          "max": 2843,
+          "runs": 4,
+          "provenance": "measured",
+          "detail": "median of 4 runs, each on a fresh stack",
+          "asOf": "2026-10-20"
         }
       },
-      "lyeveLead": 4.5
+      "lyeveLead": 7.1
     }
   ],
   "internals": {
     "machine": "Intel Core Ultra 5 125H (18 threads)",
     "os": "Linux 7.0, Ubuntu 26.04",
-    "goVersion": "1.27.1",
-    "measuredOn": "2026-10-05",
-    "source": "core bench suite (go test -bench -benchmem -count=5, median), commit da80fdd (v0.51.2)",
+    "goVersion": "1.27.2",
+    "measuredOn": "2026-10-20",
+    "source": "core bench suite (go test -bench -benchmem -count=5, median), commit 27d8c49 (v0.55.0)",
     "groups": [
       {
         "title": "Auth / crypto",
         "rows": [
           {
             "name": "JWT sign (HMAC)",
-            "display": "5.2 µs",
-            "raw": 5245,
+            "display": "5.5 µs",
+            "raw": 5457,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              5093,
-              5378
+              5185,
+              5648
             ]
           },
           {
             "name": "JWT verify (parse)",
-            "display": "6.4 µs",
-            "raw": 6359,
+            "display": "6.1 µs",
+            "raw": 6109,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              6105,
-              6635
+              5866,
+              6650
             ]
           },
           {
             "name": "Ed25519 sign",
-            "display": "16.1 µs",
-            "raw": 16103,
+            "display": "15.9 µs",
+            "raw": 15888,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              15864,
-              16332
+              15839,
+              16149
             ]
           },
           {
             "name": "Ed25519 verify",
-            "display": "36.5 µs",
-            "raw": 36516,
+            "display": "36.4 µs",
+            "raw": 36357,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              35880,
-              37477
+              36290,
+              36891
             ]
           },
           {
             "name": "Password hash (bcrypt, cost 10)",
-            "display": "49 ms",
-            "raw": 48974594,
+            "display": "48 ms",
+            "raw": 47968014,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              48458523,
-              51969329
+              47895478,
+              48671441
             ]
           },
           {
             "name": "Password hash (argon2id)",
-            "display": "18 ms",
-            "raw": 17662060,
+            "display": "17 ms",
+            "raw": 17300579,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              17260394,
-              17830885
+              16652489,
+              17808043
             ]
           }
         ]
@@ -517,34 +517,34 @@
           {
             "name": "PostgreSQL passthrough",
             "display": "2.1 ns",
-            "raw": 2.145,
+            "raw": 2.113,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              2.135,
-              2.156
+              2.085,
+              2.142
             ]
           },
           {
             "name": "MySQL rewrite ($N → ?)",
-            "display": "269 ns",
-            "raw": 269.2,
+            "display": "258 ns",
+            "raw": 258.2,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              262.1,
-              280.8
+              255.8,
+              269.8
             ]
           },
           {
             "name": "MSSQL rewrite ($N → @pN)",
-            "display": "246 ns",
-            "raw": 246,
+            "display": "236 ns",
+            "raw": 236.1,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              235.8,
-              255.2
+              228.7,
+              247.3
             ]
           }
         ]
@@ -554,35 +554,35 @@
         "rows": [
           {
             "name": "Full stack (4 middlewares)",
-            "display": "5.1 µs",
-            "raw": 5124,
+            "display": "4.9 µs",
+            "raw": 4898,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              4601,
-              5856
+              4657,
+              5527
             ]
           },
           {
             "name": "Tenant header (no-op)",
-            "display": "452 ns",
-            "raw": 451.5,
+            "display": "508 ns",
+            "raw": 508.4,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              444,
-              458.5
+              495.9,
+              516.5
             ]
           },
           {
             "name": "Rate limiter (allow)",
-            "display": "2.0 µs",
-            "raw": 2026,
+            "display": "2.2 µs",
+            "raw": 2167,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              2008,
-              2079
+              2138,
+              2200
             ]
           }
         ]
@@ -724,31 +724,36 @@
           "id": "post-read",
           "weight": 45,
           "desc": "read one post",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "post-list",
           "weight": 25,
           "desc": "recent posts, newest first",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "post-populated",
           "weight": 12,
           "desc": "a post with its author and category inflated, which is what the page renders",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "category-filter",
           "weight": 10,
           "desc": "posts in a category, filtered on the foreign key",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "search",
           "weight": 8,
           "desc": "full-text post search, on the admin router",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         }
       ],
       "result": {
@@ -758,17 +763,17 @@
         "throughput_rps": 200,
         "p50_ms": 1.4,
         "p95_ms": 2,
-        "p99_ms": 2.4,
+        "p99_ms": 2.5,
         "p95_ms_range": [
           2,
-          2
+          2.1
         ],
         "p99_ms_range": [
-          2.4,
-          2.5
+          2.5,
+          2.6
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -798,25 +803,29 @@
           "id": "topic-read",
           "weight": 38,
           "desc": "read one topic",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "topic-list",
           "weight": 30,
           "desc": "the topic index",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "thread",
           "weight": 22,
           "desc": "the thread under a topic",
-          "needs": "schema"
+          "needs": "schema",
+          "paid": false
         },
         {
           "id": "search",
           "weight": 10,
           "desc": "topic search",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         }
       ],
       "result": {
@@ -825,18 +834,18 @@
         "runs": 3,
         "throughput_rps": 200,
         "p50_ms": 1.4,
-        "p95_ms": 1.9,
-        "p99_ms": 2.3,
+        "p95_ms": 2,
+        "p99_ms": 2.5,
         "p95_ms_range": [
           1.9,
-          1.9
+          2
         ],
         "p99_ms_range": [
-          2.3,
-          2.3
+          2.4,
+          2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -871,31 +880,36 @@
           "id": "page-read",
           "weight": 40,
           "desc": "read one page",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "page-by-slug",
           "weight": 20,
           "desc": "look a page up by slug, which is a filtered list because there is no get-by-slug route",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "openings-list",
           "weight": 18,
           "desc": "open roles",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "team-list",
           "weight": 15,
           "desc": "the team",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "page-list",
           "weight": 7,
           "desc": "page index",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -903,19 +917,19 @@
         "provenance": "measured",
         "runs": 3,
         "throughput_rps": 150,
-        "p50_ms": 1.4,
-        "p95_ms": 2.1,
-        "p99_ms": 2.6,
+        "p50_ms": 1.5,
+        "p95_ms": 2.2,
+        "p99_ms": 2.8,
         "p95_ms_range": [
           2.1,
-          2.1
+          2.2
         ],
         "p99_ms_range": [
-          2.5,
-          2.6
+          2.7,
+          2.9
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -945,25 +959,29 @@
           "id": "page-read",
           "weight": 35,
           "desc": "read one page",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "space-tree",
           "weight": 30,
           "desc": "every page in a space, which is what building the navigation tree costs",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "page-by-slug",
           "weight": 20,
           "desc": "resolve a documentation URL",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "search",
           "weight": 15,
           "desc": "documentation search",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         }
       ],
       "result": {
@@ -973,17 +991,17 @@
         "throughput_rps": 200,
         "p50_ms": 1.4,
         "p95_ms": 3.5,
-        "p99_ms": 4.6,
+        "p99_ms": 4.4,
         "p95_ms_range": [
           3.5,
           3.5
         ],
         "p99_ms_range": [
-          4.6,
-          4.6
+          4.4,
+          4.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1013,25 +1031,29 @@
           "id": "event-read",
           "weight": 38,
           "desc": "read one event",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "upcoming",
           "weight": 30,
           "desc": "the upcoming list, sorted by the app because the engine cannot",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "registrations",
           "weight": 22,
           "desc": "the door list for an event",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "event-by-slug",
           "weight": 10,
           "desc": "resolve an event URL",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1039,19 +1061,19 @@
         "provenance": "measured",
         "runs": 3,
         "throughput_rps": 200,
-        "p50_ms": 1.4,
-        "p95_ms": 2,
-        "p99_ms": 2.4,
+        "p50_ms": 1.5,
+        "p95_ms": 2.1,
+        "p99_ms": 2.5,
         "p95_ms_range": [
           2,
-          2
+          2.1
         ],
         "p99_ms_range": [
-          2.4,
+          2.5,
           2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1085,31 +1107,36 @@
           "id": "listing-read",
           "weight": 30,
           "desc": "read one listing",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "search",
           "weight": 26,
           "desc": "the way most candidates arrive",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "listing-populated",
           "weight": 16,
           "desc": "a listing with its company",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "company-filter",
           "weight": 16,
           "desc": "every role at one company",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "listing-index",
           "weight": 12,
           "desc": "the index",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1118,18 +1145,18 @@
         "runs": 3,
         "throughput_rps": 200,
         "p50_ms": 1.4,
-        "p95_ms": 2,
-        "p99_ms": 2.5,
+        "p95_ms": 2.1,
+        "p99_ms": 2.6,
         "p95_ms_range": [
           2,
-          2
+          2.2
         ],
         "p99_ms_range": [
-          2.5,
-          2.6
+          2.4,
+          2.7
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1168,31 +1195,36 @@
           "id": "lesson-read",
           "weight": 32,
           "desc": "read one lesson",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "course-modules",
           "weight": 24,
           "desc": "the first level of the walk",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "module-lessons",
           "weight": 22,
           "desc": "the second level",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "course-read",
           "weight": 14,
           "desc": "the course itself",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "catalog",
           "weight": 8,
           "desc": "the catalog",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1201,18 +1233,18 @@
         "runs": 3,
         "throughput_rps": 180,
         "p50_ms": 1.4,
-        "p95_ms": 1.9,
-        "p99_ms": 2.3,
+        "p95_ms": 2,
+        "p99_ms": 2.4,
         "p95_ms_range": [
           1.9,
-          1.9
+          2
         ],
         "p99_ms_range": [
           2.3,
-          2.4
+          2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1252,37 +1284,43 @@
           "id": "product-read",
           "weight": 30,
           "desc": "read one product",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "product-browse",
           "weight": 24,
           "desc": "browse a page, and ranking is left to the application",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "product-populated",
           "weight": 14,
           "desc": "product with seller and category inflated",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "category-filter",
           "weight": 14,
           "desc": "products in a category",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "review-list",
           "weight": 10,
           "desc": "reviews for a product",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "search",
           "weight": 8,
           "desc": "product search",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         }
       ],
       "result": {
@@ -1292,17 +1330,17 @@
         "throughput_rps": 250,
         "p50_ms": 1.4,
         "p95_ms": 1.9,
-        "p99_ms": 2.4,
+        "p99_ms": 2.3,
         "p95_ms_range": [
           1.9,
-          1.9
+          2
         ],
         "p99_ms_range": [
-          2.4,
+          2.3,
           2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1332,25 +1370,29 @@
           "id": "page-read",
           "weight": 34,
           "desc": "the default-locale entry",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "resolve",
           "weight": 30,
           "desc": "the translation for a locale",
-          "needs": "localization"
+          "needs": "localization",
+          "paid": false
         },
         {
           "id": "page-by-slug",
           "weight": 20,
           "desc": "resolve a localized URL",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "section-pages",
           "weight": 16,
           "desc": "the pages in a section",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1358,19 +1400,19 @@
         "provenance": "measured",
         "runs": 3,
         "throughput_rps": 180,
-        "p50_ms": 1.4,
-        "p95_ms": 1.9,
-        "p99_ms": 2.4,
+        "p50_ms": 1.5,
+        "p95_ms": 2,
+        "p99_ms": 2.5,
         "p95_ms_range": [
-          1.9,
-          2
+          2,
+          2.1
         ],
         "p99_ms_range": [
           2.4,
-          2.4
+          2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1405,31 +1447,36 @@
           "id": "story-read",
           "weight": 34,
           "desc": "read one story",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "front-page",
           "weight": 26,
           "desc": "the front page",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "story-populated",
           "weight": 16,
           "desc": "a story with its byline and desk",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "desk-filter",
           "weight": 14,
           "desc": "one desk output",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "revisions",
           "weight": 10,
           "desc": "the revision history of a story",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1437,19 +1484,19 @@
         "provenance": "measured",
         "runs": 3,
         "throughput_rps": 180,
-        "p50_ms": 1.5,
-        "p95_ms": 2,
-        "p99_ms": 2.5,
+        "p50_ms": 1.6,
+        "p95_ms": 2.2,
+        "p99_ms": 2.6,
         "p95_ms_range": [
-          2,
-          2
+          2.1,
+          2.2
         ],
         "p99_ms_range": [
           2.5,
-          2.5
+          2.8
         ],
         "error_rate": 0,
-        "asOf": "2026-10-05"
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1484,19 +1531,22 @@
           "id": "list-25",
           "weight": 40,
           "desc": "one root field, the GraphQL equivalent of a REST list",
-          "needs": "graphql"
+          "needs": "graphql",
+          "paid": true
         },
         {
           "id": "multi-root",
           "weight": 35,
           "desc": "three root fields in one document, which is the only thing this transport does that REST cannot",
-          "needs": "graphql"
+          "needs": "graphql",
+          "paid": true
         },
         {
           "id": "wide-selection",
           "weight": 25,
           "desc": "a wide selection over 50 records, well inside the measured cost ceiling of 1000",
-          "needs": "graphql"
+          "needs": "graphql",
+          "paid": true
         }
       ],
       "result": {
@@ -1530,29 +1580,49 @@
           "id": "photo-read",
           "weight": 34,
           "desc": "one photograph, which is what a photo page loads before it asks for the bytes",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "album-photos",
           "weight": 28,
           "desc": "a whole album, filtered on the foreign key because the engine cannot filter by the album's slug",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "photo-populated",
           "weight": 20,
           "desc": "a photograph with its album inflated, which is the page load in one request instead of two",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "album-list",
           "weight": 18,
           "desc": "the album index",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
-        "provenance": "pending"
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 180,
+        "p50_ms": 1.5,
+        "p95_ms": 2.5,
+        "p99_ms": 3.3,
+        "p95_ms_range": [
+          2.4,
+          2.5
+        ],
+        "p99_ms_range": [
+          3.1,
+          3.3
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1582,59 +1652,84 @@
           "id": "search-term",
           "weight": 30,
           "desc": "the ordinary query: full text over title and body, ranked, first page",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "search-highlight",
           "weight": 15,
           "desc": "the same query with snippets, which adds two ts_headline calls per row",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "instant",
           "weight": 12,
           "desc": "autocomplete as the reader types: a prefix LIKE on the title, several per query typed",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "search-facets",
           "weight": 10,
           "desc": "faceted counts, which run one extra grouped query per facet field",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "search-paged",
           "weight": 8,
           "desc": "the third page of results, where the count is repeated and the offset is skipped",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "search-browse",
           "weight": 5,
           "desc": "a search with no query text, which is a browse ordered by last update and takes no ranking",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "article-read",
           "weight": 8,
           "desc": "opening one article, which is the content router rather than search",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "article-by-slug",
           "weight": 7,
           "desc": "the slug lookup a result link turns into, because there is no get-by-slug route",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "category-filter",
           "weight": 5,
           "desc": "browsing a category, filtered on the foreign key because search cannot filter a relation",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
-        "provenance": "pending"
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 120,
+        "p50_ms": 1.6,
+        "p95_ms": 2.5,
+        "p99_ms": 3.2,
+        "p95_ms_range": [
+          2.3,
+          2.6
+        ],
+        "p99_ms_range": [
+          2.9,
+          3.3
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1669,47 +1764,70 @@
           "id": "practitioner-list",
           "weight": 18,
           "desc": "the front page's practitioner cards",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "diary",
           "weight": 18,
           "desc": "the front page reads 200 slots to count each practitioner's open hours, because the engine has no aggregate",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "practitioner-by-slug",
           "weight": 18,
           "desc": "a practitioner page resolves its slug, since there is no get-by-slug route",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "practitioner-diary",
           "weight": 18,
           "desc": "one practitioner's diary, filtered on the foreign key and grouped by day in the app",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "slot-by-slug",
           "weight": 13,
           "desc": "the booking form loads its slot, and reads it again on submit before claiming it",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "practitioner-read",
           "weight": 12,
           "desc": "the slot's practitioner on the booking form and on the confirmation page, the second hop populate does not take",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "confirmation",
           "weight": 3,
           "desc": "the confirmation page: an appointment by slug with its slot inflated",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
-        "provenance": "pending"
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 200,
+        "p50_ms": 1.5,
+        "p95_ms": 2.9,
+        "p99_ms": 3.8,
+        "p95_ms_range": [
+          2.9,
+          3
+        ],
+        "p99_ms_range": [
+          3.7,
+          3.8
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1739,41 +1857,63 @@
           "id": "queue-first-page",
           "weight": 4,
           "desc": "the first page of the inbox's status query",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "queue-deep-page",
           "weight": 14,
           "desc": "a later page of the same query, which the inbox reads until a page comes back short",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "reply-count-first-page",
           "weight": 4,
           "desc": "the first page of the unfiltered reply read behind each row's reply count",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "reply-count-deep-page",
           "weight": 49,
           "desc": "a middle page of that read, which walks every reply on the desk at each inbox view",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "ticket-by-slug",
           "weight": 18,
           "desc": "a ticket page resolves its slug, and so does each reply or status action before it writes",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "thread",
           "weight": 11,
           "desc": "the thread under a ticket, filtered on the foreign key",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
-        "provenance": "pending"
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 150,
+        "p50_ms": 2.8,
+        "p95_ms": 3.7,
+        "p99_ms": 4.8,
+        "p95_ms_range": [
+          3.6,
+          3.8
+        ],
+        "p99_ms_range": [
+          4.6,
+          4.9
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1803,35 +1943,56 @@
           "id": "article-by-slug",
           "weight": 42,
           "desc": "an article page resolves its slug, since there is no get-by-slug route",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "reader",
           "weight": 28,
           "desc": "the layout reads the signed-in reader on every page to decide access",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "article-list",
           "weight": 24,
           "desc": "the front page, newest first",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "entitlements",
           "weight": 4,
           "desc": "the account page's license panel, an engine route that no plugin serves",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "roster",
           "weight": 2,
           "desc": "the member list the signed-out account page shows, because the demo has no sign-up",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
-        "provenance": "pending"
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 200,
+        "p50_ms": 1.4,
+        "p95_ms": 1.9,
+        "p99_ms": 2.3,
+        "p95_ms_range": [
+          1.9,
+          1.9
+        ],
+        "p99_ms_range": [
+          2.3,
+          2.4
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-20"
       }
     },
     {
@@ -1856,171 +2017,211 @@
           "id": "request-summary",
           "weight": 10,
           "desc": "the request summary on the overview and the requests page, over the default 24 hour window",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "request-trend",
           "weight": 10,
           "desc": "the hourly request trend, drawn on three of the five pages",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "collector-config",
           "weight": 9,
           "desc": "the collector settings, which say how stale the request panels can be",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "tenant-breakdown",
           "weight": 5,
           "desc": "requests by tenant, on the requests page and the quota page",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "endpoint-breakdown",
           "weight": 4,
           "desc": "the busiest endpoints",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "method-breakdown",
           "weight": 4,
           "desc": "requests by HTTP method",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "agent-breakdown",
           "weight": 4,
           "desc": "requests by user agent",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "anomalies",
           "weight": 4,
           "desc": "the anomaly report on the requests page",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "content-activity",
           "weight": 6,
           "desc": "the last 200 content events, which the engine's content hooks write on every create",
-          "needs": "analytics"
+          "needs": "analytics",
+          "paid": false
         },
         {
           "id": "daily-rollup",
           "weight": 6,
           "desc": "the daily rollup summary on the overview",
-          "needs": "analytics"
+          "needs": "analytics",
+          "paid": false
         },
         {
           "id": "providers",
           "weight": 6,
           "desc": "the configured analytics destinations, read on every overview",
-          "needs": "analytics"
+          "needs": "analytics",
+          "paid": false
         },
         {
           "id": "notes",
           "weight": 7,
           "desc": "the operators' notes, the console's one content type",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "healthz",
           "weight": 3,
           "desc": "the liveness probe on the health page",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "readyz",
           "weight": 3,
           "desc": "the readiness probe, which runs its checks on every call",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "startup",
           "weight": 3,
           "desc": "the startup probe, which caches its first pass",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "ready",
           "weight": 3,
           "desc": "the authenticated readiness report with the schema count",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "pool-health",
           "weight": 3,
           "desc": "the database pool's live statistics",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "latency",
           "weight": 3,
           "desc": "the slowest endpoints from the engine's latency tracker",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "runtime-metrics",
           "weight": 3,
           "desc": "the Prometheus exposition, parsed by the console for in-flight requests and status codes",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "tenant-usage",
           "weight": 1,
           "desc": "content, media and API-key usage per tenant, counted at read time",
-          "needs": "usage"
+          "needs": "usage",
+          "paid": false
         },
         {
           "id": "quotas",
           "weight": 1,
           "desc": "the stored quotas",
-          "needs": "usage"
+          "needs": "usage",
+          "paid": false
         },
         {
           "id": "quota-status",
           "weight": 1,
           "desc": "the calling tenant's own quota status",
-          "needs": "usage"
+          "needs": "usage",
+          "paid": false
         },
         {
           "id": "quota-requests",
           "weight": 1,
           "desc": "the quota increase requests awaiting review",
-          "needs": "usage"
+          "needs": "usage",
+          "paid": false
         }
       ],
       "result": {
-        "provenance": "pending"
+        "mode": "core",
+        "provenance": "measured",
+        "runs": 3,
+        "throughput_rps": 120,
+        "p50_ms": 1.7,
+        "p95_ms": 3.4,
+        "p99_ms": 4.5,
+        "p95_ms_range": [
+          3.3,
+          3.5
+        ],
+        "p99_ms_range": [
+          4.2,
+          4.6
+        ],
+        "error_rate": 0,
+        "asOf": "2026-10-20"
       }
     }
   ],
   "rig": {
     "note": "What the latest sweep ran on and how. tools/generate-report.mjs prints it at the top of RESULTS.md and copies it into results.json.",
-    "date": "2026-10-05 (every target, the application profiles and the micro-benchmarks)",
+    "date": "2026-10-20 (every target, the application profiles and the micro-benchmarks)",
     "machine": {
       "cpu": "Intel Core Ultra 5 125H (18 threads)",
       "memory": "32 GB RAM",
       "disk": "NVMe",
       "os": "Ubuntu 26.04, Linux 7.0",
-      "docker": "Docker 29.8 (containerd image store), Compose v2"
+      "docker": "Docker 29.9 (containerd image store), Compose v2"
     },
     "loadGenerator": "k6 2.3.0 on the same machine, constant arrival rate",
     "engine": {
-      "version": "v0.51.2",
-      "commit": "da80fdd",
-      "image": "ghcr.io/lyeve-labs/lyeve-core:0.51.2",
-      "description": "the published v0.51.2 image as it ships, with all 51 plugins compiled in, pulled rather than built. No license: the free baseline starts. Micro-benchmarks from the engine source at the same tag",
-      "binaryBytes": 72589472,
-      "imageLayersBytes": 78323712,
-      "imageCompressedMB": 27.6,
+      "version": "v0.55.0",
+      "commit": "27d8c49",
+      "image": "ghcr.io/lyeve-labs/lyeve-core:0.55.0",
+      "description": "the published v0.55.0 image as it ships, with all 51 plugins compiled in, pulled rather than built. No license: the free baseline starts. Micro-benchmarks from the engine source at the same tag",
+      "binaryBytes": 77205628,
+      "imageLayersBytes": 82964480,
+      "imageCompressedMB": 30.2,
       "previous": {
-        "commit": "271cd9e",
-        "date": "2026-09-27",
-        "binaryBytes": 78721184,
-        "imageLayersBytes": 84848640,
-        "imageCompressedMB": 28.9
+        "version": "v0.51.2",
+        "commit": "da80fdd",
+        "date": "2026-10-05",
+        "binaryBytes": 72589472,
+        "imageLayersBytes": 78323712,
+        "imageCompressedMB": 27.6
       }
     },
     "competitors": [
@@ -2037,7 +2238,7 @@
         "version": "3.11.0 on Next.js 15.1.0, built from the committed app on node:24-alpine"
       }
     ],
-    "repetitions": "Every target on 2026-10-05: four repetitions, interleaved (LyEve, Directus, Strapi, Payload, then again), each on a fresh stack. Every run started and ended below load 4. One Directus run is set aside under results/raw/excluded because an unrelated build ran on the machine during it, so Directus is the median of 3 runs and every other target of 4. Each application profile ran 3 times the same evening.",
+    "repetitions": "Every target on 2026-10-20: four repetitions, interleaved (lyeve, strapi, directus, payload, then again), each on a fresh stack. Every kept run started and ended below load 4. Each application profile ran three times.",
     "method": [
       "Every run brings the target's stack up from nothing, seeds the same 2,020 records from a fixed seed, and tears it down with its volumes afterwards.",
       "Each scenario gets a 10 s discarded warm-up, then a 60 s measured window. The published figure is the median of the runs. The range beneath it is the lowest and highest run.",
