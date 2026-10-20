@@ -724,31 +724,36 @@
           "id": "post-read",
           "weight": 45,
           "desc": "read one post",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "post-list",
           "weight": 25,
           "desc": "recent posts, newest first",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "post-populated",
           "weight": 12,
           "desc": "a post with its author and category inflated, which is what the page renders",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "category-filter",
           "weight": 10,
           "desc": "posts in a category, filtered on the foreign key",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "search",
           "weight": 8,
           "desc": "full-text post search, on the admin router",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         }
       ],
       "result": {
@@ -798,25 +803,29 @@
           "id": "topic-read",
           "weight": 38,
           "desc": "read one topic",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "topic-list",
           "weight": 30,
           "desc": "the topic index",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "thread",
           "weight": 22,
           "desc": "the thread under a topic",
-          "needs": "schema"
+          "needs": "schema",
+          "paid": false
         },
         {
           "id": "search",
           "weight": 10,
           "desc": "topic search",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         }
       ],
       "result": {
@@ -871,31 +880,36 @@
           "id": "page-read",
           "weight": 40,
           "desc": "read one page",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "page-by-slug",
           "weight": 20,
           "desc": "look a page up by slug, which is a filtered list because there is no get-by-slug route",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "openings-list",
           "weight": 18,
           "desc": "open roles",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "team-list",
           "weight": 15,
           "desc": "the team",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "page-list",
           "weight": 7,
           "desc": "page index",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -945,25 +959,29 @@
           "id": "page-read",
           "weight": 35,
           "desc": "read one page",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "space-tree",
           "weight": 30,
           "desc": "every page in a space, which is what building the navigation tree costs",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "page-by-slug",
           "weight": 20,
           "desc": "resolve a documentation URL",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "search",
           "weight": 15,
           "desc": "documentation search",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         }
       ],
       "result": {
@@ -1013,25 +1031,29 @@
           "id": "event-read",
           "weight": 38,
           "desc": "read one event",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "upcoming",
           "weight": 30,
           "desc": "the upcoming list, sorted by the app because the engine cannot",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "registrations",
           "weight": 22,
           "desc": "the door list for an event",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "event-by-slug",
           "weight": 10,
           "desc": "resolve an event URL",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1085,31 +1107,36 @@
           "id": "listing-read",
           "weight": 30,
           "desc": "read one listing",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "search",
           "weight": 26,
           "desc": "the way most candidates arrive",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "listing-populated",
           "weight": 16,
           "desc": "a listing with its company",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "company-filter",
           "weight": 16,
           "desc": "every role at one company",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "listing-index",
           "weight": 12,
           "desc": "the index",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1168,31 +1195,36 @@
           "id": "lesson-read",
           "weight": 32,
           "desc": "read one lesson",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "course-modules",
           "weight": 24,
           "desc": "the first level of the walk",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "module-lessons",
           "weight": 22,
           "desc": "the second level",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "course-read",
           "weight": 14,
           "desc": "the course itself",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "catalog",
           "weight": 8,
           "desc": "the catalog",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1252,37 +1284,43 @@
           "id": "product-read",
           "weight": 30,
           "desc": "read one product",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "product-browse",
           "weight": 24,
           "desc": "browse a page, and ranking is left to the application",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "product-populated",
           "weight": 14,
           "desc": "product with seller and category inflated",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "category-filter",
           "weight": 14,
           "desc": "products in a category",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "review-list",
           "weight": 10,
           "desc": "reviews for a product",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "search",
           "weight": 8,
           "desc": "product search",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         }
       ],
       "result": {
@@ -1332,25 +1370,29 @@
           "id": "page-read",
           "weight": 34,
           "desc": "the default-locale entry",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "resolve",
           "weight": 30,
           "desc": "the translation for a locale",
-          "needs": "localization"
+          "needs": "localization",
+          "paid": false
         },
         {
           "id": "page-by-slug",
           "weight": 20,
           "desc": "resolve a localized URL",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "section-pages",
           "weight": 16,
           "desc": "the pages in a section",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1405,31 +1447,36 @@
           "id": "story-read",
           "weight": 34,
           "desc": "read one story",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "front-page",
           "weight": 26,
           "desc": "the front page",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "story-populated",
           "weight": 16,
           "desc": "a story with its byline and desk",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "desk-filter",
           "weight": 14,
           "desc": "one desk output",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "revisions",
           "weight": 10,
           "desc": "the revision history of a story",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1484,19 +1531,22 @@
           "id": "list-25",
           "weight": 40,
           "desc": "one root field, the GraphQL equivalent of a REST list",
-          "needs": "graphql"
+          "needs": "graphql",
+          "paid": true
         },
         {
           "id": "multi-root",
           "weight": 35,
           "desc": "three root fields in one document, which is the only thing this transport does that REST cannot",
-          "needs": "graphql"
+          "needs": "graphql",
+          "paid": true
         },
         {
           "id": "wide-selection",
           "weight": 25,
           "desc": "a wide selection over 50 records, well inside the measured cost ceiling of 1000",
-          "needs": "graphql"
+          "needs": "graphql",
+          "paid": true
         }
       ],
       "result": {
@@ -1530,25 +1580,29 @@
           "id": "photo-read",
           "weight": 34,
           "desc": "one photograph, which is what a photo page loads before it asks for the bytes",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "album-photos",
           "weight": 28,
           "desc": "a whole album, filtered on the foreign key because the engine cannot filter by the album's slug",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "photo-populated",
           "weight": 20,
           "desc": "a photograph with its album inflated, which is the page load in one request instead of two",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "album-list",
           "weight": 18,
           "desc": "the album index",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1598,55 +1652,64 @@
           "id": "search-term",
           "weight": 30,
           "desc": "the ordinary query: full text over title and body, ranked, first page",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "search-highlight",
           "weight": 15,
           "desc": "the same query with snippets, which adds two ts_headline calls per row",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "instant",
           "weight": 12,
           "desc": "autocomplete as the reader types: a prefix LIKE on the title, several per query typed",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "search-facets",
           "weight": 10,
           "desc": "faceted counts, which run one extra grouped query per facet field",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "search-paged",
           "weight": 8,
           "desc": "the third page of results, where the count is repeated and the offset is skipped",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "search-browse",
           "weight": 5,
           "desc": "a search with no query text, which is a browse ordered by last update and takes no ranking",
-          "needs": "search"
+          "needs": "search",
+          "paid": true
         },
         {
           "id": "article-read",
           "weight": 8,
           "desc": "opening one article, which is the content router rather than search",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "article-by-slug",
           "weight": 7,
           "desc": "the slug lookup a result link turns into, because there is no get-by-slug route",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "category-filter",
           "weight": 5,
           "desc": "browsing a category, filtered on the foreign key because search cannot filter a relation",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1701,43 +1764,50 @@
           "id": "practitioner-list",
           "weight": 18,
           "desc": "the front page's practitioner cards",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "diary",
           "weight": 18,
           "desc": "the front page reads 200 slots to count each practitioner's open hours, because the engine has no aggregate",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "practitioner-by-slug",
           "weight": 18,
           "desc": "a practitioner page resolves its slug, since there is no get-by-slug route",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "practitioner-diary",
           "weight": 18,
           "desc": "one practitioner's diary, filtered on the foreign key and grouped by day in the app",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "slot-by-slug",
           "weight": 13,
           "desc": "the booking form loads its slot, and reads it again on submit before claiming it",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "practitioner-read",
           "weight": 12,
           "desc": "the slot's practitioner on the booking form and on the confirmation page, the second hop populate does not take",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "confirmation",
           "weight": 3,
           "desc": "the confirmation page: an appointment by slug with its slot inflated",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1787,37 +1857,43 @@
           "id": "queue-first-page",
           "weight": 4,
           "desc": "the first page of the inbox's status query",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "queue-deep-page",
           "weight": 14,
           "desc": "a later page of the same query, which the inbox reads until a page comes back short",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "reply-count-first-page",
           "weight": 4,
           "desc": "the first page of the unfiltered reply read behind each row's reply count",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "reply-count-deep-page",
           "weight": 49,
           "desc": "a middle page of that read, which walks every reply on the desk at each inbox view",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "ticket-by-slug",
           "weight": 18,
           "desc": "a ticket page resolves its slug, and so does each reply or status action before it writes",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "thread",
           "weight": 11,
           "desc": "the thread under a ticket, filtered on the foreign key",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1867,31 +1943,36 @@
           "id": "article-by-slug",
           "weight": 42,
           "desc": "an article page resolves its slug, since there is no get-by-slug route",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "reader",
           "weight": 28,
           "desc": "the layout reads the signed-in reader on every page to decide access",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "article-list",
           "weight": 24,
           "desc": "the front page, newest first",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "entitlements",
           "weight": 4,
           "desc": "the account page's license panel, an engine route that no plugin serves",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "roster",
           "weight": 2,
           "desc": "the member list the signed-out account page shows, because the demo has no sign-up",
-          "needs": null
+          "needs": null,
+          "paid": false
         }
       ],
       "result": {
@@ -1936,139 +2017,162 @@
           "id": "request-summary",
           "weight": 10,
           "desc": "the request summary on the overview and the requests page, over the default 24 hour window",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "request-trend",
           "weight": 10,
           "desc": "the hourly request trend, drawn on three of the five pages",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "collector-config",
           "weight": 9,
           "desc": "the collector settings, which say how stale the request panels can be",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "tenant-breakdown",
           "weight": 5,
           "desc": "requests by tenant, on the requests page and the quota page",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "endpoint-breakdown",
           "weight": 4,
           "desc": "the busiest endpoints",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "method-breakdown",
           "weight": 4,
           "desc": "requests by HTTP method",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "agent-breakdown",
           "weight": 4,
           "desc": "requests by user agent",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "anomalies",
           "weight": 4,
           "desc": "the anomaly report on the requests page",
-          "needs": "apianalytics"
+          "needs": "apianalytics",
+          "paid": true
         },
         {
           "id": "content-activity",
           "weight": 6,
           "desc": "the last 200 content events, which the engine's content hooks write on every create",
-          "needs": "analytics"
+          "needs": "analytics",
+          "paid": false
         },
         {
           "id": "daily-rollup",
           "weight": 6,
           "desc": "the daily rollup summary on the overview",
-          "needs": "analytics"
+          "needs": "analytics",
+          "paid": false
         },
         {
           "id": "providers",
           "weight": 6,
           "desc": "the configured analytics destinations, read on every overview",
-          "needs": "analytics"
+          "needs": "analytics",
+          "paid": false
         },
         {
           "id": "notes",
           "weight": 7,
           "desc": "the operators' notes, the console's one content type",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "healthz",
           "weight": 3,
           "desc": "the liveness probe on the health page",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "readyz",
           "weight": 3,
           "desc": "the readiness probe, which runs its checks on every call",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "startup",
           "weight": 3,
           "desc": "the startup probe, which caches its first pass",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "ready",
           "weight": 3,
           "desc": "the authenticated readiness report with the schema count",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "pool-health",
           "weight": 3,
           "desc": "the database pool's live statistics",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "latency",
           "weight": 3,
           "desc": "the slowest endpoints from the engine's latency tracker",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "runtime-metrics",
           "weight": 3,
           "desc": "the Prometheus exposition, parsed by the console for in-flight requests and status codes",
-          "needs": null
+          "needs": null,
+          "paid": false
         },
         {
           "id": "tenant-usage",
           "weight": 1,
           "desc": "content, media and API-key usage per tenant, counted at read time",
-          "needs": "usage"
+          "needs": "usage",
+          "paid": false
         },
         {
           "id": "quotas",
           "weight": 1,
           "desc": "the stored quotas",
-          "needs": "usage"
+          "needs": "usage",
+          "paid": false
         },
         {
           "id": "quota-status",
           "weight": 1,
           "desc": "the calling tenant's own quota status",
-          "needs": "usage"
+          "needs": "usage",
+          "paid": false
         },
         {
           "id": "quota-requests",
           "weight": 1,
           "desc": "the quota increase requests awaiting review",
-          "needs": "usage"
+          "needs": "usage",
+          "paid": false
         }
       ],
       "result": {

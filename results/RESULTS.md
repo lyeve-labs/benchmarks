@@ -135,14 +135,14 @@ Complete applications: schema plus realistic traffic, on the free engine. See [`
 - **Schema:** blog_authors (3f) · blog_categories (2f) · blog_posts (7f)
 - **Seed:** 10 blog_authors, 20 blog_categories, 500 blog_posts
 - **Traffic** (200 req/s, p95 < 120 ms): 45% `post-read` · 25% `post-list` · 12% `post-populated` · 10% `category-filter` · 8% `search` `[search]`
-- **Result** (core, median of 3 runs, 2026-10-20): **200 req/s**, p95 2 ms (2 to 2.1), p99 2.5 ms (2.5 to 2.6), 0.00% err at worst (measured)
+- **Result** (core, median of 3 runs, 2026-10-20): **200 req/s**, p95 2 ms (2 to 2.1), p99 2.5 ms (2.5 to 2.6), 0.00% err at worst (measured). Without a license, the 8% of the mix that needs search is left out and the rest runs at the full rate.
 
 ### Community Forum: A forum: topics read constantly, and the thread under each one.
 
 - **Schema:** comments (7f) · forum_topics (7f)
 - **Seed:** 1,200 forum_topics, 2,400 comments
 - **Traffic** (200 req/s, p95 < 150 ms): 38% `topic-read` · 30% `topic-list` · 22% `thread` `[schema]` · 10% `search` `[search]`
-- **Result** (core, median of 3 runs, 2026-10-20): **200 req/s**, p95 2 ms (1.9 to 2), p99 2.5 ms (2.4 to 2.5), 0.00% err at worst (measured)
+- **Result** (core, median of 3 runs, 2026-10-20): **200 req/s**, p95 2 ms (1.9 to 2), p99 2.5 ms (2.4 to 2.5), 0.00% err at worst (measured). Without a license, the 10% of the mix that needs search is left out and the rest runs at the full rate.
 
 ### Company Profile: A corporate site: a small, stable content set read constantly.
 
@@ -156,7 +156,7 @@ Complete applications: schema plus realistic traffic, on the free engine. See [`
 - **Schema:** docs_spaces (4f) · docs_pages (6f)
 - **Seed:** 10 docs_spaces, 2,000 docs_pages
 - **Traffic** (200 req/s, p95 < 140 ms): 35% `page-read` · 30% `space-tree` · 20% `page-by-slug` · 15% `search` `[search]`
-- **Result** (core, median of 3 runs, 2026-10-20): **200 req/s**, p95 3.5 ms (3.5 to 3.5), p99 4.4 ms (4.4 to 4.5), 0.00% err at worst (measured)
+- **Result** (core, median of 3 runs, 2026-10-20): **200 req/s**, p95 3.5 ms (3.5 to 3.5), p99 4.4 ms (4.4 to 4.5), 0.00% err at worst (measured). Without a license, the 15% of the mix that needs search is left out and the rest runs at the full rate.
 
 ### Events and Registration: An events site: reads against a counter the application maintains.
 
@@ -170,7 +170,7 @@ Complete applications: schema plus realistic traffic, on the free engine. See [`
 - **Schema:** jobs_companies (4f) · jobs_listings (9f) · jobs_applications (7f)
 - **Seed:** 200 jobs_companies, 3,000 jobs_listings
 - **Traffic** (200 req/s, p95 < 150 ms): 30% `listing-read` · 26% `search` `[search]` · 16% `listing-populated` · 16% `company-filter` · 12% `listing-index`
-- **Result** (core, median of 3 runs, 2026-10-20): **200 req/s**, p95 2.1 ms (2 to 2.2), p99 2.6 ms (2.4 to 2.7), 0.00% err at worst (measured)
+- **Result** (core, median of 3 runs, 2026-10-20): **200 req/s**, p95 2.1 ms (2 to 2.2), p99 2.6 ms (2.4 to 2.7), 0.00% err at worst (measured). Without a license, the 26% of the mix that needs search is left out and the rest runs at the full rate.
 
 ### Course Platform: A course platform: three levels of nesting per page load.
 
@@ -184,7 +184,7 @@ Complete applications: schema plus realistic traffic, on the free engine. See [`
 - **Schema:** shop_categories (2f) · shop_sellers (4f) · shop_products (8f) · shop_reviews (5f)
 - **Seed:** 100 shop_sellers, 50 shop_categories, 2,000 shop_products, 5,000 shop_reviews
 - **Traffic** (250 req/s, p95 < 150 ms): 30% `product-read` · 24% `product-browse` · 14% `product-populated` · 14% `category-filter` · 10% `review-list` · 8% `search` `[search]`
-- **Result** (core, median of 3 runs, 2026-10-20): **250 req/s**, p95 1.9 ms (1.9 to 2), p99 2.3 ms (2.3 to 2.5), 0.00% err at worst (measured)
+- **Result** (core, median of 3 runs, 2026-10-20): **250 req/s**, p95 1.9 ms (1.9 to 2), p99 2.3 ms (2.3 to 2.5), 0.00% err at worst (measured). Without a license, the 8% of the mix that needs search is left out and the rest runs at the full rate.
 
 ### Multi-language Site: A translated site: every page load resolves a locale.
 
@@ -219,7 +219,7 @@ Complete applications: schema plus realistic traffic, on the free engine. See [`
 - **Schema:** kb_categories (2f) · kb_articles (6f)
 - **Seed:** 20 kb_categories, 5,000 kb_articles
 - **Traffic** (120 req/s, p95 < 220 ms): 30% `search-term` `[search]` · 15% `search-highlight` `[search]` · 12% `instant` `[search]` · 10% `search-facets` `[search]` · 8% `search-paged` `[search]` · 5% `search-browse` `[search]` · 8% `article-read` · 7% `article-by-slug` · 5% `category-filter`
-- **Result** (core, median of 3 runs, 2026-10-20): **120 req/s**, p95 2.5 ms (2.3 to 2.6), p99 3.2 ms (2.9 to 3.3), 0.00% err at worst (measured)
+- **Result** (core, median of 3 runs, 2026-10-20): **120 req/s**, p95 2.5 ms (2.3 to 2.6), p99 3.2 ms (2.9 to 3.3), 0.00% err at worst (measured). Without a license, the 80% of the mix that needs search is left out and the rest runs at the full rate.
 
 ### Appointment Booking: A clinic's booking site: every page reads a practitioner's whole diary.
 
@@ -247,7 +247,7 @@ Complete applications: schema plus realistic traffic, on the free engine. See [`
 - **Schema:** metrics_notes (4f)
 - **Seed:** 500 metrics_notes
 - **Traffic** (120 req/s, p95 < 220 ms): 10% `request-summary` `[apianalytics]` · 10% `request-trend` `[apianalytics]` · 9% `collector-config` `[apianalytics]` · 5% `tenant-breakdown` `[apianalytics]` · 4% `endpoint-breakdown` `[apianalytics]` · 4% `method-breakdown` `[apianalytics]` · 4% `agent-breakdown` `[apianalytics]` · 4% `anomalies` `[apianalytics]` · 6% `content-activity` `[analytics]` · 6% `daily-rollup` `[analytics]` · 6% `providers` `[analytics]` · 7% `notes` · 3% `healthz` · 3% `readyz` · 3% `startup` · 3% `ready` · 3% `pool-health` · 3% `latency` · 3% `runtime-metrics` · 1% `tenant-usage` `[usage]` · 1% `quotas` `[usage]` · 1% `quota-status` `[usage]` · 1% `quota-requests` `[usage]`
-- **Result** (core, median of 3 runs, 2026-10-20): **120 req/s**, p95 3.4 ms (3.3 to 3.5), p99 4.5 ms (4.2 to 4.6), 0.00% err at worst (measured)
+- **Result** (core, median of 3 runs, 2026-10-20): **120 req/s**, p95 3.4 ms (3.3 to 3.5), p99 4.5 ms (4.2 to 4.6), 0.00% err at worst (measured). Without a license, the 50% of the mix that needs apianalytics is left out and the rest runs at the full rate.
 
 ## Reproduce
 
