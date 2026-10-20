@@ -1,6 +1,6 @@
 # LyEve Benchmark Results
 
-> Generated 2026-10-05 from the [benchmark harness](../README.md). Every value is tagged with its provenance. We never publish a number we did not measure ([methodology §1](../METHODOLOGY.md#1-the-one-rule)).
+> Generated 2026-10-20 from the [benchmark harness](../README.md). Every value is tagged with its provenance. We never publish a number we did not measure ([methodology §1](../METHODOLOGY.md#1-the-one-rule)).
 
 **Rig:** Intel Core Ultra 5 125H (18 threads), 32 GB RAM, NVMe, Ubuntu 26.04, Docker 29.8 · PostgreSQL 16, one container per target on the same host
 
@@ -139,9 +139,9 @@ Complete applications: schema plus realistic traffic, on the free engine. See [`
 
 ### Community Forum: A forum: topics read constantly, and the thread under each one.
 
-- **Schema:** forum_topics (7f)
-- **Seed:** 1,200 forum_topics
-- **Traffic** (200 req/s, p95 < 150 ms): 38% `topic-read` · 30% `topic-list` · 22% `thread` `[comments]` · 10% `search` `[search]`
+- **Schema:** comments (7f) · forum_topics (7f)
+- **Seed:** 1,200 forum_topics, 2,400 comments
+- **Traffic** (200 req/s, p95 < 150 ms): 38% `topic-read` · 30% `topic-list` · 22% `thread` `[schema]` · 10% `search` `[search]`
 - **Result** (core, median of 3 runs, 2026-10-05): **200 req/s**, p95 1.9 ms (1.9 to 1.9), p99 2.3 ms (2.3 to 2.3), 0.00% err at worst (measured)
 
 ### Company Profile: A corporate site: a small, stable content set read constantly.
@@ -199,6 +199,55 @@ Complete applications: schema plus realistic traffic, on the free engine. See [`
 - **Seed:** 8 news_desks, 25 news_reporters, 1,500 news_stories
 - **Traffic** (180 req/s, p95 < 140 ms): 34% `story-read` · 26% `front-page` · 16% `story-populated` · 14% `desk-filter` · 10% `revisions`
 - **Result** (core, median of 3 runs, 2026-10-05): **180 req/s**, p95 2 ms (2 to 2), p99 2.5 ms (2.5 to 2.5), 0.00% err at worst (measured)
+
+### GraphQL Storefront: The same catalog over GraphQL, where a page is one request.
+
+- **Schema:** gql_collections (3f) · gql_products (7f) · gql_reviews (6f)
+- **Seed:** 20 gql_collections, 1,500 gql_products, 3,000 gql_reviews
+- **Traffic** (200 req/s, p95 < 150 ms): 40% `list-25` `[graphql]` · 35% `multi-root` `[graphql]` · 25% `wide-selection` `[graphql]`
+- **Result:** pending
+
+### Photo Library: A photo archive: deep albums, read constantly, written in bursts.
+
+- **Schema:** gallery_albums (3f) · gallery_photos (7f)
+- **Seed:** 40 gallery_albums, 4,000 gallery_photos
+- **Traffic** (180 req/s, p95 < 120 ms): 34% `photo-read` · 28% `album-photos` · 20% `photo-populated` · 18% `album-list`
+- **Result:** pending
+
+### Search-Heavy Knowledge Base: A support knowledge base where almost every request is a search.
+
+- **Schema:** kb_categories (2f) · kb_articles (6f)
+- **Seed:** 20 kb_categories, 5,000 kb_articles
+- **Traffic** (120 req/s, p95 < 220 ms): 30% `search-term` `[search]` · 15% `search-highlight` `[search]` · 12% `instant` `[search]` · 10% `search-facets` `[search]` · 8% `search-paged` `[search]` · 5% `search-browse` `[search]` · 8% `article-read` · 7% `article-by-slug` · 5% `category-filter`
+- **Result:** pending
+
+### Appointment Booking: A clinic's booking site: every page reads a practitioner's whole diary.
+
+- **Schema:** booking_practitioners (5f) · booking_slots (6f) · booking_appointments (6f)
+- **Seed:** 30 booking_practitioners, 4,000 booking_slots, 2,500 booking_appointments
+- **Traffic** (200 req/s, p95 < 160 ms): 18% `practitioner-list` · 18% `diary` · 18% `practitioner-by-slug` · 18% `practitioner-diary` · 13% `slot-by-slug` · 12% `practitioner-read` · 3% `confirmation`
+- **Result:** pending
+
+### Support Helpdesk: A support desk whose inbox reads every ticket and every reply on each view.
+
+- **Schema:** desk_tickets (8f) · desk_replies (6f)
+- **Seed:** 1,000 desk_tickets, 3,000 desk_replies
+- **Traffic** (150 req/s, p95 < 200 ms): 4% `queue-first-page` · 14% `queue-deep-page` · 4% `reply-count-first-page` · 49% `reply-count-deep-page` · 18% `ticket-by-slug` · 11% `thread`
+- **Result:** pending
+
+### Subscription Publication: A paywalled publication: each signed-in page view also reads the reader.
+
+- **Schema:** sub_articles (5f) · sub_members (5f)
+- **Seed:** 1,500 sub_articles, 2,000 sub_members
+- **Traffic** (200 req/s, p95 < 120 ms): 42% `article-by-slug` · 28% `reader` · 24% `article-list` · 4% `entitlements` · 2% `roster`
+- **Result:** pending
+
+### Operations Dashboard: An operations console that reads the engine's own telemetry, not content.
+
+- **Schema:** metrics_notes (4f)
+- **Seed:** 500 metrics_notes
+- **Traffic** (120 req/s, p95 < 220 ms): 10% `request-summary` `[apianalytics]` · 10% `request-trend` `[apianalytics]` · 9% `collector-config` `[apianalytics]` · 5% `tenant-breakdown` `[apianalytics]` · 4% `endpoint-breakdown` `[apianalytics]` · 4% `method-breakdown` `[apianalytics]` · 4% `agent-breakdown` `[apianalytics]` · 4% `anomalies` `[apianalytics]` · 6% `content-activity` `[analytics]` · 6% `daily-rollup` `[analytics]` · 6% `providers` `[analytics]` · 7% `notes` · 3% `healthz` · 3% `readyz` · 3% `startup` · 3% `ready` · 3% `pool-health` · 3% `latency` · 3% `runtime-metrics` · 1% `tenant-usage` `[usage]` · 1% `quotas` `[usage]` · 1% `quota-status` `[usage]` · 1% `quota-requests` `[usage]`
+- **Result:** pending
 
 ## Reproduce
 

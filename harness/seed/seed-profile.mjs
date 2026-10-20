@@ -3,8 +3,9 @@
 // Reads profiles/profiles.json, then for the chosen profile:
 //   1. bootstraps the first super_admin via POST /api/admin/setup, or logs in if
 //      the admin already exists;
-//   2. creates each content type over POST /api/admin/schemas, with relations
-//      declared as real relation fields;
+//   2. applies the schema plugin presets the profile names, then creates each
+//      content type over POST /api/admin/schemas, with relations declared as
+//      real relation fields;
 //   3. seeds each type's volume in dependency order through the admin content
 //      route, so the rows are visible to search and to the admin UI.
 //
@@ -73,6 +74,45 @@ async function auth() {
 // Map profile field types onto the engine's field_type values. The API key is
 // `field_type`, never `type`, and an absent one is rejected.
 const TYPE = { string: 'text', text: 'text', integer: 'number', decimal: 'number', boolean: 'boolean', json: 'json', timestamp: 'text', media: 'text' };
+
+// A preset creates its types with their full definitions, as the paired
+// example applies it, and the plain create that follows answers 409 for each
+// of them. The preset refuses, creating nothing, when a type it would create
+// already exists, which is the answer a second seed against one engine gets.
+async function applyPresets() {
+  for (const name of profile.presets || []) {
+    const res = await api('POST', `/api/admin/schemas/presets/${encodeURIComponent(name)}`);
+    if (!res.ok && res.status !== 409) {
+      fail(`apply preset ${name} failed (${res.status}): ${(await res.text()).slice(0, 200)}`);
+    }
+  }
+}
+
+// The paid condition, checked against the engine about to be measured. A free
+// run drives every entry not marked paid, so each plugin those entries need has
+// to be running here without a license. A wrong mark would otherwise publish a
+// free figure that needed one, or time the engine refusing a request. A licensed
+// run checks the paid entries' plugins the same way.
+async function checkPaidCondition() {
+  const free = process.env.FULL !== '1';
+  const driven = profile.traffic.filter((t) => t.needs != null && (free ? !t.paid : true));
+  const plugins = [...new Set(driven.map((t) => t.needs))];
+  if (!plugins.length) return;
+  const res = await api('GET', '/api/admin/plugins/status');
+  if (!res.ok) fail(`cannot read /api/admin/plugins/status (${res.status}), so which plugins run cannot be checked`);
+  const report = await res.json();
+  const byName = new Map((report.plugins || []).map((p) => [p.name, p]));
+  for (const name of plugins) {
+    const p = byName.get(name);
+    if (p && p.entitled && p.active) continue;
+    const entries = driven.filter((t) => t.needs === name).map((t) => t.id).join(', ');
+    const why = p ? p.reason || p.last_error || p.phase : 'not compiled into this engine';
+    fail(free
+      ? `${entries} marked free, but ${name} does not run on this engine without a license (${why}). Mark the entry paid, or fix the engine.`
+      : `${entries} need ${name}, which does not run under this license (${why}). The licensed run would time refusals.`);
+  }
+  console.log(`  plugins checked (${free ? 'free run' : 'licensed run'}): ${plugins.join(', ')}`);
+}
 
 // ── 2. create schemas, with relations as real relation fields ────────────────
 async function createSchemas() {
@@ -179,6 +219,7 @@ async function seedType(sc, count) {
       const ref = sampleRel(r.to);
       if (ref) body[r.field] = ref.id;
     }
+    applySeedValues(sc.name, body);
 
     const id = await createRow(sc.name, slug, title, body);
     if (id) created[sc.name].push({ id, slug });
@@ -186,6 +227,27 @@ async function seedType(sc, count) {
   }
   process.stdout.write(`\r  ${sc.name}: ${created[sc.name].length}/${count} created\n`);
   if (!created[sc.name].length && count > 0) fail(`seeded nothing into ${sc.name}; the run would measure an empty dataset`);
+}
+
+// A field whose value has to mean something: a reply names the topic it belongs
+// to, and a random string there seeds rows no read ever finds. A literal is
+// written as given, null leaves the field unset, and {id:<type>} takes the id of
+// a row already seeded into that type.
+function applySeedValues(type, body) {
+  for (const [field, value] of Object.entries(profile.seedValues?.[type] || {})) {
+    if (value === null) {
+      delete body[field];
+      continue;
+    }
+    const ref = typeof value === 'string' && value.match(/^\{id:([a-z0-9_]+)\}$/);
+    if (ref) {
+      const row = sampleRel(ref[1]);
+      if (!row) fail(`seedValues ${type}.${field} draws from ${ref[1]}, which has no seeded rows. Seed it first.`);
+      body[field] = row.id;
+      continue;
+    }
+    body[field] = value;
+  }
 }
 
 function fieldValue(f, type, i, w) {
@@ -212,6 +274,8 @@ function orderSchemas() {
 
 // ── main ─────────────────────────────────────────────────────────────────────
 await auth();
+await checkPaidCondition();
+await applyPresets();
 await createSchemas();
 for (const sc of orderSchemas()) {
   const count = profile.seed[sc.name] || 0;

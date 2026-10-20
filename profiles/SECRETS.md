@@ -7,7 +7,7 @@ A profile run generates the secrets it needs. Nothing is checked in.
 | `JWT_SECRET` | signs admin/session tokens | a fixed benchmark value set in the compose stack (`harness/compose/lyeve.yml`). Config requires it even in EdDSA mode. |
 | `LYEVE_SETUP_TOKEN` | the credential the first-admin setup call must present | generated per run by `harness/run.sh` when unset, passed to the engine through the compose stack and to the seeder. Setup answers 401 without it. |
 | admin account | create schemas + seed content | bootstrapped at run time via `POST /api/admin/setup` (the first-run super_admin), presenting `LYEVE_SETUP_TOKEN`. |
-| `LYEVE_LICENSE_KEY` + `LICENSE_PUBLIC_KEY_HEX` | activate paid plugins for a `FULL=1` run | supplied by you in the environment and passed to the run by `harness/gen-license.sh`. This repo does not issue licenses. |
+| `LYEVE_LICENSE_KEY` + `LICENSE_PUBLIC_KEY_HEX` | activate paid plugins for a `FULL=1` run | supplied by you in the environment, read by `harness/gen-license.sh` and passed to the engine through the compose stack. Nothing writes it to disk. This repo does not issue licenses. |
 
 ## Content core vs. FULL
 

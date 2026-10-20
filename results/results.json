@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-10-05",
+  "generatedAt": "2026-10-20",
   "sourceRepo": "LyEve-Labs/benchmarks",
   "reference": {
     "host": "local-rig",
@@ -780,13 +780,18 @@
       "threshold": "p95 < 150 ms",
       "schemas": [
         {
+          "name": "comments",
+          "fields": 7
+        },
+        {
           "name": "forum_topics",
           "fields": 7
         }
       ],
       "plugins": [],
       "seed": {
-        "forum_topics": 1200
+        "forum_topics": 1200,
+        "comments": 2400
       },
       "traffic": [
         {
@@ -805,7 +810,7 @@
           "id": "thread",
           "weight": 22,
           "desc": "the thread under a topic",
-          "needs": "comments"
+          "needs": "schema"
         },
         {
           "id": "search",
@@ -1445,6 +1450,549 @@
         ],
         "error_rate": 0,
         "asOf": "2026-10-05"
+      }
+    },
+    {
+      "id": "graphql",
+      "name": "GraphQL Storefront",
+      "tagline": "The same catalog over GraphQL, where a page is one request.",
+      "realWorld": "A storefront served entirely through GraphQL. The transport's one real advantage over the REST content API is that several root fields travel in one document, so a page that needs three collections of records costs one request instead of three. This profile measures that against the equivalent single-field read. It cannot traverse a relation, because the GraphQL surface exposes the orphan relation column and not the foreign key, so the types carry a denormalized slug instead.",
+      "rate": 200,
+      "threshold": "p95 < 150 ms",
+      "schemas": [
+        {
+          "name": "gql_collections",
+          "fields": 3
+        },
+        {
+          "name": "gql_products",
+          "fields": 7
+        },
+        {
+          "name": "gql_reviews",
+          "fields": 6
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "gql_collections": 20,
+        "gql_products": 1500,
+        "gql_reviews": 3000
+      },
+      "traffic": [
+        {
+          "id": "list-25",
+          "weight": 40,
+          "desc": "one root field, the GraphQL equivalent of a REST list",
+          "needs": "graphql"
+        },
+        {
+          "id": "multi-root",
+          "weight": 35,
+          "desc": "three root fields in one document, which is the only thing this transport does that REST cannot",
+          "needs": "graphql"
+        },
+        {
+          "id": "wide-selection",
+          "weight": 25,
+          "desc": "a wide selection over 50 records, well inside the measured cost ceiling of 1000",
+          "needs": "graphql"
+        }
+      ],
+      "result": {
+        "provenance": "pending"
+      }
+    },
+    {
+      "id": "media-library",
+      "name": "Photo Library",
+      "tagline": "A photo archive: deep albums, read constantly, written in bursts.",
+      "realWorld": "A photographer's archive: a few dozen albums holding a few thousand frames, browsed far more often than added to, where every page load is a list filtered to one album followed by a read of one frame.",
+      "rate": 180,
+      "threshold": "p95 < 120 ms",
+      "schemas": [
+        {
+          "name": "gallery_albums",
+          "fields": 3
+        },
+        {
+          "name": "gallery_photos",
+          "fields": 7
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "gallery_albums": 40,
+        "gallery_photos": 4000
+      },
+      "traffic": [
+        {
+          "id": "photo-read",
+          "weight": 34,
+          "desc": "one photograph, which is what a photo page loads before it asks for the bytes",
+          "needs": null
+        },
+        {
+          "id": "album-photos",
+          "weight": 28,
+          "desc": "a whole album, filtered on the foreign key because the engine cannot filter by the album's slug",
+          "needs": null
+        },
+        {
+          "id": "photo-populated",
+          "weight": 20,
+          "desc": "a photograph with its album inflated, which is the page load in one request instead of two",
+          "needs": null
+        },
+        {
+          "id": "album-list",
+          "weight": 18,
+          "desc": "the album index",
+          "needs": null
+        }
+      ],
+      "result": {
+        "provenance": "pending"
+      }
+    },
+    {
+      "id": "search-console",
+      "name": "Search-Heavy Knowledge Base",
+      "tagline": "A support knowledge base where almost every request is a search.",
+      "realWorld": "An operations knowledge base fronted by a search box: readers arrive with a query rather than a URL, type into an autocomplete on the way, and open one or two articles. Reads of a single record are the minority.",
+      "rate": 120,
+      "threshold": "p95 < 220 ms",
+      "schemas": [
+        {
+          "name": "kb_categories",
+          "fields": 2
+        },
+        {
+          "name": "kb_articles",
+          "fields": 6
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "kb_categories": 20,
+        "kb_articles": 5000
+      },
+      "traffic": [
+        {
+          "id": "search-term",
+          "weight": 30,
+          "desc": "the ordinary query: full text over title and body, ranked, first page",
+          "needs": "search"
+        },
+        {
+          "id": "search-highlight",
+          "weight": 15,
+          "desc": "the same query with snippets, which adds two ts_headline calls per row",
+          "needs": "search"
+        },
+        {
+          "id": "instant",
+          "weight": 12,
+          "desc": "autocomplete as the reader types: a prefix LIKE on the title, several per query typed",
+          "needs": "search"
+        },
+        {
+          "id": "search-facets",
+          "weight": 10,
+          "desc": "faceted counts, which run one extra grouped query per facet field",
+          "needs": "search"
+        },
+        {
+          "id": "search-paged",
+          "weight": 8,
+          "desc": "the third page of results, where the count is repeated and the offset is skipped",
+          "needs": "search"
+        },
+        {
+          "id": "search-browse",
+          "weight": 5,
+          "desc": "a search with no query text, which is a browse ordered by last update and takes no ranking",
+          "needs": "search"
+        },
+        {
+          "id": "article-read",
+          "weight": 8,
+          "desc": "opening one article, which is the content router rather than search",
+          "needs": null
+        },
+        {
+          "id": "article-by-slug",
+          "weight": 7,
+          "desc": "the slug lookup a result link turns into, because there is no get-by-slug route",
+          "needs": null
+        },
+        {
+          "id": "category-filter",
+          "weight": 5,
+          "desc": "browsing a category, filtered on the foreign key because search cannot filter a relation",
+          "needs": null
+        }
+      ],
+      "result": {
+        "provenance": "pending"
+      }
+    },
+    {
+      "id": "booking",
+      "name": "Appointment Booking",
+      "tagline": "A clinic's booking site: every page reads a practitioner's whole diary.",
+      "realWorld": "Patients pick a practitioner, scan the open times and book one. The engine has no availability query, so the front page and each practitioner page read up to 200 slots and decide what is open in the app.",
+      "rate": 200,
+      "threshold": "p95 < 160 ms",
+      "schemas": [
+        {
+          "name": "booking_practitioners",
+          "fields": 5
+        },
+        {
+          "name": "booking_slots",
+          "fields": 6
+        },
+        {
+          "name": "booking_appointments",
+          "fields": 6
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "booking_practitioners": 30,
+        "booking_slots": 4000,
+        "booking_appointments": 2500
+      },
+      "traffic": [
+        {
+          "id": "practitioner-list",
+          "weight": 18,
+          "desc": "the front page's practitioner cards",
+          "needs": null
+        },
+        {
+          "id": "diary",
+          "weight": 18,
+          "desc": "the front page reads 200 slots to count each practitioner's open hours, because the engine has no aggregate",
+          "needs": null
+        },
+        {
+          "id": "practitioner-by-slug",
+          "weight": 18,
+          "desc": "a practitioner page resolves its slug, since there is no get-by-slug route",
+          "needs": null
+        },
+        {
+          "id": "practitioner-diary",
+          "weight": 18,
+          "desc": "one practitioner's diary, filtered on the foreign key and grouped by day in the app",
+          "needs": null
+        },
+        {
+          "id": "slot-by-slug",
+          "weight": 13,
+          "desc": "the booking form loads its slot, and reads it again on submit before claiming it",
+          "needs": null
+        },
+        {
+          "id": "practitioner-read",
+          "weight": 12,
+          "desc": "the slot's practitioner on the booking form and on the confirmation page, the second hop populate does not take",
+          "needs": null
+        },
+        {
+          "id": "confirmation",
+          "weight": 3,
+          "desc": "the confirmation page: an appointment by slug with its slot inflated",
+          "needs": null
+        }
+      ],
+      "result": {
+        "provenance": "pending"
+      }
+    },
+    {
+      "id": "helpdesk",
+      "name": "Support Helpdesk",
+      "tagline": "A support desk whose inbox reads every ticket and every reply on each view.",
+      "realWorld": "Agents work a queue of tickets and the threads under them. The engine has no count and no negated filter, so the inbox pages through every ticket by status and every reply to show a reply count, and the cost of one inbox view grows with the whole desk.",
+      "rate": 150,
+      "threshold": "p95 < 200 ms",
+      "schemas": [
+        {
+          "name": "desk_tickets",
+          "fields": 8
+        },
+        {
+          "name": "desk_replies",
+          "fields": 6
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "desk_tickets": 1000,
+        "desk_replies": 3000
+      },
+      "traffic": [
+        {
+          "id": "queue-first-page",
+          "weight": 4,
+          "desc": "the first page of the inbox's status query",
+          "needs": null
+        },
+        {
+          "id": "queue-deep-page",
+          "weight": 14,
+          "desc": "a later page of the same query, which the inbox reads until a page comes back short",
+          "needs": null
+        },
+        {
+          "id": "reply-count-first-page",
+          "weight": 4,
+          "desc": "the first page of the unfiltered reply read behind each row's reply count",
+          "needs": null
+        },
+        {
+          "id": "reply-count-deep-page",
+          "weight": 49,
+          "desc": "a middle page of that read, which walks every reply on the desk at each inbox view",
+          "needs": null
+        },
+        {
+          "id": "ticket-by-slug",
+          "weight": 18,
+          "desc": "a ticket page resolves its slug, and so does each reply or status action before it writes",
+          "needs": null
+        },
+        {
+          "id": "thread",
+          "weight": 11,
+          "desc": "the thread under a ticket, filtered on the foreign key",
+          "needs": null
+        }
+      ],
+      "result": {
+        "provenance": "pending"
+      }
+    },
+    {
+      "id": "paywall",
+      "name": "Subscription Publication",
+      "tagline": "A paywalled publication: each signed-in page view also reads the reader.",
+      "realWorld": "Free and paid articles behind a server-side paywall. A signed-in reader's page costs one read of their member record on top of the article, because access is decided from the tier and status the payment provider last reported.",
+      "rate": 200,
+      "threshold": "p95 < 120 ms",
+      "schemas": [
+        {
+          "name": "sub_articles",
+          "fields": 5
+        },
+        {
+          "name": "sub_members",
+          "fields": 5
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "sub_articles": 1500,
+        "sub_members": 2000
+      },
+      "traffic": [
+        {
+          "id": "article-by-slug",
+          "weight": 42,
+          "desc": "an article page resolves its slug, since there is no get-by-slug route",
+          "needs": null
+        },
+        {
+          "id": "reader",
+          "weight": 28,
+          "desc": "the layout reads the signed-in reader on every page to decide access",
+          "needs": null
+        },
+        {
+          "id": "article-list",
+          "weight": 24,
+          "desc": "the front page, newest first",
+          "needs": null
+        },
+        {
+          "id": "entitlements",
+          "weight": 4,
+          "desc": "the account page's license panel, an engine route that no plugin serves",
+          "needs": null
+        },
+        {
+          "id": "roster",
+          "weight": 2,
+          "desc": "the member list the signed-out account page shows, because the demo has no sign-up",
+          "needs": null
+        }
+      ],
+      "result": {
+        "provenance": "pending"
+      }
+    },
+    {
+      "id": "ops-dashboard",
+      "name": "Operations Dashboard",
+      "tagline": "An operations console that reads the engine's own telemetry, not content.",
+      "realWorld": "An operator console over the engine's request analytics, content activity, health probes, pool and latency figures, and usage and quotas. Each page fans out into five to eight telemetry reads at once, and the figures come from the traffic the engine has served, so the seed and the run fill them.",
+      "rate": 120,
+      "threshold": "p95 < 220 ms",
+      "schemas": [
+        {
+          "name": "metrics_notes",
+          "fields": 4
+        }
+      ],
+      "plugins": [],
+      "seed": {
+        "metrics_notes": 500
+      },
+      "traffic": [
+        {
+          "id": "request-summary",
+          "weight": 10,
+          "desc": "the request summary on the overview and the requests page, over the default 24 hour window",
+          "needs": "apianalytics"
+        },
+        {
+          "id": "request-trend",
+          "weight": 10,
+          "desc": "the hourly request trend, drawn on three of the five pages",
+          "needs": "apianalytics"
+        },
+        {
+          "id": "collector-config",
+          "weight": 9,
+          "desc": "the collector settings, which say how stale the request panels can be",
+          "needs": "apianalytics"
+        },
+        {
+          "id": "tenant-breakdown",
+          "weight": 5,
+          "desc": "requests by tenant, on the requests page and the quota page",
+          "needs": "apianalytics"
+        },
+        {
+          "id": "endpoint-breakdown",
+          "weight": 4,
+          "desc": "the busiest endpoints",
+          "needs": "apianalytics"
+        },
+        {
+          "id": "method-breakdown",
+          "weight": 4,
+          "desc": "requests by HTTP method",
+          "needs": "apianalytics"
+        },
+        {
+          "id": "agent-breakdown",
+          "weight": 4,
+          "desc": "requests by user agent",
+          "needs": "apianalytics"
+        },
+        {
+          "id": "anomalies",
+          "weight": 4,
+          "desc": "the anomaly report on the requests page",
+          "needs": "apianalytics"
+        },
+        {
+          "id": "content-activity",
+          "weight": 6,
+          "desc": "the last 200 content events, which the engine's content hooks write on every create",
+          "needs": "analytics"
+        },
+        {
+          "id": "daily-rollup",
+          "weight": 6,
+          "desc": "the daily rollup summary on the overview",
+          "needs": "analytics"
+        },
+        {
+          "id": "providers",
+          "weight": 6,
+          "desc": "the configured analytics destinations, read on every overview",
+          "needs": "analytics"
+        },
+        {
+          "id": "notes",
+          "weight": 7,
+          "desc": "the operators' notes, the console's one content type",
+          "needs": null
+        },
+        {
+          "id": "healthz",
+          "weight": 3,
+          "desc": "the liveness probe on the health page",
+          "needs": null
+        },
+        {
+          "id": "readyz",
+          "weight": 3,
+          "desc": "the readiness probe, which runs its checks on every call",
+          "needs": null
+        },
+        {
+          "id": "startup",
+          "weight": 3,
+          "desc": "the startup probe, which caches its first pass",
+          "needs": null
+        },
+        {
+          "id": "ready",
+          "weight": 3,
+          "desc": "the authenticated readiness report with the schema count",
+          "needs": null
+        },
+        {
+          "id": "pool-health",
+          "weight": 3,
+          "desc": "the database pool's live statistics",
+          "needs": null
+        },
+        {
+          "id": "latency",
+          "weight": 3,
+          "desc": "the slowest endpoints from the engine's latency tracker",
+          "needs": null
+        },
+        {
+          "id": "runtime-metrics",
+          "weight": 3,
+          "desc": "the Prometheus exposition, parsed by the console for in-flight requests and status codes",
+          "needs": null
+        },
+        {
+          "id": "tenant-usage",
+          "weight": 1,
+          "desc": "content, media and API-key usage per tenant, counted at read time",
+          "needs": "usage"
+        },
+        {
+          "id": "quotas",
+          "weight": 1,
+          "desc": "the stored quotas",
+          "needs": "usage"
+        },
+        {
+          "id": "quota-status",
+          "weight": 1,
+          "desc": "the calling tenant's own quota status",
+          "needs": "usage"
+        },
+        {
+          "id": "quota-requests",
+          "weight": 1,
+          "desc": "the quota increase requests awaiting review",
+          "needs": "usage"
+        }
+      ],
+      "result": {
+        "provenance": "pending"
       }
     }
   ],

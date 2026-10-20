@@ -8,9 +8,32 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
-## [Unreleased]
+## [0.7.0] - 2026-10-20
+
+### Added
+
+- Seven application profiles, so they cover 17 of the example apps: a GraphQL
+  storefront, a photo library, a search-heavy knowledge base, appointment
+  booking, a support helpdesk, a subscription publication and an operations
+  dashboard over the engine's own telemetry.
 
 ### Changed
+
+- A traffic entry that depends on a plugin says whether that plugin needs a
+  paid license (`paid`), and the profiles file moves to format 0.5.0. A free
+  run now drives every entry that is not paid, so traffic on free plugins (the
+  comments preset, localization, analytics, usage) is measured on the free
+  engine instead of waiting for a licensed run. A licensed run asks the license
+  only for the paid plugins. A profile whose every entry is paid, the GraphQL
+  storefront, is recorded `pending` with the reason `paid-only` on a free run.
+- The seeder checks the mark against `GET /api/admin/plugins/status` before
+  it seeds: a plugin an entry relies on that is not running on the engine
+  being measured stops the run and names the entry.
+- `harness/compose/lyeve.yml` raises `PUBLIC_RATE_LIMIT_GLOBAL`, the per-address
+  cap every public route without a limit of its own shares, above any offered
+  rate, as `RATE_LIMIT_RPS` already was. The free i18n run on 0.54.1 still
+  fails about 12% of its requests, on the localization resolve route's own
+  limit of 30 a second.
 
 - The README and METHODOLOGY section 8 describe how results reach the website
   by what the page reads, `results/results.json` from a published release,
@@ -38,6 +61,37 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ### Fixed
 
+- The create scenario (S03) built each slug from a per-user iteration count
+  and a random suffix. About thirty virtual users shared each count, so two
+  creates picked the same slug about once in ten runs, and every target
+  declares the slug unique: one create in 6,000 failed with a conflict on
+  LyEve, Strapi, Directus and Payload alike. Slugs now come from the
+  test-wide iteration number, prefixed with the time the script loaded, and
+  never collide.
+- The forum profile's thread read found nothing, so a licensed forum run
+  failed 21.6% of its requests. The replies live in the comments type the
+  schema plugin's preset creates, and the profile neither applied the preset
+  nor seeded any replies. The profile now names the preset and seeds 2400
+  replies under the topics, and the seeder applies `presets` before it creates
+  the types and fixes a field for every seeded row through `seedValues`.
+  Measured on 0.54.1 with a license, the forum run fails none of 12,003
+  requests.
+- `harness/gen-license.sh` could not be parsed: an apostrophe inside a
+  parameter default opened a quote bash never found closed. Every `FULL=1`
+  profile run therefore started without a license and its paid traffic was
+  refused. It parses and prints the license again, and a FULL run without a
+  license now stops with the script's own error instead of measuring refusals.
+- The LyEve stack set no `LYEVE_CONSOLE_URL`, so in production mode the
+  password reset and magic-link plugins refused to start and every figure
+  was measured two plugins short of the free baseline. The stack now names a
+  console URL and the whole baseline starts.
+- A `FULL=1` profile run never handed its license to the engine, because the
+  compose file did not pass `LYEVE_LICENSE_KEY`, so the paid traffic met the
+  free tier. The run also wrote the license token into its raw output under
+  `results/`. The token now reaches the engine through the compose
+  environment as `BENCH_LICENSE_KEY`, which only a FULL run sets, so a
+  license exported in the caller's shell never reaches a free run, and it is
+  never written to disk.
 - The LyEve compose file's `JWT_SECRET` contained "change-me", which v0.51.2
   refuses as a placeholder, so the engine could not boot from it.
 - `FULL=1` profile runs stopped before starting, because the harness read a

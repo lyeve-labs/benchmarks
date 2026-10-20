@@ -7,6 +7,7 @@
 // Invoked by harness/run.sh, one scenario per process:
 //   k6 run -e TARGET=lyeve -e SCENARIO=S01 -e BASE_URL=http://localhost:8080 scenario.js
 import http from 'k6/http';
+import exec from 'k6/execution';
 import { check } from 'k6';
 import { Trend, Rate } from 'k6/metrics';
 
@@ -76,10 +77,18 @@ function login() {
   }
 }
 
+// Every target declares the article slug unique. __ITER counts per virtual
+// user, so about thirty users shared each value and a random suffix collided
+// about once in ten runs, which failed one create in 6,000 on every target.
+// The test-wide iteration number is unique across virtual users within a
+// run. The prefix is when this virtual user loaded the script, which is after
+// the warm-up's separate process exited, so it keeps the two runs apart.
+const RUN_STARTED = Date.now();
+
 function articleBody(i) {
   const b = {
     title: `Benchmark article ${i}`,
-    slug: `bench-article-${i}-${Math.floor(Math.random() * 1e6)}`,
+    slug: `bench-article-${RUN_STARTED}-${exec.scenario.iterationInTest}`,
     body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '.repeat(6),
     views: i,
     published: true,

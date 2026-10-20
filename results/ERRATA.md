@@ -369,3 +369,17 @@ profile runs stayed at or below 3.18.
 | 20261005-204103 | directus | 0.75 | 2.12 | yes |
 | 20261005-204844 | strapi | 2.11 | 1.44 | yes |
 | 20261005-205621 | payload | 1.44 | 1.15 | yes |
+
+## 13. The LyEve stack started two plugins short of the free baseline
+
+The LyEve stack ran the engine in its production mode with no
+`LYEVE_CONSOLE_URL`. In that mode the password reset and magic-link plugins
+refuse to start without the console's public URL. The section 12 sweep ran
+v0.51.2, whose two plugins already refused, so its LyEve figures were measured
+with 49 of the 51 plugins the image carries running, two short of the free
+baseline the report describes. The engine logged both refusals at boot. The
+earlier sweeps were not checked for it.
+
+The stack now sets a console URL, and the published 0.52.2 image boots with no
+plugin refusing to start. The figures above stand as they were measured. The
+next sweep is the first on the whole baseline, and its section says so.
