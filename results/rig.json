@@ -1,28 +1,29 @@
 {
   "note": "What the latest sweep ran on and how. tools/generate-report.mjs prints it at the top of RESULTS.md and copies it into results.json.",
-  "date": "2026-10-05 (every target, the application profiles and the micro-benchmarks)",
+  "date": "2026-10-20 (every target, the application profiles and the micro-benchmarks)",
   "machine": {
     "cpu": "Intel Core Ultra 5 125H (18 threads)",
     "memory": "32 GB RAM",
     "disk": "NVMe",
     "os": "Ubuntu 26.04, Linux 7.0",
-    "docker": "Docker 29.8 (containerd image store), Compose v2"
+    "docker": "Docker 29.9 (containerd image store), Compose v2"
   },
   "loadGenerator": "k6 2.3.0 on the same machine, constant arrival rate",
   "engine": {
-    "version": "v0.51.2",
-    "commit": "da80fdd",
-    "image": "ghcr.io/lyeve-labs/lyeve-core:0.51.2",
-    "description": "the published v0.51.2 image as it ships, with all 51 plugins compiled in, pulled rather than built. No license: the free baseline starts. Micro-benchmarks from the engine source at the same tag",
-    "binaryBytes": 72589472,
-    "imageLayersBytes": 78323712,
-    "imageCompressedMB": 27.6,
+    "version": "v0.55.0",
+    "commit": "27d8c49",
+    "image": "ghcr.io/lyeve-labs/lyeve-core:0.55.0",
+    "description": "the published v0.55.0 image as it ships, with all 51 plugins compiled in, pulled rather than built. No license: the free baseline starts. Micro-benchmarks from the engine source at the same tag",
+    "binaryBytes": 77205628,
+    "imageLayersBytes": 82964480,
+    "imageCompressedMB": 30.2,
     "previous": {
-      "commit": "271cd9e",
-      "date": "2026-09-27",
-      "binaryBytes": 78721184,
-      "imageLayersBytes": 84848640,
-      "imageCompressedMB": 28.9
+      "version": "v0.51.2",
+      "commit": "da80fdd",
+      "date": "2026-10-05",
+      "binaryBytes": 72589472,
+      "imageLayersBytes": 78323712,
+      "imageCompressedMB": 27.6
     }
   },
   "competitors": [
@@ -39,7 +40,7 @@
       "version": "3.11.0 on Next.js 15.1.0, built from the committed app on node:24-alpine"
     }
   ],
-  "repetitions": "Every target on 2026-10-05: four repetitions, interleaved (LyEve, Directus, Strapi, Payload, then again), each on a fresh stack. Every run started and ended below load 4. One Directus run is set aside under results/raw/excluded because an unrelated build ran on the machine during it, so Directus is the median of 3 runs and every other target of 4. Each application profile ran 3 times the same evening.",
+  "repetitions": "Every target on 2026-10-20: four repetitions, interleaved (lyeve, strapi, directus, payload, then again), each on a fresh stack. Every kept run started and ended below load 4. Each application profile ran three times.",
   "method": [
     "Every run brings the target's stack up from nothing, seeds the same 2,020 records from a fixed seed, and tears it down with its volumes afterwards.",
     "Each scenario gets a 10 s discarded warm-up, then a 60 s measured window. The published figure is the median of the runs. The range beneath it is the lowest and highest run.",
