@@ -399,3 +399,63 @@ This sweep pulled `ghcr.io/lyeve-labs/lyeve-core:0.55.0` (revision `27d8c49`) an
 | Cold start | 488 ms | 335 ms | 2,377.5 ms (Strapi) |
 
 The binary is 77,205,628 bytes, the image unpacks to 82,964,480 bytes and its compressed amd64 layers are 30.2 MB, against 72,589,472, 78,323,712 and 27.6 MB for v0.51.2.
+
+A boot of the same stack and image started all 31 plugins of the free
+baseline and logged no refusal, so these are the first figures on the whole
+baseline that section 13 describes. The harness keeps no engine log per run,
+so this was read from a separate boot on the same day.
+
+The micro-benchmarks first ran with the processor set to save power, which
+roughly halves its speed. Those runs were set aside before any figure was
+kept, and every figure here was measured with the processor in its balanced
+setting.
+
+LyEve leads the strongest competitor on every published metric but create,
+where Payload is now level. To tell a change in the engine from a change in
+the machine, v0.51.2 ran again beside v0.55.0 on the evening of 2026-10-20:
+the create scenario four times each, alternating, each on a fresh stack. The
+v0.51.2 image is no longer on the registry, so that run used a local copy of
+its published amd64 image (revision `da80fdd`).
+
+Create rose from 6.7 to 7.6 ms at p99, inside this sweep's range of 6.2 to
+8.4 ms. Side by side, v0.55.0 measured 7.3 to 7.8 ms and v0.51.2 6.2 to 8.6
+ms, so at p99 the two overlap. At the median v0.55.0 read 4.8 ms against 3.5,
+with ranges that overlap as well (3.6 to 5.5 against 3.4 to 5.6), so these
+runs cannot say whether a create got slower. Payload's create held at 7.8 ms,
+so the 1.2 times lead of 2026-10-05 is gone and the table reads on par.
+
+Cold start fell from 488 to 335 ms. A boot on this machine takes either 310 to
+400 ms or 580 to 780 ms, with nothing in between. Five of the eight v0.51.2
+boots measured were slow ones (four on 2026-10-05 and four side by side), and
+none of the eight v0.55.0 boots was. When both boot quickly they take the same
+time. What makes a boot slow is not established, so these runs cannot say
+that v0.55.0 has stopped doing it.
+
+The image grew by 4,640,768 bytes, and the binary accounts for 4,616,156 of
+them. Idle memory rose from 26.5 to 27.5 MB, and side by side the two
+releases idled at 26.5 and 28 MB.
+
+Two micro-benchmark rows moved by more than 5 percent, both under the 20
+percent regression gate, and most of each move is garbage collection in the
+benchmark's own process. Built from both sources with one Go toolchain and
+run side by side, the rate limiter took 2.14 against 2.28 µs, and 1.93
+against 1.91 µs with the collector switched off. Its code is the same in both
+releases, so its 7 percent is collection cost. The tenant middleware took 451
+against 498 ns, and 256 against 275 ns with the collector off. The 19 ns left
+are the reads it now makes on every request: the tenant the host named, which
+sign-in uses, and whether the caller is a super admin, which the access log
+uses.
+
+The ten profiles measured on 2026-10-05 moved by 0.2 ms or less at p99. Six
+are measured for the first time: the photo library, the search-heavy
+knowledge base, appointment booking, the support helpdesk, the subscription
+publication and the operations dashboard. The GraphQL storefront stays
+pending, because every request in its mix needs a license.
+
+The report generator changed in two ways with this sweep. It skipped every
+profile run whose id holds a hyphen, so three of the new profiles would have
+read as pending although they were measured. It also never said how much of a
+profile's mix a free run leaves out, and each free result now names that
+share. It is 80 percent for the search-heavy knowledge base, all of its search
+traffic, and 50 percent for the operations dashboard, so neither figure
+describes the traffic that gives its profile its name.
