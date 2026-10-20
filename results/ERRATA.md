@@ -383,3 +383,19 @@ earlier sweeps were not checked for it.
 The stack now sets a console URL, and the published 0.52.2 image boots with no
 plugin refusing to start. The figures above stand as they were measured. The
 next sweep is the first on the whole baseline, and its section says so.
+
+## 14. Every target re-measured on 2026-10-20, on the published v0.55.0 image
+
+This sweep pulled `ghcr.io/lyeve-labs/lyeve-core:0.55.0` (revision `27d8c49`) and ran it as shipped. `targets.json` and the compose file now name that tag. Every target on 2026-10-20: four repetitions, interleaved (lyeve, strapi, directus, payload, then again), each on a fresh stack. Every kept run started and ended below load 4. Each application profile ran three times.
+
+| Metric | LyEve, 2026-10-05 (v0.51.2) | LyEve, 2026-10-20 (v0.55.0) | Strongest competitor, 2026-10-20 |
+|---:|---:|---:|---:|
+| Image size | 78 MB | 83 MB | 970 MB (Directus) |
+| Idle memory | 26.5 MB | 27.5 MB | 98 MB (Strapi) |
+| P99 read-by-id | 1.8 ms | 1.8 ms | 8 ms (Payload) |
+| P99 list-50 | 2.9 ms | 2.8 ms | 9.4 ms (Payload) |
+| P99 create | 6.7 ms | 7.6 ms | 7.8 ms (Payload) |
+| P99 filter | 2.4 ms | 2.5 ms | 5.9 ms (Directus) |
+| Cold start | 488 ms | 335 ms | 2,377.5 ms (Strapi) |
+
+The binary is 77,205,628 bytes, the image unpacks to 82,964,480 bytes and its compressed amd64 layers are 30.2 MB, against 72,589,472, 78,323,712 and 27.6 MB for v0.51.2.

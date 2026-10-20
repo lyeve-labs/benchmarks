@@ -8,6 +8,10 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
+## Unreleased
+
+- Re-measured every figure on the v0.55.0 engine image: the head-to-head, the application profiles and the micro-benchmarks.
+
 ## [0.7.0] - 2026-10-20
 
 ### Added
