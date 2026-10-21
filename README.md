@@ -57,6 +57,41 @@ baseline), so you can iterate on the report without re-running the load tests.
 
 ---
 
+## Small-server mode
+
+The head-to-head runs every target on one capable machine. `make small`
+answers a second question: what one target does alone on the smallest server
+people rent, 1 vCPU and 1 GB. The target and its own PostgreSQL run on the
+remote server, and k6 drives them from your machine over the network.
+
+```bash
+make small TARGET=lyeve HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm PROVIDER=<provider> PLAN=<plan>
+```
+
+The server needs SSH as root, or as a user with passwordless sudo, and the same
+CPU architecture as your machine. The harness installs Docker there if it is
+missing and copies only the target's compose file and images. It measures the
+boot, idle memory and one read scenario at rising rates, then removes
+everything it brought. A target that fails to boot is a result, recorded with
+the reason the server shows. Each run lands in
+`results/raw/small/<run-id>/small.json`.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `HOST` | required | SSH destination, `user@address` |
+| `KEY` | required | private key for that destination |
+| `SSH_PORT`, `SSH_OPTS` | `22`, none | SSH port and extra options |
+| `PROVIDER`, `PLAN` | none | recorded with the rig. The CPU, cores and memory are read from the server |
+| `SCENARIO` | `S01` | a read scenario |
+| `RATES` | `25 50 100 200 300 500` | offered rates in req/s, run in order |
+| `BOOT_TIMEOUT` | `300` | seconds the target has to answer after it starts |
+| `BENCH_PORT` | `8080` | application port on the server |
+
+See [`METHODOLOGY.md`](./METHODOLOGY.md) §13 for the rules and what a boot
+failure means.
+
+---
+
 ## How this reaches the website
 
 This repo is the source of truth. [lyeve.com/benchmarks](https://lyeve.com/benchmarks)
