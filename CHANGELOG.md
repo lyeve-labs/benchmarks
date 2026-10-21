@@ -8,6 +8,16 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
+## [Unreleased]
+
+### Added
+
+- A small-server mode, `make small`, that runs one target alone on a remote
+  1 vCPU / 1 GB server over SSH and drives it from this machine. It records
+  whether the target boots within a limit and why it did not, idle memory for
+  the whole server and each container, and a read scenario at stepped rates.
+  `METHODOLOGY.md` section 13 describes the rig.
+
 ## [0.8.0] - 2026-10-20
 
 ### Changed
