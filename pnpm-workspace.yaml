@@ -2,3 +2,7 @@
 # it. Without this line pnpm 11 admits a young version and writes its own
 # exemption, which then reads as if somebody chose it.
 minimumReleaseAgeStrict: true
+
+# pnpm only warns when the running Node misses engines.node, so this makes
+# an install on an older Node fail instead.
+engineStrict: true
