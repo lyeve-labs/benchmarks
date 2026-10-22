@@ -18,6 +18,13 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   the whole server and each container, and a read scenario at stepped rates.
   `METHODOLOGY.md` section 13 describes the rig.
 
+### Changed
+
+- The rig, its CI and the Strapi and Payload images run on Node 26.12.1, and
+  the repository installs with pnpm only. Strapi declares Node 22 at most and
+  still builds and starts on 26. The published results keep the images they
+  were measured on until the next sweep.
+
 ## [0.8.0] - 2026-10-20
 
 ### Changed
