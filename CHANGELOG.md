@@ -8,7 +8,7 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
-## [Unreleased]
+## [0.9.0] - 2026-10-22
 
 ### Added
 
