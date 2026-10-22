@@ -38,7 +38,7 @@ reproduced, or challenged.
 ## Quickstart
 
 ```bash
-# 0. Prerequisites: Docker, Docker Compose, k6, Node 20+.
+# 0. Prerequisites: Docker, Docker Compose, k6, Node 26. pnpm is the only package manager.
 make doctor                      # check your machine has what it needs
 
 # 1. Run one scenario against one target
