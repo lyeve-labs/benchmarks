@@ -8,6 +8,12 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
+## [0.9.1] - 2026-10-22
+
+### Changed
+
+- Installing on a Node older than 26 fails instead of printing a warning, so the minimum Node version holds for every install.
+
 ## [0.9.0] - 2026-10-22
 
 ### Added
