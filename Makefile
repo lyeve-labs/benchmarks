@@ -41,6 +41,10 @@ refresh: ## Pull the pinned official images, then: make sweep
 profile: ## Run a real-world profile: make profile PROFILE=blog TARGET=lyeve [FULL=1]
 	@FULL=$(FULL) harness/run.sh --profile $(PROFILE) --target $(TARGET)
 
+.PHONY: small
+small: ## Run one target alone on a small remote server: make small TARGET=lyeve HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm [PROVIDER= PLAN= RATES="25 50 100"]
+	@harness/small.sh --target $(TARGET) --scenario $(SCENARIO)
+
 .PHONY: report
 report: ## Regenerate results.json + RESULTS.md from results/raw/
 	@node tools/generate-report.mjs

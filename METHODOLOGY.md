@@ -17,6 +17,7 @@ where to push back.
 10. [Competitor notes & caveats](#10-competitor-notes--caveats)
 11. [Maintenance & regression gate](#11-maintenance--regression-gate)
 12. [Errata](#12-errata)
+13. [The small-server rig](#13-the-small-server-rig)
 
 ---
 
@@ -292,6 +293,85 @@ harness that drives the wrong endpoint, so every query shape in the harness is
 now checked against the engine's own request parsing rather than against an
 assumed API. Where the two disagreed, the engine won and the disagreement is
 recorded.
+
+---
+
+## 13. The small-server rig
+
+The head-to-head says which engine is faster on a capable machine. The
+small-server rig answers a different question: what each one does on the
+smallest server people rent, one virtual CPU and 1 GB of memory. Its figures
+come from a different host, so they never enter the head-to-head table (§2).
+
+```bash
+make small TARGET=lyeve HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm PROVIDER=<provider> PLAN=<plan>
+```
+
+**Same rules.** The images are the ones the local rig measures, byte for byte.
+The server pulls each public image by the digest the harness machine holds,
+and an image it cannot pull (one built locally, or one whose registry refuses
+anonymous pulls) is copied to it over SSH. So the server has to share the
+harness machine's CPU architecture. The dataset, the seed, the scenarios, the
+stock configuration and the provenance tags are unchanged. Each target runs
+alone, with its own PostgreSQL on the same server, the way a small-server user
+would run it. Use a fresh server for each target, so nothing one target left
+behind (page cache, a kernel log) is read as another's.
+
+**A remote load generator.** k6 runs on a separate machine and reaches the
+server over the network, so the load generator never takes the server's one
+core. The cost is that every latency includes the network round trip. The run
+records that round trip (the median TCP connect time over eleven requests), so
+a reader can subtract it. Put the load generator as close to the server as
+possible, in the same region and on the same provider's network if you can. A
+figure measured across a continent measures the continent.
+
+**The network between them.** The application port answers only the load
+generator's address while a run lasts. A firewall rule on the server drops
+every other source, and teardown removes it. That keeps strangers' scans out of
+the measurement, and it keeps a stack with published benchmark credentials off
+the open internet.
+
+**What a run measures.**
+
+1. **Boot.** The time from `docker compose up`, with the images already on the
+   server and an empty database, to the first successful answer on the target's
+   ready path, within a limit (300 s by default). This is a first boot with
+   database creation and migrations, which §4.1's cold start is not: that one
+   restarts a container that has already booted once.
+2. **Idle memory.** After the same 45 s settle the head-to-head uses, five
+   samples of the whole server (`free`) and of each container (`docker stats`),
+   reported as medians.
+3. **One read scenario at stepped rates.** S01 by default, offered at 25, 50,
+   100, 200, 300 and 500 req/s. Each step gets the usual 10 s warm-up, which is
+   discarded, and the scenario's measured window. Each step records the latency
+   percentiles, the error rate and the share of the offered rate the target
+   served. Stepping stops after the first step that breaks the error budget or
+   serves less than 90% of its rate, because a higher rate would only measure
+   the same collapse for longer. While the steps run, a sampler on the server
+   records server and container memory every 5 s.
+
+**What a boot failure means.** A target that does not answer within the limit,
+exits, or is killed has a result, not a missing number: in its stock
+configuration it does not run on that server size. The run records the reason
+the server shows: the container's state, exit code and restart count, whether
+Docker saw it killed for memory, the kernel's out-of-memory lines from `dmesg`,
+and the last lines of the application's log. A failure is never retried with
+tuning until it passes, because a tuned target is not the one a reader would
+install.
+
+**Where results go.** Each run writes `results/raw/small/<run-id>/`: the raw
+text from the server, one k6 summary per step, the `M-*.json` files every run
+carries, and `small.json`. That file holds the rig (provider and plan as given,
+the CPU model, core count and memory read from the server itself), the boot
+result, idle and peak memory, and every step. The report generator does not
+read this directory, so a small-server figure cannot reach the head-to-head.
+
+**Nothing secret stays on the server.** The one credential a run creates, the
+engine's setup token, travels over SSH on standard input and lives only in the
+container. Teardown removes the stack with its volumes, the images the run
+brought, the firewall rules and the work directory. When the server has no
+Docker, the harness installs it with Docker's own install script and leaves it
+installed.
 
 ---
 

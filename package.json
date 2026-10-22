@@ -1,14 +1,16 @@
 {
   "name": "@lyeve-labs/benchmarks",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "type": "module",
   "description": "Reproducible performance benchmarks for LyEve Core and competitor comparison.",
   "license": "MIT",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "scripts": {
+    "preinstall": "node -e \"if(!/^pnpm\\//.test(process.env.npm_config_user_agent||'')){console.error('Use pnpm: this repository installs with pnpm only.');process.exit(1)}\"",
     "report": "node tools/generate-report.mjs",
     "collect": "node tools/collect.mjs",
     "validate": "node tools/validate.mjs"

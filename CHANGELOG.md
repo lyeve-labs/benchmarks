@@ -8,6 +8,23 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
+## [0.9.0] - 2026-10-22
+
+### Added
+
+- A small-server mode, `make small`, that runs one target alone on a remote
+  1 vCPU / 1 GB server over SSH and drives it from this machine. It records
+  whether the target boots within a limit and why it did not, idle memory for
+  the whole server and each container, and a read scenario at stepped rates.
+  `METHODOLOGY.md` section 13 describes the rig.
+
+### Changed
+
+- The rig, its CI and the Strapi and Payload images run on Node 26.12.1, and
+  the repository installs with pnpm only. Strapi declares Node 22 at most and
+  still builds and starts on 26. The published results keep the images they
+  were measured on until the next sweep.
+
 ## [0.8.0] - 2026-10-20
 
 ### Changed

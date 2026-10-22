@@ -37,7 +37,9 @@ export const options = {
   scenarios: {
     [scenarioDef.slug]: {
       executor: k6def.executor,
-      rate: k6def.rate,
+      // The small-server mode steps the offered rate up. Every other run
+      // offers the rate the scenario defines.
+      rate: Number(__ENV.BENCH_RATE) || k6def.rate,
       timeUnit: k6def.timeUnit,
       duration: __ENV.DURATION || k6def.duration,
       preAllocatedVUs: k6def.preAllocatedVUs,
