@@ -262,7 +262,7 @@ function campaignMarkdown(c) {
 
   for (const id of scenarioIds) {
     md += `\n### ${id}: ${scenarioTitle(id)}\n\n`;
-    md += 'Latencies in ms. CPU is the busy share of each machine over the whole k6 process that ran the step. I/O wait is the share the server sat waiting on its disk: on a server with no swap it climbs when memory runs out and the kernel reads back the program code it dropped from its cache. Steal is the share the hypervisor held back from the server.\n\n';
+    md += 'Latencies in ms. CPU is the busy share of each machine over the whole k6 process that ran the step. I/O wait is the share the server sat idle waiting on its disk. It rises with synchronous writes, and on a server with no swap it climbs far higher when memory runs out and the kernel reads back the program code it dropped from its cache. Steal is the share the hypervisor held back from the server.\n\n';
     md += '| Target | Offered (req/s) | Runs | Served | p50 | p95 | p99 | Errors | Server CPU | Server I/O wait | Server steal | Load generator CPU | Received (MB/s) |\n';
     md += '|---|---:|---:|---|---:|---:|---|---:|---:|---:|---:|---:|---:|\n';
     for (const t of c.targets) {

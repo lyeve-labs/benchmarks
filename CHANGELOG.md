@@ -22,7 +22,7 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   and the load generator's CPU, the server's I/O wait, k6's dropped iterations
   and peak virtual users, and the bytes received per second, so a step that
   falls short shows which machine ran out, and whether the server ran out of
-  CPU or of memory.
+  CPU or sat waiting on its disk.
 - Each small-server run records the harness commit, the image ID the server
   ran, and both machines' load when it started. A run during which the load
   generator's address changed is void and never reported.

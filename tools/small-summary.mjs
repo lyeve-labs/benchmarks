@@ -80,7 +80,7 @@ function state(dir, name) {
 
 // The busy, I/O wait and stolen shares of one machine's CPU between two reads
 // of the first line of /proc/stat: cpu user nice system idle iowait irq softirq
-// steal. I/O wait is idle time with a disk read outstanding.
+// steal. I/O wait is idle time with a disk request outstanding.
 function cpuShare(before, after) {
   const a = String(before || '').trim().split(/\s+/).slice(1, 9).map(Number);
   const b = String(after || '').trim().split(/\s+/).slice(1, 9).map(Number);
