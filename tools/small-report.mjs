@@ -106,6 +106,11 @@ const STEP_FIELDS = [
   'received_mb_s', 'server_busy_pct', 'server_iowait_pct', 'server_steal_pct', 'loadgen_busy_pct', 'loadgen_steal_pct',
 ];
 
+// A run in which the kernel killed a process for memory or Docker restarted a
+// container, at boot or by the end of the steps.
+const trouble = (r) => r.boot?.container?.oomKilled || r.end?.oomKilled || r.end?.restarts > 0
+  || r.boot?.container?.oomKernelLines?.length > 0 || r.end?.oomKernelLines?.length > 0;
+
 function scenarioResult(id, runs, voids) {
   const booted = runs.filter((r) => r.boot?.status === 'ok' && r.load);
   const measured = booted.filter((r) => r.load.reason !== 'seed-failed');
@@ -117,7 +122,9 @@ function scenarioResult(id, runs, voids) {
     voided: tally(voids.map((v) => v.reason)),
     bootFailed: runs.length - booted.length,
     seedFailed: booted.length - measured.length,
-    unanswered: runs.filter((r) => r.end?.status === 'unanswered').length,
+    killed: runs.filter(trouble).length,
+    // A run whose kernel lines show a kill already counts above.
+    unanswered: runs.filter((r) => r.end?.status === 'unanswered' && !trouble(r)).length,
     offeredRates: tally(measured.map((r) => r.load.offeredRates.join(' '))).map((x) => x.value),
     // A run that kept up at no rate counts as 0.
     highestRateKeptUp: spread(measured.map((r) => r.load.highestRateKeptUp ?? 0), lowerMedian),
@@ -135,8 +142,6 @@ function scenarioResult(id, runs, voids) {
 function targetResult(id, runs, scenarioIds, voids) {
   const def = targetsDoc.targets.find((t) => t.id === id);
   const failed = runs.filter((r) => r.boot?.status !== 'ok');
-  const trouble = (r) => r.boot?.container?.oomKilled || r.end?.oomKilled || r.end?.restarts > 0
-    || r.boot?.container?.oomKernelLines?.length > 0 || r.end?.oomKernelLines?.length > 0;
   return {
     id,
     name: def?.name || id,
@@ -224,6 +229,9 @@ const share = (x) => num(Math.floor(x * 1000 + 1e-6) / 10, 1);
 const percent = (x) => (x == null ? 'n/a' : `${num(x, 0)}%`);
 // Steal sits near zero on a healthy machine, so it keeps one decimal.
 const steal = (x) => (x == null ? 'n/a' : `${num(x, 1)}%`);
+// A machine's figure that fewer runs read than the step's count gives its own
+// n, because a server that stops answering loses its last reads.
+const counted = (s, runs, f) => (s == null ? 'n/a' : `${f(s.median)}${s.n < runs ? `<br><sub>n=${s.n}</sub>` : ''}`);
 const range = (s, f) => (s.min === s.max ? f(s.min) : `${f(s.min)} to ${f(s.max)}`);
 const errors = (x) => (x == null ? 'n/a' : `${(x * 100).toFixed(2)}%`);
 const rate = (x) => (x === 0 ? 'none' : num(x, 0));
@@ -232,13 +240,15 @@ const shortId = (ref) => ref.replace(/ sha256:([0-9a-f]{12})[0-9a-f]*/g, ' `$1`'
 const scenarioTitle = (id) => scenariosDoc.scenarios.find((s) => s.id === id)?.title || id;
 
 // The highest rate a scenario kept up, with the runs that measured nothing
-// because the target did not boot or did not take the seed, those after whose
-// steps the server did not answer, and the void runs set aside.
+// because the target did not boot or did not take the seed, those that ended
+// in a kill or a restart or after whose steps the server did not answer, and
+// the void runs set aside.
 function keptUp(s) {
   const voided = s.voided.reduce((n, v) => n + v.runs, 0);
   const failed = [
     s.bootFailed && `the target did not boot in ${s.bootFailed} of ${s.runs} runs`,
     s.seedFailed && `seeding failed in ${s.seedFailed} of ${s.runs} runs`,
+    s.killed && `killed for memory or restarted in ${s.killed} of ${s.runs} runs`,
     s.unanswered && `the server did not answer after the steps in ${s.unanswered} of ${s.runs} runs`,
     voided && `${voided} void ${voided === 1 ? 'run' : 'runs'} set aside: ${s.voided.map((v) => v.value).join(', ')}`,
   ].filter(Boolean);
@@ -297,7 +307,7 @@ function campaignMarkdown(c) {
     for (const t of c.targets) {
       const s = t.scenarios.find((x) => x.id === id);
       for (const st of s.steps) {
-        md += `| ${t.name} | ${st.rate} | ${st.runs} | ${cell(st.served_share, share, '%')} | ${num(st.p50_ms?.median)} | ${num(st.p95_ms?.median)} | ${cell(st.p99_ms, ms)} | ${errors(st.error_rate?.median)} | ${percent(st.server_busy_pct?.median)} | ${percent(st.server_iowait_pct?.median)} | ${steal(st.server_steal_pct?.median)} | ${percent(st.loadgen_busy_pct?.median)} | ${num(st.received_mb_s?.median, 2)} |\n`;
+        md += `| ${t.name} | ${st.rate} | ${st.runs} | ${cell(st.served_share, share, '%')} | ${num(st.p50_ms?.median)} | ${num(st.p95_ms?.median)} | ${cell(st.p99_ms, ms)} | ${errors(st.error_rate?.median)} | ${counted(st.server_busy_pct, st.runs, percent)} | ${counted(st.server_iowait_pct, st.runs, percent)} | ${counted(st.server_steal_pct, st.runs, steal)} | ${counted(st.loadgen_busy_pct, st.runs, percent)} | ${num(st.received_mb_s?.median, 2)} |\n`;
       }
     }
   }

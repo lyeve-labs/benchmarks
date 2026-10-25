@@ -41,7 +41,7 @@ A step keeps up when it serves at least 90% of its offered rate within the scena
 
 | Target | S01: Read one content record by ID (req/s) | S02: List 50 records (page 1) (req/s) | S04: Filter by an indexed field (req/s) |
 |---|---|---|---|
-| LyEve | 500<br><sub>500 to 500, n=3</sub> | 200<br><sub>200 to 200, n=3</sub><br><sub>the server did not answer after the steps in 1 of 3 runs</sub> | 300<br><sub>300 to 300, n=3</sub> |
+| LyEve | 500<br><sub>500 to 500, n=3</sub> | 200<br><sub>200 to 200, n=3</sub><br><sub>the server did not answer after the steps in 1 of 3 runs</sub> | 300<br><sub>300 to 300, n=3</sub><br><sub>killed for memory or restarted in 1 of 3 runs</sub> |
 | Strapi | 50<br><sub>50 to 50, n=3</sub> | 25<br><sub>25 to 25, n=3</sub> | 50<br><sub>50 to 50, n=3</sub> |
 | Directus | 200<br><sub>100 to 200, n=3</sub> | 100<br><sub>100 to 100, n=3</sub> | 100<br><sub>100 to 100, n=3</sub> |
 | Payload | 300<br><sub>300 to 300, n=3</sub> | 100<br><sub>100 to 100, n=3</sub> | 200<br><sub>200 to 200, n=3</sub> |
@@ -94,7 +94,7 @@ Latencies in ms. CPU is the busy share of each machine over the whole k6 process
 | LyEve | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 3.5 | 6.5 | 9.7<br><sub>9.5 to 10.3, n=3</sub> | 0.00% | 33% | 5% | 0.1% | 5% | 1.46 |
 | LyEve | 100 | 3 | 99.9%<br><sub>99.9 to 100, n=3</sub> | 3.3 | 7.8 | 22<br><sub>18.9 to 22.1, n=3</sub> | 0.00% | 54% | 8% | 0.1% | 9% | 2.91 |
 | LyEve | 200 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 10.3 | 71.7 | 152.8<br><sub>140 to 163.3, n=3</sub> | 0.00% | 94% | 4% | 0.1% | 14% | 5.82 |
-| LyEve | 300 | 3 | 14%<br><sub>9.6 to 17, n=3</sub> | 633 | 29,069 | 35,044.1<br><sub>32,461.1 to 60,000.2, n=3</sub> | 0.48% | 31% | 69% | 0% | 4% | 1.22 |
+| LyEve | 300 | 3 | 14%<br><sub>9.6 to 17, n=3</sub> | 633 | 29,069 | 35,044.1<br><sub>32,461.1 to 60,000.2, n=3</sub> | 0.48% | 31%<br><sub>n=2</sub> | 69%<br><sub>n=2</sub> | 0%<br><sub>n=2</sub> | 4% | 1.22 |
 | Strapi | 25 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 21.5 | 97.4 | 190<br><sub>184 to 212.1, n=3</sub> | 0.00% | 62% | 0% | 0.1% | 2% | 0.67 |
 | Strapi | 50 | 3 | 82.6%<br><sub>82.5 to 82.7, n=3</sub> | 4,281.7 | 4,948.9 | 5,033.4<br><sub>5,006.8 to 5,088.1, n=3</sub> | 0.00% | 99% | 0% | 0.1% | 4% | 1.11 |
 | Directus | 25 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 6.3 | 13 | 21.8<br><sub>20.8 to 29.2, n=3</sub> | 0.00% | 26% | 0% | 0.1% | 3% | 0.48 |

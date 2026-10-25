@@ -181,6 +181,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -756,6 +757,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 1,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -1243,6 +1245,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 1,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -1865,6 +1868,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -2170,6 +2174,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -2387,6 +2392,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -2739,6 +2745,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -3220,6 +3227,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -3613,6 +3621,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -4053,6 +4062,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -4622,6 +4632,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"
@@ -5015,6 +5026,7 @@
               "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
+              "killed": 0,
               "unanswered": 0,
               "offeredRates": [
                 "25 50 100 200 300 500"

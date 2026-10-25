@@ -29,9 +29,11 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   counts it.
 - The small-server report shows each step's I/O wait and CPU steal on the
   server, the load every run started at, the runs in which a target did not
-  boot or take the seed, and the void runs set aside. With an even number of
-  runs, the highest rate kept up is the lower of the two middle ones, so it is
-  always a rate that was offered.
+  boot, did not take the seed, or was killed for memory or restarted, and the
+  void runs set aside. A CPU figure measured in fewer runs than its step shows
+  its own run count. With an even number of runs, the highest rate
+  kept up is the lower of the two middle ones, so it is always a rate that was
+  offered.
 - The first small-server campaign, `2026-10-25-aws-t2-micro`: LyEve, Strapi,
   Directus and Payload on S01, S02 and S04, three rounds each, on an AWS
   t2.micro in Singapore driven by a second t2.micro on its private network.
