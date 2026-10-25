@@ -52,6 +52,12 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   so a step that served 449.6 of 500 req/s counted as 90% and the next rate
   ran. Served shares print one decimal, rounded down, so a share under the
   floor never reads as 90%.
+- A small-server run whose server stopped answering after its steps read as
+  ending cleanly, with nothing killed or restarted. Its end state now reads
+  unknown, and the report says beside the highest rate kept up that the server
+  stopped answering. When the sweep cannot reach the server for the next run,
+  it says to restart the server from the provider's console and run the same
+  command.
 
 ## [0.9.1] - 2026-10-22
 

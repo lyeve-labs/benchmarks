@@ -59,9 +59,13 @@ function parseSamples(s) {
   return { vm, ctr };
 }
 
+// The app container's state as the harness read it from the server. The
+// server always prints a status, so a file the harness wrote with none in it
+// means the server did not answer.
 function state(dir, name) {
+  if (!existsSync(join(dir, `${name}.txt`))) return null;
   const kv = keyValues(text(dir, `${name}.txt`));
-  if (!kv.status) return null;
+  if (!kv.status) return { status: 'unanswered', exitCode: null, oomKilled: null, restarts: null, oomKernelLines: [] };
   return {
     status: kv.status,
     exitCode: kv.exit_code != null ? Number(kv.exit_code) : null,

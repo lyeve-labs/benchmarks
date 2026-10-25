@@ -191,7 +191,8 @@ retry() {
 
 reboot_server() {
   local before now deadline
-  before="$(retry rsh 'cat /proc/sys/kernel/random/boot_id')" || die "cannot reach $HOST"
+  before="$(retry rsh 'cat /proc/sys/kernel/random/boot_id')" \
+    || die "cannot reach $HOST: restart it from the provider's console, then run the same command to resume"
   # Not retried: a call that reached systemd-run and lost its answer has
   # already scheduled the reboot. A new boot id is the proof either way.
   rsh '$S systemd-run --quiet --on-active=2 /usr/bin/systemctl reboot' >/dev/null \

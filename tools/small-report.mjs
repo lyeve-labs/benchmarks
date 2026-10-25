@@ -93,6 +93,7 @@ function scenarioResult(id, runs) {
     runs: runs.length,
     bootFailed: runs.length - booted.length,
     seedFailed: booted.length - measured.length,
+    unanswered: runs.filter((r) => r.end?.status === 'unanswered').length,
     offeredRates: tally(measured.map((r) => r.load.offeredRates.join(' '))).map((x) => x.value),
     // A run that kept up at no rate counts as 0.
     highestRateKeptUp: spread(measured.map((r) => r.load.highestRateKeptUp ?? 0), lowerMedian),
@@ -128,6 +129,7 @@ function targetResult(id, runs, scenarioIds) {
       containersMB: services(runs.map((r) => r.idle?.containersMB)),
     },
     oomKilledOrRestarted: runs.filter(trouble).length,
+    endUnanswered: runs.filter((r) => r.end?.status === 'unanswered').length,
     scenarios: scenarioIds.map((s) => scenarioResult(s, runs.filter((r) => r.scenario === s))),
   };
 }
@@ -202,11 +204,13 @@ const shortId = (ref) => ref.replace(/ sha256:([0-9a-f]{12})[0-9a-f]*/g, ' `$1`'
 const scenarioTitle = (id) => scenariosDoc.scenarios.find((s) => s.id === id)?.title || id;
 
 // The highest rate a scenario kept up, with the runs that measured nothing
-// because the target did not boot or did not take the seed.
+// because the target did not boot or did not take the seed, and those after
+// which the server stopped answering.
 function keptUp(s) {
   const failed = [
     s.bootFailed && `the target did not boot in ${s.bootFailed} of ${s.runs} runs`,
     s.seedFailed && `seeding failed in ${s.seedFailed} of ${s.runs} runs`,
+    s.unanswered && `the server stopped answering in ${s.unanswered} of ${s.runs} runs`,
   ].filter(Boolean);
   const figure = s.highestRateKeptUp ? cell(s.highestRateKeptUp, rate) : s.runs ? 'no run measured' : 'n/a';
   return failed.length ? `${figure}<br><sub>${failed.join(', ')}</sub>` : figure;
@@ -239,7 +243,8 @@ function campaignMarkdown(c) {
     const images = t.images.map((i) => `${shortId(i.value).split(', ').join('<br>')}${t.images.length > 1 ? ` (${i.runs} runs)` : ''}`).join('<br>');
     const failed = t.boot.failed ? `${t.boot.failed} of ${t.boot.runs}: ${t.boot.reasons.map((r) => r.value).join(', ')}` : `0 of ${t.boot.runs}`;
     const ctr = t.idle.containersMB;
-    md += `| ${t.name} | ${images} | ${cell(t.boot.ms, seconds, ' s')} | ${cell(t.idle.vmUsedMB, megabytes, ' MB')} | ${cell(ctr.app, megabytes, ' MB')} | ${cell(ctr.db, megabytes, ' MB')} | ${ctr.proxy ? cell(ctr.proxy, megabytes, ' MB') : 'none'} | ${failed} | ${t.oomKilledOrRestarted} |\n`;
+    const killed = `${t.oomKilledOrRestarted}${t.endUnanswered ? `<br><sub>unknown in ${t.endUnanswered}: the server did not answer at the end</sub>` : ''}`;
+    md += `| ${t.name} | ${images} | ${cell(t.boot.ms, seconds, ' s')} | ${cell(t.idle.vmUsedMB, megabytes, ' MB')} | ${cell(ctr.app, megabytes, ' MB')} | ${cell(ctr.db, megabytes, ' MB')} | ${ctr.proxy ? cell(ctr.proxy, megabytes, ' MB') : 'none'} | ${failed} | ${killed} |\n`;
   }
 
   md += '\n### Highest rate kept up\n\n';
