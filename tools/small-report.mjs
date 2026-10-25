@@ -175,8 +175,8 @@ function campaignResult(name, runs, voids) {
     name,
     runs: runs.length,
     voidRuns: voids.length,
-    firstRun: runs[0].date,
-    lastRun: runs.at(-1).date,
+    firstRun: runs[0]?.date ?? null,
+    lastRun: runs.at(-1)?.date ?? null,
     provider: rig((g) => g.provider),
     plan: rig((g) => g.plan),
     harness: rig((g) => g.harness),
@@ -233,6 +233,8 @@ const steal = (x) => (x == null ? 'n/a' : `${num(x, 1)}%`);
 // n, because a server that stops answering loses its last reads.
 const counted = (s, runs, f) => (s == null ? 'n/a' : `${f(s.median)}${s.n < runs ? `<br><sub>n=${s.n}</sub>` : ''}`);
 const range = (s, f) => (s.min === s.max ? f(s.min) : `${f(s.min)} to ${f(s.max)}`);
+// The days a campaign's counted runs ran on, or none when no run counted.
+const days = (c) => (!c.firstRun ? 'none' : c.firstRun === c.lastRun ? c.firstRun : `${c.firstRun} to ${c.lastRun}`);
 const errors = (x) => (x == null ? 'n/a' : `${(x * 100).toFixed(2)}%`);
 const rate = (x) => (x === 0 ? 'none' : num(x, 0));
 const load = (x) => num(x, 2);
@@ -250,7 +252,7 @@ function keptUp(s) {
     s.seedFailed && `seeding failed in ${s.seedFailed} of ${s.runs} runs`,
     s.killed && `killed for memory or restarted in ${s.killed} of ${s.runs} runs`,
     s.unanswered && `the server did not answer after the steps in ${s.unanswered} of ${s.runs} runs`,
-    voided && `${voided} void ${voided === 1 ? 'run' : 'runs'} set aside: ${s.voided.map((v) => v.value).join(', ')}`,
+    voided && `${voided} void ${voided === 1 ? 'run' : 'runs'} set aside: ${s.voided.map((v) => (s.voided.length > 1 ? `${v.value} (${v.runs})` : v.value)).join(', ')}`,
   ].filter(Boolean);
   const figure = s.highestRateKeptUp ? cell(s.highestRateKeptUp, rate) : s.runs ? 'no run measured' : 'n/a';
   return failed.length ? `${figure}<br><sub>${failed.join(', ')}</sub>` : figure;
@@ -268,7 +270,9 @@ function campaignMarkdown(c) {
   md += `| Server software | ${one(c.server.os)}, Linux ${one(c.server.kernel)}, Docker ${one(c.server.docker)} |\n`;
   md += `| Load generator | ${one(c.loadGenerator.cpu)}, ${one(c.loadGenerator.nproc)} vCPU, ${memory(c.loadGenerator.memoryTotalMB)} memory, k6 ${one(c.loadGenerator.k6)} |\n`;
   md += `| Network | TCP connect from the load generator to the server: ${c.networkRttMs ? `${num(c.networkRttMs.median, 2)} ms (${num(c.networkRttMs.min, 2)} to ${num(c.networkRttMs.max, 2)}, n=${c.networkRttMs.n})` : 'n/a'} |\n`;
-  md += `| Runs | ${c.runs}${c.voidRuns ? `, and ${c.voidRuns} void ${c.voidRuns === 1 ? 'run' : 'runs'} set aside` : ''}, ${c.firstRun === c.lastRun ? `on ${c.firstRun}` : `from ${c.firstRun} to ${c.lastRun}`}. Each started ${c.server.uptimeAtStartS ? `${range(c.server.uptimeAtStartS, (x) => num(x, 0))} s` : 'an unrecorded time'} after the server booted |\n`;
+  const voided = c.voidRuns ? `, and ${c.voidRuns} void ${c.voidRuns === 1 ? 'run' : 'runs'} set aside` : '';
+  const started = c.server.uptimeAtStartS ? `${range(c.server.uptimeAtStartS, (x) => num(x, 0))} s` : 'an unrecorded time';
+  md += `| Runs | ${c.runs}${voided}${c.runs ? `, ${c.firstRun === c.lastRun ? 'on' : 'from'} ${days(c)}. Each started ${started} after the server booted` : ''} |\n`;
   md += `| Load at the start of a run | one-minute load average ${c.server.loadAtStart ? range(c.server.loadAtStart, load) : 'n/a'} on the server and ${c.loadGenerator.loadAtStart ? range(c.loadGenerator.loadAtStart, load) : 'n/a'} on the load generator |\n`;
   md += `| Offered rates | ${offered.length ? offered.map((o) => `${o.split(' ').join(', ')} req/s`).join('; ') : 'n/a'} |\n`;
   md += `| Harness | ${c.harness.length ? c.harness.map((h) => `\`${h.value}\`${c.harness.length > 1 ? ` (${h.runs} runs)` : ''}`).join(', ') : 'n/a'} |\n`;
@@ -320,7 +324,7 @@ function markdown(campaigns) {
   md += 'Each campaign runs every self-hosted target alone on one small server, with its own PostgreSQL beside it, the way someone renting the smallest plan would run it. The server reboots before every run. k6 runs on a second machine and offers each read scenario at rising rates. Every figure is the median of the campaign\'s runs, with the lowest and highest beneath it and the number of runs. These figures never enter the head-to-head in [RESULTS.md](RESULTS.md), which runs every target on one larger machine.\n\n';
   if (!campaigns.length) return md + 'No campaign has run yet.\n';
   md += '| Campaign | Provider | Plan | Runs | Dates |\n|---|---|---|---|---|\n';
-  for (const c of campaigns) md += `| [${c.name}](#${c.name.toLowerCase().replace(/[^a-z0-9_-]/g, '')}) | ${one(c.provider)} | ${one(c.plan)} | ${c.runs} | ${c.firstRun === c.lastRun ? c.firstRun : `${c.firstRun} to ${c.lastRun}`} |\n`;
+  for (const c of campaigns) md += `| [${c.name}](#${c.name.toLowerCase().replace(/[^a-z0-9_-]/g, '')}) | ${one(c.provider)} | ${one(c.plan)} | ${c.runs} | ${days(c)} |\n`;
   return md + '\n' + campaigns.map(campaignMarkdown).join('\n');
 }
 
@@ -329,11 +333,13 @@ if (process.argv[2] === '--count') {
   const [campaign, target, scenario] = process.argv.slice(3);
   console.log(runs.filter((r) => r.campaign === campaign && r.target === target && r.scenario === scenario).length);
 } else {
-  // Newest first: the campaign whose last run is latest leads. A run id starts
-  // with its UTC start time, so the ids sort in time order.
-  const latest = (n) => runs.filter((r) => r.campaign === n).at(-1).id;
+  // Newest first: the campaign whose last run is latest leads, its void runs
+  // included, so a campaign in which no run counted is still listed. A run id
+  // starts with its UTC start time, so the ids sort in time order.
   const voids = voidRuns();
-  const campaigns = [...new Set(runs.map((r) => r.campaign))]
+  const all = [...runs, ...voids];
+  const latest = (n) => all.filter((r) => r.campaign === n).map((r) => r.id).sort().at(-1);
+  const campaigns = [...new Set(all.map((r) => r.campaign))]
     .sort((a, b) => (latest(b) < latest(a) ? -1 : 1))
     .map((n) => campaignResult(n, runs.filter((r) => r.campaign === n), voids.filter((v) => v.campaign === n)));
   writeFileSync(join(REPO, 'results/small.json'), JSON.stringify({ campaigns }, null, 2) + '\n');
