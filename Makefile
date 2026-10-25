@@ -50,7 +50,10 @@ small-sweep: ## Run a small-server campaign, every target and read scenario in r
 	@harness/small-sweep.sh
 
 .PHONY: small-report
-small-report: ## Regenerate results/small.json + results/SMALL.md from results/raw/small/
+small-report: ## Summarize every run in results/raw/small/ again, then regenerate results/small.json + results/SMALL.md
+	@for d in results/raw/small/*/; do \
+	  if [ -f "$$d/small.json" ]; then node tools/small-summary.mjs "$$d" >/dev/null || exit 1; fi; \
+	done
 	@node tools/small-report.mjs
 
 .PHONY: report

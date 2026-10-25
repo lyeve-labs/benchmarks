@@ -111,10 +111,11 @@ The sweep reboots the server before every run and waits until it is quiet,
 masks its timers and holds its snap refreshes until it ends, and resumes where
 it stopped when it runs again with the same `CAMPAIGN`. If it stops without
 restoring the timers, `harness/small-sweep.sh --restore` does. `make
-small-report` writes [`results/SMALL.md`](./results/SMALL.md) and
-`results/small.json`, newest campaign first, so a new engine release or
-another provider's plan reads beside the campaigns before it. To measure
-another engine image, set `LYEVE_IMAGE` for both commands.
+small-report` summarizes every run again from its raw files and writes
+[`results/SMALL.md`](./results/SMALL.md) and `results/small.json`, newest
+campaign first, so a new engine release or another provider's plan reads beside
+the campaigns before it. To measure another engine image, set `LYEVE_IMAGE` for
+both commands.
 
 | Variable | Default | Meaning |
 |---|---|---|
