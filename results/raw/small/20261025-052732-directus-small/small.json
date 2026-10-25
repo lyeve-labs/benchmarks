@@ -150,7 +150,7 @@
         "rate": 200,
         "provenance": "measured",
         "served_rps": 156,
-        "served_share": 0.7779,
+        "served_share": 0.7778,
         "p50_ms": 1267.5,
         "p95_ms": 1433.8,
         "p99_ms": 3486.9,

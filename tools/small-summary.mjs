@@ -99,7 +99,9 @@ function step(summaryPath, rate, budget) {
   // The share comes from k6's own request rate, not the whole number the row
   // rounds it to, so a step that served 449.6 of 500 req/s misses the floor.
   const ratio = typeof m.http_reqs?.rate === 'number' ? m.http_reqs.rate / rate : null;
-  const share = ratio != null ? Math.round(ratio * 10000) / 10000 : null;
+  // Stored rounded down, as the report prints it, so a step that missed the
+  // floor never stores 0.9.
+  const share = ratio != null ? Math.floor(ratio * 10000 + 1e-6) / 10000 : null;
   const withinBudget = row.error_rate != null && row.error_rate <= budget;
   const keptUp = ratio != null && ratio >= SERVED_FLOOR;
   // What can hold a step under its offered rate besides the target: k6 out of

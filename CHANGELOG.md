@@ -55,8 +55,8 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 - A small-server step keeps up only when k6's own request rate reaches 90% of
   the offered rate. The rate was rounded to a whole request per second first,
   so a step that served 449.6 of 500 req/s counted as 90% and the next rate
-  ran. Served shares print one decimal, rounded down, so a share under the
-  floor never reads as 90%.
+  ran. Served shares are stored with four decimals and printed with one, both
+  rounded down, so a share under the floor never reads as 90%.
 - A small-server run whose server did not answer after its steps read as
   ending cleanly, with nothing killed or restarted. Its end state now reads
   unknown unless the kernel's lines show a kill, and the report says so beside

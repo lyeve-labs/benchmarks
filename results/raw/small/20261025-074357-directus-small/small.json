@@ -90,7 +90,7 @@
         "rate": 25,
         "provenance": "measured",
         "served_rps": 25,
-        "served_share": 1.0018,
+        "served_share": 1.0017,
         "p50_ms": 6.1,
         "p95_ms": 12.6,
         "p99_ms": 23.7,
