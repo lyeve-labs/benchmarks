@@ -343,8 +343,15 @@ together. A step that falls short with the server near 100% busy measured the
 server. One with the load generator near 100% measured the load generator, and
 the report shows both shares beside every step. Steal also shows a burstable
 plan that ran out of CPU credits, which throttles the machine to its baseline.
-The step records the bytes received per second over the same process too, so a
-network ceiling shows as a flat line with neither CPU saturated.
+The busy share counts neither idle time nor I/O wait, the time the CPU sat idle
+with a disk request outstanding, so each step records the server's I/O wait
+too. It rises with synchronous writes to disk, and on a server with no swap it
+rises far higher once memory runs out, because the kernel drops the cached code
+of the running programs and has to read it back. A step that falls short while
+the server's busy and I/O wait shares add up to nearly 100% measured the
+server, whichever of the two is larger. The step records the bytes received per
+second over the same process too, so a network ceiling shows as a flat line
+with neither CPU saturated.
 
 **The network between them.** The application port answers only the load
 generator's address while a run lasts. A firewall rule on the server drops

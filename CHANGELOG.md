@@ -19,16 +19,18 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   `make small-report` writes `results/SMALL.md` and `results/small.json`, each
   figure the median of a campaign's runs with its range, newest campaign first.
 - Each small-server step records the busy and steal shares of the server's
-  and the load generator's CPU, k6's dropped iterations and peak virtual
-  users, and the bytes received per second, so a step that falls short shows
-  which machine ran out.
+  and the load generator's CPU, the server's I/O wait, k6's dropped iterations
+  and peak virtual users, and the bytes received per second, so a step that
+  falls short shows which machine ran out, and whether the server ran out of
+  CPU or of memory.
 - Each small-server run records the harness commit, the image ID the server
   ran, and both machines' load when it started. A run during which the load
   generator's address changed is void and never reported.
-- The small-server report shows each step's CPU steal on the server, the load
-  every run started at, and the runs in which a target did not boot or take
-  the seed. With an even number of runs, the highest rate kept up is the lower
-  of the two middle ones, so it is always a rate that was offered.
+- The small-server report shows each step's I/O wait and CPU steal on the
+  server, the load every run started at, and the runs in which a target did
+  not boot or take the seed. With an even number of runs, the highest rate
+  kept up is the lower of the two middle ones, so it is always a rate that was
+  offered.
 
 ### Changed
 

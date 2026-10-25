@@ -71,8 +71,9 @@ function state(dir, name) {
   };
 }
 
-// The busy and stolen shares of one machine's CPU between two reads of the
-// first line of /proc/stat: cpu user nice system idle iowait irq softirq steal.
+// The busy, I/O wait and stolen shares of one machine's CPU between two reads
+// of the first line of /proc/stat: cpu user nice system idle iowait irq softirq
+// steal. I/O wait is idle time with a disk read outstanding.
 function cpuShare(before, after) {
   const a = String(before || '').trim().split(/\s+/).slice(1, 9).map(Number);
   const b = String(after || '').trim().split(/\s+/).slice(1, 9).map(Number);
@@ -81,7 +82,7 @@ function cpuShare(before, after) {
   const total = d.reduce((sum, v) => sum + v, 0);
   if (total <= 0) return null;
   const pct = (x) => Math.round((x / total) * 1000) / 10;
-  return { busy: pct(total - d[3] - d[4] - d[7]), steal: pct(d[7]) };
+  return { busy: pct(total - d[3] - d[4] - d[7]), iowait: pct(d[4]), steal: pct(d[7]) };
 }
 
 function step(summaryPath, rate, budget) {
@@ -115,6 +116,7 @@ function step(summaryPath, rate, budget) {
     vus_peak: m.vus?.max ?? null,
     received_mb_s: m.data_received?.rate != null ? Math.round(m.data_received.rate / 10000) / 100 : null,
     server_busy_pct: server?.busy ?? null,
+    server_iowait_pct: server?.iowait ?? null,
     server_steal_pct: server?.steal ?? null,
     loadgen_busy_pct: loadgen?.busy ?? null,
     loadgen_steal_pct: loadgen?.steal ?? null,
@@ -124,8 +126,9 @@ function step(summaryPath, rate, budget) {
 function describe(s) {
   // Rounded down, so a share under the floor never prints as the floor.
   const pct = (x) => (x == null ? '?' : `${Math.floor(x * 1000 + 1e-6) / 10}%`);
+  const iowait = s.server_iowait_pct >= 5 ? ` (I/O wait ${Math.round(s.server_iowait_pct)}%)` : '';
   const cpu = s.server_busy_pct != null && s.loadgen_busy_pct != null
-    ? `, CPU busy ${Math.round(s.server_busy_pct)}% on the server and ${Math.round(s.loadgen_busy_pct)}% here`
+    ? `, CPU busy ${Math.round(s.server_busy_pct)}%${iowait} on the server and ${Math.round(s.loadgen_busy_pct)}% here`
     : '';
   return `served ${pct(s.served_share)} of ${s.rate} req/s, ${s.error_rate == null ? '?' : (s.error_rate * 100).toFixed(2)}% errors, p99 ${s.p99_ms ?? '?'} ms${cpu}`;
 }
