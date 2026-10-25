@@ -370,12 +370,13 @@ target that stopped.
    100, 200, 300 and 500 req/s. Each step gets the usual 10 s warm-up, which is
    discarded, and the scenario's measured window. Each step records the latency
    percentiles, the error rate and the share of the offered rate the target
-   served. Stepping stops after the first step that breaks the error budget or
-   serves less than 90% of its rate, because a higher rate would only measure
-   the same collapse for longer. Each step also records the busy and steal
-   shares of both machines' CPUs, the iterations k6 dropped, the most virtual
-   users it held and the bytes it received per second. While the steps run, a
-   sampler on the server records server and container memory every 5 s.
+   served, from k6's own request rate before any rounding. Stepping stops after
+   the first step that breaks the error budget or serves less than 90% of its
+   rate, because a higher rate would only measure the same collapse for longer.
+   Each step also records the busy and steal shares of both machines' CPUs, the
+   iterations k6 dropped, the most virtual users it held and the bytes it
+   received per second. While the steps run, a sampler on the server records
+   server and container memory every 5 s.
 
 **Campaigns.** `make small-sweep` runs a campaign: every self-hosted target on
 every read scenario, three rounds by default, all on one server. Before every

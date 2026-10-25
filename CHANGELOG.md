@@ -45,8 +45,11 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 - A small-server run removes the containers and volumes an earlier run could
   not tear down before it starts, so it never measures a leftover stack or the
   data that stack seeded.
-- A small-server step's served share shows one decimal, so 89.5% no longer
-  reads as 90%, the floor a step has to reach.
+- A small-server step keeps up only when k6's own request rate reaches 90% of
+  the offered rate. The rate was rounded to a whole request per second first,
+  so a step that served 449.6 of 500 req/s counted as 90% and the next rate
+  ran. Served shares print one decimal, rounded down, so a share under the
+  floor never reads as 90%.
 
 ## [0.9.1] - 2026-10-22
 

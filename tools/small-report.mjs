@@ -189,8 +189,8 @@ function cell(s, f = (x) => num(x), unit = '') {
 const ms = (x) => num(x);
 const seconds = (x) => num(x / 1000);
 const megabytes = (x) => num(x, 0);
-// One decimal, so a share just under the 90% floor never reads as 90.
-const share = (x) => num(x * 100, 1);
+// One decimal, rounded down, so a share under the 90% floor never reads as 90.
+const share = (x) => num(Math.floor(x * 1000 + 1e-6) / 10, 1);
 const percent = (x) => (x == null ? 'n/a' : `${num(x, 0)}%`);
 // Steal sits near zero on a healthy machine, so it keeps one decimal.
 const steal = (x) => (x == null ? 'n/a' : `${num(x, 1)}%`);

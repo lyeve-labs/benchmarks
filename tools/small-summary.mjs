@@ -87,13 +87,16 @@ function cpuShare(before, after) {
 function step(summaryPath, rate, budget) {
   const row = collectSummary(summaryPath);
   if (!row) return { rate, provenance: 'pending', reason: 'no k6 summary' };
-  const share = row.throughput_rps != null ? Math.round((row.throughput_rps / rate) * 1000) / 1000 : null;
+  const m = JSON.parse(readFileSync(summaryPath, 'utf8')).metrics || {};
+  // The share comes from k6's own request rate, not the whole number the row
+  // rounds it to, so a step that served 449.6 of 500 req/s misses the floor.
+  const ratio = typeof m.http_reqs?.rate === 'number' ? m.http_reqs.rate / rate : null;
+  const share = ratio != null ? Math.round(ratio * 10000) / 10000 : null;
   const withinBudget = row.error_rate != null && row.error_rate <= budget;
-  const keptUp = share != null && share >= SERVED_FLOOR;
+  const keptUp = ratio != null && ratio >= SERVED_FLOOR;
   // What can hold a step under its offered rate besides the target: k6 out of
   // virtual users (dropped iterations), the network (bytes received) and the
   // CPU of either machine, read over the whole k6 process.
-  const m = JSON.parse(readFileSync(summaryPath, 'utf8')).metrics || {};
   const cpu = keyValues(text(dirname(summaryPath), basename(summaryPath).replace(/\.summary\.json$/, '.cpu.txt')));
   const server = cpuShare(cpu.server_before, cpu.server_after);
   const loadgen = cpuShare(cpu.loadgen_before, cpu.loadgen_after);
@@ -119,7 +122,8 @@ function step(summaryPath, rate, budget) {
 }
 
 function describe(s) {
-  const pct = (x) => (x == null ? '?' : `${Math.round(x * 1000) / 10}%`);
+  // Rounded down, so a share under the floor never prints as the floor.
+  const pct = (x) => (x == null ? '?' : `${Math.floor(x * 1000 + 1e-6) / 10}%`);
   const cpu = s.server_busy_pct != null && s.loadgen_busy_pct != null
     ? `, CPU busy ${Math.round(s.server_busy_pct)}% on the server and ${Math.round(s.loadgen_busy_pct)}% here`
     : '';
@@ -229,8 +233,11 @@ function summarize(dir) {
       stopped: load.stopped || null,
     };
     if (load.seed === 'failed') Object.assign(out.load, { provenance: 'pending', reason: 'seed-failed' });
-    const highest = steps.filter((s) => s.within_budget && s.kept_up).pop();
-    out.load.highestRateKeptUp = highest ? highest.rate : null;
+    // Stepping stops at the first step that misses, so only the steps before
+    // it count.
+    const miss = steps.findIndex((s) => !(s.within_budget && s.kept_up));
+    const kept = miss === -1 ? steps : steps.slice(0, miss);
+    out.load.highestRateKeptUp = kept.length ? kept.at(-1).rate : null;
 
     const peak = parseSamples(text(dir, 'load-samples.txt'));
     if (peak.vm.length) {
