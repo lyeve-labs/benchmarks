@@ -40,11 +40,11 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ### Fixed
 
-- A small-server run that loses its SSH connection to the server is void,
+- A small-server run whose server does not answer SSH for a minute is void,
   instead of reading as a target that stopped or failed to start.
-- A small-server run removes the containers and volumes an earlier run could
-  not tear down before it starts, so it never measures a leftover stack or the
-  data that stack seeded.
+- A small-server run removes the containers, volumes and firewall rules an
+  earlier run could not tear down before it starts, so it never measures a
+  leftover stack or the data that stack seeded.
 - A small-server step keeps up only when k6's own request rate reaches 90% of
   the offered rate. The rate was rounded to a whole request per second first,
   so a step that served 449.6 of 500 req/s counted as 90% and the next rate

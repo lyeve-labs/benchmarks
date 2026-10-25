@@ -353,8 +353,9 @@ the measurement, and it keeps a stack with published benchmark credentials off
 the open internet. If the load generator's address changes during a run, the
 rule drops its requests from then on, and the target would read as failing.
 Such a run is void: it is set aside, never reported, and run again. So is a run
-that lost its SSH connection to the server, which would otherwise read as a
-target that stopped.
+whose server did not answer SSH for a minute, which would otherwise read as a
+target that stopped. A target that stalls the server that long is voided on
+every pass, so its campaign stays incomplete and the void records show why.
 
 **What a run measures.**
 
@@ -385,21 +386,21 @@ a kernel log) is read as another's, and the run starts only once the server has
 been up two minutes with Docker running and its one-minute load under 0.3, and
 the load generator's load is under half its cores. Each wait gives up after ten
 minutes, and every run records the load it started at. A stack an earlier run
-could not tear down is removed before the next run starts. For the whole
-campaign the server's timers are masked and its snap refreshes held, so no
-package or maintenance job shares the CPU with a step. Both come back when the
-sweep ends, and `harness/small-sweep.sh --restore` brings them back after a
-sweep that could not reach the server at its end. The rounds interleave the
-targets (each scenario takes every target in turn before the next round), so a
-slow hour at the provider spreads over all of them instead of landing on one.
-Every run carries the campaign's name, and a stopped sweep resumes where it
-left off. `make small-report` turns the campaigns into `results/SMALL.md` and
-`results/small.json`: each figure is the median of the campaign's runs, with
-the lowest and highest and the number of runs. The highest rate kept up takes
-the lower of the two middle runs when their number is even, so it is always a
-rate that was offered. Campaigns accumulate, newest first, so a later engine
-release or another provider's plan reads beside the earlier ones, and a reader
-compares two campaigns only where their rigs match.
+could not tear down, with its firewall rule, is removed before the next run
+starts. For the whole campaign the server's timers are masked and its snap
+refreshes held, so no package or maintenance job shares the CPU with a step.
+Both come back when the sweep ends, and `harness/small-sweep.sh --restore`
+brings them back after a sweep that could not reach the server at its end. The
+rounds interleave the targets (each scenario takes every target in turn before
+the next round), so a slow hour at the provider spreads over all of them
+instead of landing on one. Every run carries the campaign's name, and a stopped
+sweep resumes where it left off. `make small-report` turns the campaigns into
+`results/SMALL.md` and `results/small.json`: each figure is the median of the
+campaign's runs, with the lowest and highest and the number of runs. The
+highest rate kept up takes the lower of the two middle runs when their number
+is even, so it is always a rate that was offered. Campaigns accumulate, newest
+first, so a later engine release or another provider's plan reads beside the
+earlier ones, and a reader compares two campaigns only where their rigs match.
 
 **What a boot failure means.** A target that does not answer within the limit,
 exits, or is killed has a result, not a missing number: in its stock

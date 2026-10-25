@@ -192,10 +192,13 @@ retry() {
 reboot_server() {
   local before now deadline
   before="$(retry rsh 'cat /proc/sys/kernel/random/boot_id')" || die "cannot reach $HOST"
-  retry rsh '$S systemd-run --quiet --on-active=2 /usr/bin/systemctl reboot' >/dev/null || die "cannot reboot $HOST"
+  # Not retried: a call that reached systemd-run and lost its answer has
+  # already scheduled the reboot. A new boot id is the proof either way.
+  rsh '$S systemd-run --quiet --on-active=2 /usr/bin/systemctl reboot' >/dev/null \
+    || warn "the reboot call did not answer, waiting for a new boot anyway"
   deadline=$(( SECONDS + 600 ))
   until now="$(rsh 'cat /proc/sys/kernel/random/boot_id' 2>/dev/null)" && [[ -n "$now" && "$now" != "$before" ]]; do
-    (( SECONDS < deadline )) || die "$HOST did not come back within ten minutes of the reboot"
+    (( SECONDS < deadline )) || die "$HOST did not boot again and answer within ten minutes"
     sleep 5
   done
 }

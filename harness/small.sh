@@ -198,15 +198,19 @@ client="$(sed -n 's/^client=//p' <<<"$rig_remote")"
   || die "the server is $(sed -n 's/^server_arch=//p' <<<"$rig_remote") and this machine is $(uname -m): the images would not be the ones the local rig measured"
 
 # A stack whose run could not tear it down would hold the port, or answer this
-# run in its place with the data that run seeded. Its containers, their volumes
-# and its sampler go before anything else.
+# run in its place with the data that run seeded, and its firewall rule would
+# drop this machine if its address changed since. Its containers, their
+# volumes, its sampler and its rules go before anything else.
 left="$(rsh '
   [ -f "$1/sampler.pid" ] && kill "$(cat "$1/sampler.pid")" 2>/dev/null
   c=$($D ps -aq --filter name=^bench-); v=$($D volume ls -q | grep "^bench-")
   [ -z "$c" ] || $D rm -f -v $c >/dev/null || exit 1
   [ -z "$v" ] || $D volume rm $v >/dev/null || exit 1
-  echo $c $v' "$W")" || die "cannot remove what an earlier run left on the server"
-[[ -n "$left" ]] && warn "[$TARGET] removed the containers and volumes an earlier run left: $left"
+  f=$($S iptables -S DOCKER-USER 2>/dev/null | grep -e "--ctorigdstport $2 ")
+  printf "%s\n" "$f" | sed -n "s/^-A /-D /p" | while read -r r; do $S iptables $r; done
+  while $S ip6tables -D INPUT -p tcp --dport "$2" -j DROP 2>/dev/null; do :; done
+  echo $c $v ${f:+firewall rules}' "$W" "$BENCH_PORT")" || die "cannot remove what an earlier run left on the server"
+[[ -n "$left" ]] && warn "[$TARGET] removed what an earlier run left on the server: $left"
 
 # ── images ───────────────────────────────────────────────────────────────────
 # An image the server already holds stays when it holds the same bytes as this
@@ -239,7 +243,9 @@ for img in "${images[@]}"; do
       docker image inspect "$img" >/dev/null 2>&1 || docker pull "$img" >/dev/null || die "cannot get $img on this machine"
     fi
     digest="$(docker image inspect -f '{{range .RepoDigests}}{{println .}}{{end}}' "$img" | grep -m1 "^$repo@" || true)"
-    brought+=("$img")
+    # An image the server lacked leaves with the run unless kept. One that
+    # replaced the server's copy stays, so the server keeps this machine's bytes.
+    [[ -n "$theirs" ]] || brought+=("$img")
     if [[ -n "$digest" ]] && rsh '$D pull -q "$1" >/dev/null 2>&1 && $D tag "$1" "$2"' "$digest" "$img"; then
       log "[$TARGET] $img pulled on the server by digest"
     else
@@ -409,8 +415,17 @@ if [[ "$seeded" == "0" ]]; then
 else
   BENCH_TOKEN="$(cat "$token_file" 2>/dev/null || true)"
   for rate in $RATES; do
+    # ssh exits 255 when it cannot reach the server. A target that stalls the
+    # server is as likely a cause as the network, so the check asks again for
+    # a minute and acts on the first answer.
     up=0
     app_running || up=$?
+    for _ in 1 2 3; do
+      (( up == 255 )) || break
+      sleep 20
+      up=0
+      app_running || up=$?
+    done
     if (( up == 255 )); then
       void ssh-lost "lost the connection to the server before ${rate} req/s"
       break
