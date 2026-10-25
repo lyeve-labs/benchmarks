@@ -3,6 +3,7 @@
     {
       "name": "2026-10-25-aws-t2-micro",
       "runs": 36,
+      "voidRuns": 0,
       "firstRun": "2026-10-25",
       "lastRun": "2026-10-25",
       "provider": [
@@ -177,6 +178,7 @@
             {
               "id": "S01",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -751,6 +753,7 @@
             {
               "id": "S02",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 1,
@@ -1237,6 +1240,7 @@
             {
               "id": "S04",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -1858,6 +1862,7 @@
             {
               "id": "S01",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -2162,6 +2167,7 @@
             {
               "id": "S02",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -2378,6 +2384,7 @@
             {
               "id": "S04",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -2729,6 +2736,7 @@
             {
               "id": "S01",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -3209,6 +3217,7 @@
             {
               "id": "S02",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -3601,6 +3610,7 @@
             {
               "id": "S04",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -4040,6 +4050,7 @@
             {
               "id": "S01",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -4608,6 +4619,7 @@
             {
               "id": "S02",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,
@@ -5000,6 +5012,7 @@
             {
               "id": "S04",
               "runs": 3,
+              "voided": [],
               "bootFailed": 0,
               "seedFailed": 0,
               "unanswered": 0,

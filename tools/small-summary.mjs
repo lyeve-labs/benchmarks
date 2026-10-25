@@ -209,7 +209,7 @@ function summarize(dir) {
     },
     boot,
   };
-  // A void run is kept for the record and never enters a report.
+  // A void run is kept for the record and never enters a figure.
   if (voided.reason) out.void = { reason: voided.reason };
 
   const idle = parseSamples(text(dir, 'idle.txt'));
@@ -272,7 +272,7 @@ function summarize(dir) {
   if (app(out.peak?.containersMB) != null) put('M-mem-peak', { value_mb: app(out.peak.containersMB) });
 
   const steps = out.load?.steps || [];
-  if (out.void) console.log(`small: ${target} run is void (${out.void.reason}), so no report reads it`);
+  if (out.void) console.log(`small: ${target} run is void (${out.void.reason}), so no figure reads it`);
   console.log(`small: ${target} boot ${boot.status}${boot.value_ms != null ? ` in ${boot.value_ms} ms` : ` (${boot.reason})`}` +
     (out.idle ? `, idle VM ${out.idle.vm.usedMB} MB used of ${out.idle.vm.totalMB}` : '') +
     (steps.length ? `, ${steps.length} steps, highest kept up: ${out.load.highestRateKeptUp ?? 'none'} req/s` : ''));

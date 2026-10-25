@@ -302,7 +302,7 @@ restarts={{.RestartCount}}" "$app"
 app_running() { rsh 'cd "$1"; app=$($D compose -f "$2" ps -q app | head -1); [ -n "$app" ] && [ "$($D inspect -f "{{.State.Running}}" "$app")" = true ]' "$W" "$compose_name"; }
 
 # void <reason> <what happened>: the run measured the rig rather than the
-# target, so it is kept for the record and no report reads it.
+# target, so it is kept for the record and no figure reads it.
 void() {
   echo "reason=$1" > "$out_dir/void.txt"
   warn "[$TARGET] $2, so the run is void"

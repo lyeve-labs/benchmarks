@@ -25,12 +25,13 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   CPU or sat waiting on its disk.
 - Each small-server run records the harness commit, the image ID the server
   ran, and both machines' load when it started. A run during which the load
-  generator's address changed is void and never reported.
+  generator's address changed is void: it enters no figure, and the report
+  counts it.
 - The small-server report shows each step's I/O wait and CPU steal on the
-  server, the load every run started at, and the runs in which a target did
-  not boot or take the seed. With an even number of runs, the highest rate
-  kept up is the lower of the two middle ones, so it is always a rate that was
-  offered.
+  server, the load every run started at, the runs in which a target did not
+  boot or take the seed, and the void runs set aside. With an even number of
+  runs, the highest rate kept up is the lower of the two middle ones, so it is
+  always a rate that was offered.
 - The first small-server campaign, `2026-10-25-aws-t2-micro`: LyEve, Strapi,
   Directus and Payload on S01, S02 and S04, three rounds each, on an AWS
   t2.micro in Singapore driven by a second t2.micro on its private network.

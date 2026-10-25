@@ -24,8 +24,8 @@
 # The order interleaves the targets, so a slow hour at the provider spreads over
 # all of them instead of landing on one. A run the campaign already holds is not
 # run again, so the same command resumes a stopped sweep. A void run, or one
-# small.sh could not finish, moves to results/raw/small/void/, which git
-# ignores and no report reads, and a second pass runs it again. A target that
+# small.sh could not finish, moves to results/raw/small/void/. No figure reads
+# it, the report counts it, and a second pass runs it again. A target that
 # failed to boot or to take the seed is a result, so its run counts and the
 # report shows the failure.
 #
@@ -256,6 +256,9 @@ run() {
     [[ -f "$RAW/$dir/void.txt" ]] || echo "reason=harness-exit-$rc" > "$RAW/$dir/void.txt"
   fi
   if [[ -f "$RAW/$dir/void.txt" ]]; then
+    # The report counts a void run beside the figures it would have joined, and
+    # a run small.sh could not finish has no summary that names them.
+    printf 'campaign=%s\ntarget=%s\nscenario=%s\n' "$CAMPAIGN" "$t" "$s" >> "$RAW/$dir/void.txt"
     mkdir -p "$RAW/void"
     mv "$RAW/$dir" "$RAW/void/"
     warn "run void ($(sed -n 's/^reason=//p' "$RAW/void/$dir/void.txt")): moved to results/raw/small/void/$dir, the next pass runs it again"

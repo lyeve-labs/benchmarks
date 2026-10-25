@@ -4,8 +4,9 @@
 // harness/small-sweep.sh runs every self-hosted target on every read scenario,
 // in rounds, on one server, and tags each run with the campaign's name. This
 // groups the runs by that name and gives each figure as the median of the
-// campaign's runs, with the lowest and highest beside it. A void run, or one
-// that belongs to no campaign, is left out.
+// campaign's runs, with the lowest and highest beside it. A void run enters no
+// figure, and the report counts it beside the figures it would have joined. A
+// run that belongs to no campaign is left out.
 //
 //   node tools/small-report.mjs
 //   node tools/small-report.mjs --count <campaign> <target> <scenario>
@@ -31,6 +32,27 @@ function campaignRuns() {
     .sort()
     .map((id) => ({ id, ...read(join(RAW, id, 'small.json')) }))
     .filter((r) => r.campaign && !r.void);
+}
+
+function keyValues(s) {
+  const out = {};
+  for (const l of s.split('\n')) {
+    const i = l.indexOf('=');
+    if (i > 0) out[l.slice(0, i)] = l.slice(i + 1);
+  }
+  return out;
+}
+
+// Every run the sweep set aside as void, with the campaign, target and scenario
+// it would have counted for.
+function voidRuns() {
+  const dir = join(RAW, 'void');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((id) => existsSync(join(dir, id, 'void.txt')))
+    .sort()
+    .map((id) => ({ id, ...keyValues(readFileSync(join(dir, id, 'void.txt'), 'utf8')) }))
+    .filter((v) => v.campaign);
 }
 
 function median(xs) {
@@ -84,13 +106,15 @@ const STEP_FIELDS = [
   'received_mb_s', 'server_busy_pct', 'server_iowait_pct', 'server_steal_pct', 'loadgen_busy_pct', 'loadgen_steal_pct',
 ];
 
-function scenarioResult(id, runs) {
+function scenarioResult(id, runs, voids) {
   const booted = runs.filter((r) => r.boot?.status === 'ok' && r.load);
   const measured = booted.filter((r) => r.load.reason !== 'seed-failed');
   const rates = [...new Set(measured.flatMap((r) => r.load.steps.map((s) => s.rate)))].sort((a, b) => a - b);
   return {
     id,
     runs: runs.length,
+    // The void runs set aside, by reason. None of them enters a figure.
+    voided: tally(voids.map((v) => v.reason)),
     bootFailed: runs.length - booted.length,
     seedFailed: booted.length - measured.length,
     unanswered: runs.filter((r) => r.end?.status === 'unanswered').length,
@@ -108,7 +132,7 @@ function scenarioResult(id, runs) {
   };
 }
 
-function targetResult(id, runs, scenarioIds) {
+function targetResult(id, runs, scenarioIds, voids) {
   const def = targetsDoc.targets.find((t) => t.id === id);
   const failed = runs.filter((r) => r.boot?.status !== 'ok');
   const trouble = (r) => r.boot?.container?.oomKilled || r.end?.oomKilled || r.end?.restarts > 0
@@ -131,18 +155,21 @@ function targetResult(id, runs, scenarioIds) {
     oomKilledOrRestarted: runs.filter(trouble).length,
     // A run whose kernel lines show a kill already counts above.
     endUnanswered: runs.filter((r) => r.end?.status === 'unanswered' && !trouble(r)).length,
-    scenarios: scenarioIds.map((s) => scenarioResult(s, runs.filter((r) => r.scenario === s))),
+    scenarios: scenarioIds.map((s) => scenarioResult(s, runs.filter((r) => r.scenario === s), voids.filter((v) => v.scenario === s))),
   };
 }
 
-function campaignResult(name, runs) {
+function campaignResult(name, runs, voids) {
   const rig = (f) => tally(runs.map((r) => f(r.rig || {})));
   const steps = runs.flatMap((r) => r.load?.steps || []);
-  const targetIds = targetsDoc.targets.map((t) => t.id).filter((id) => runs.some((r) => r.target === id));
-  const scenarioIds = scenariosDoc.scenarios.map((s) => s.id).filter((id) => runs.some((r) => r.scenario === id));
+  // A target whose every run was void still gets its row, which says so.
+  const ran = (key, id) => runs.some((r) => r[key] === id) || voids.some((v) => v[key] === id);
+  const targetIds = targetsDoc.targets.map((t) => t.id).filter((id) => ran('target', id));
+  const scenarioIds = scenariosDoc.scenarios.map((s) => s.id).filter((id) => ran('scenario', id));
   return {
     name,
     runs: runs.length,
+    voidRuns: voids.length,
     firstRun: runs[0].date,
     lastRun: runs.at(-1).date,
     provider: rig((g) => g.provider),
@@ -175,7 +202,7 @@ function campaignResult(name, runs) {
       loadGeneratorBusyPct: highest(steps.map((s) => s.loadgen_busy_pct)),
       loadGeneratorStealPct: highest(steps.map((s) => s.loadgen_steal_pct)),
     },
-    targets: targetIds.map((id) => targetResult(id, runs.filter((r) => r.target === id), scenarioIds)),
+    targets: targetIds.map((id) => targetResult(id, runs.filter((r) => r.target === id), scenarioIds, voids.filter((v) => v.target === id))),
   };
 }
 
@@ -205,13 +232,15 @@ const shortId = (ref) => ref.replace(/ sha256:([0-9a-f]{12})[0-9a-f]*/g, ' `$1`'
 const scenarioTitle = (id) => scenariosDoc.scenarios.find((s) => s.id === id)?.title || id;
 
 // The highest rate a scenario kept up, with the runs that measured nothing
-// because the target did not boot or did not take the seed, and those after
-// whose steps the server did not answer.
+// because the target did not boot or did not take the seed, those after whose
+// steps the server did not answer, and the void runs set aside.
 function keptUp(s) {
+  const voided = s.voided.reduce((n, v) => n + v.runs, 0);
   const failed = [
     s.bootFailed && `the target did not boot in ${s.bootFailed} of ${s.runs} runs`,
     s.seedFailed && `seeding failed in ${s.seedFailed} of ${s.runs} runs`,
     s.unanswered && `the server did not answer after the steps in ${s.unanswered} of ${s.runs} runs`,
+    voided && `${voided} void ${voided === 1 ? 'run' : 'runs'} set aside: ${s.voided.map((v) => v.value).join(', ')}`,
   ].filter(Boolean);
   const figure = s.highestRateKeptUp ? cell(s.highestRateKeptUp, rate) : s.runs ? 'no run measured' : 'n/a';
   return failed.length ? `${figure}<br><sub>${failed.join(', ')}</sub>` : figure;
@@ -229,7 +258,7 @@ function campaignMarkdown(c) {
   md += `| Server software | ${one(c.server.os)}, Linux ${one(c.server.kernel)}, Docker ${one(c.server.docker)} |\n`;
   md += `| Load generator | ${one(c.loadGenerator.cpu)}, ${one(c.loadGenerator.nproc)} vCPU, ${memory(c.loadGenerator.memoryTotalMB)} memory, k6 ${one(c.loadGenerator.k6)} |\n`;
   md += `| Network | TCP connect from the load generator to the server: ${c.networkRttMs ? `${num(c.networkRttMs.median, 2)} ms (${num(c.networkRttMs.min, 2)} to ${num(c.networkRttMs.max, 2)}, n=${c.networkRttMs.n})` : 'n/a'} |\n`;
-  md += `| Runs | ${c.runs}, ${c.firstRun === c.lastRun ? `on ${c.firstRun}` : `from ${c.firstRun} to ${c.lastRun}`}. Each started ${c.server.uptimeAtStartS ? `${range(c.server.uptimeAtStartS, (x) => num(x, 0))} s` : 'an unrecorded time'} after the server booted |\n`;
+  md += `| Runs | ${c.runs}${c.voidRuns ? `, and ${c.voidRuns} void ${c.voidRuns === 1 ? 'run' : 'runs'} set aside` : ''}, ${c.firstRun === c.lastRun ? `on ${c.firstRun}` : `from ${c.firstRun} to ${c.lastRun}`}. Each started ${c.server.uptimeAtStartS ? `${range(c.server.uptimeAtStartS, (x) => num(x, 0))} s` : 'an unrecorded time'} after the server booted |\n`;
   md += `| Load at the start of a run | one-minute load average ${c.server.loadAtStart ? range(c.server.loadAtStart, load) : 'n/a'} on the server and ${c.loadGenerator.loadAtStart ? range(c.loadGenerator.loadAtStart, load) : 'n/a'} on the load generator |\n`;
   md += `| Offered rates | ${offered.length ? offered.map((o) => `${o.split(' ').join(', ')} req/s`).join('; ') : 'n/a'} |\n`;
   md += `| Harness | ${c.harness.length ? c.harness.map((h) => `\`${h.value}\`${c.harness.length > 1 ? ` (${h.runs} runs)` : ''}`).join(', ') : 'n/a'} |\n`;
@@ -241,7 +270,7 @@ function campaignMarkdown(c) {
   md += '| Target | Images | Boot | Server used | App | Database | Proxy | Failed boots | Killed for memory or restarted |\n';
   md += '|---|---|---|---|---|---|---|---|---|\n';
   for (const t of c.targets) {
-    const images = t.images.map((i) => `${shortId(i.value).split(', ').join('<br>')}${t.images.length > 1 ? ` (${i.runs} runs)` : ''}`).join('<br>');
+    const images = t.images.map((i) => `${shortId(i.value).split(', ').join('<br>')}${t.images.length > 1 ? ` (${i.runs} runs)` : ''}`).join('<br>') || 'n/a';
     const failed = t.boot.failed ? `${t.boot.failed} of ${t.boot.runs}: ${t.boot.reasons.map((r) => r.value).join(', ')}` : `0 of ${t.boot.runs}`;
     const ctr = t.idle.containersMB;
     const killed = `${t.oomKilledOrRestarted}${t.endUnanswered ? `<br><sub>unknown in ${t.endUnanswered}: the server did not answer after the steps</sub>` : ''}`;
@@ -293,9 +322,10 @@ if (process.argv[2] === '--count') {
   // Newest first: the campaign whose last run is latest leads. A run id starts
   // with its UTC start time, so the ids sort in time order.
   const latest = (n) => runs.filter((r) => r.campaign === n).at(-1).id;
+  const voids = voidRuns();
   const campaigns = [...new Set(runs.map((r) => r.campaign))]
     .sort((a, b) => (latest(b) < latest(a) ? -1 : 1))
-    .map((n) => campaignResult(n, runs.filter((r) => r.campaign === n)));
+    .map((n) => campaignResult(n, runs.filter((r) => r.campaign === n), voids.filter((v) => v.campaign === n)));
   writeFileSync(join(REPO, 'results/small.json'), JSON.stringify({ campaigns }, null, 2) + '\n');
   writeFileSync(join(REPO, 'results/SMALL.md'), markdown(campaigns));
   console.log(`small report: ${campaigns.length} campaigns, ${runs.length} runs → results/SMALL.md`);

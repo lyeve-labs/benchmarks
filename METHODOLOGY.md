@@ -359,10 +359,13 @@ every other source, and teardown removes it. That keeps strangers' scans out of
 the measurement, and it keeps a stack with published benchmark credentials off
 the open internet. If the load generator's address changes during a run, the
 rule drops its requests from then on, and the target would read as failing.
-Such a run is void: it is set aside, never reported, and run again. So is a run
-whose server did not answer SSH for a minute, which would otherwise read as a
-target that stopped. A target that stalls the server that long is voided on
-every pass, so its campaign stays incomplete and the void records show why.
+Such a run is void: it enters no figure and runs again, and the report counts
+it beside the figures it would have joined, with its reason. So is a run whose
+server did not answer SSH for a minute, which would otherwise read as a target
+that stopped. A target that stalls the server that long is voided on every
+pass, so its campaign stays incomplete and the report shows its void runs where
+its figures would be. Every void run stays in the results, under
+`results/raw/small/void/`.
 
 **What a run measures.**
 
