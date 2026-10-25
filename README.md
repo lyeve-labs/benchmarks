@@ -98,7 +98,8 @@ them on the server first, so the load generator needs only the Docker CLI,
 Node and k6:
 
 ```bash
-# from the machine that holds the images, once per server
+# from the machine that holds the images, once per server and after every
+# rebuild or pull: an image whose bytes differ from that machine's is replaced
 HOST=ubuntu@203.0.113.10 KEY=~/.ssh/bench.pem harness/small-sweep.sh --prepare
 # from the load generator, by the server's private address
 make small-sweep HOST=ubuntu@10.0.1.20 KEY=~/.ssh/bench.pem \

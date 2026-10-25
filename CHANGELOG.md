@@ -28,9 +28,19 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ### Changed
 
-- `make small` leaves an image the server already holds in place, so a load
-  generator without the images can drive a server prepared by the machine that
-  has them (`harness/small-sweep.sh --prepare`).
+- `make small` leaves an image the server already holds in place when it holds
+  the same bytes as this machine's copy, or when this machine has none, so a
+  load generator without the images can drive a server prepared by the machine
+  that has them (`harness/small-sweep.sh --prepare`). An image whose bytes
+  differ from this machine's is replaced.
+
+### Fixed
+
+- A small-server run that loses its SSH connection to the server is void,
+  instead of reading as a target that stopped or failed to start.
+- A small-server run removes the containers and volumes an earlier run could
+  not tear down before it starts, so it never measures a leftover stack or the
+  data that stack seeded.
 
 ## [0.9.1] - 2026-10-22
 

@@ -8,19 +8,23 @@
 #
 #   hold    mask the server's active timers and hold snap refreshes, so no
 #           package or maintenance job shares the CPU with a step. Both come
-#           back when the sweep ends, however it ends
+#           back when the sweep ends, and --restore brings them back after a
+#           sweep that could not reach the server at its end
 #   images  put every target's images on the server once (small.sh --prepare)
 #   runs    for each round, each scenario and each target: reboot the server, so
 #           no target inherits another's memory, page cache or kernel log, wait
 #           until it has been up two minutes with Docker active and its load
 #           under 0.3, wait until this machine's load is under half its cores,
-#           then run small.sh
+#           then run small.sh. Each wait gives up after ten minutes, and the
+#           run records the load it started at
 #
 # The order interleaves the targets, so a slow hour at the provider spreads over
 # all of them instead of landing on one. A run the campaign already holds is not
-# run again, so the same command resumes a stopped sweep, and a second pass
-# retries a run that failed. A void run, or one small.sh could not finish, moves
-# to results/raw/small/void/, which git ignores and no report reads.
+# run again, so the same command resumes a stopped sweep. A void run, or one
+# small.sh could not finish, moves to results/raw/small/void/, which git
+# ignores and no report reads, and a second pass runs it again. A target that
+# failed to boot or to take the seed is a result, so its run counts and the
+# report shows the failure.
 #
 # Usage:
 #   HOST=ubuntu@10.0.1.20 KEY=~/.ssh/bench.pem CAMPAIGN=2026-10-25-aws-t2-micro \
@@ -92,6 +96,11 @@ now=$(systemctl list-units --type=timer --state=active --no-legend --plain | awk
 if [ -n "$now" ]; then
   printf '%s\n' $now | $S tee -a "$STATE/held-timers" >/dev/null
   $S systemctl mask --now $now >/dev/null 2>&1
+fi
+left=$(systemctl list-units --type=timer --state=active --no-legend --plain | awk '{print $1}' | grep -v '^run-' || true)
+if [ -n "$left" ]; then
+  echo "still active after masking:" $left
+  exit 1
 fi
 if command -v snap >/dev/null 2>&1 && [ ! -f "$STATE/snap-held" ] && [ -z "$(snap get system refresh.hold 2>/dev/null)" ]; then
   $S snap refresh --hold >/dev/null 2>&1 && $S touch "$STATE/snap-held"
@@ -169,10 +178,21 @@ node -e '
 # small.sh reads both. The images stay on the server between runs.
 export CAMPAIGN KEEP_IMAGES=1
 
+# retry <command...>: three tries, ten seconds apart, so one refused connection
+# does not end a campaign.
+retry() {
+  local i
+  for i in 1 2 3; do
+    "$@" && return 0
+    (( i < 3 )) && sleep 10
+  done
+  return 1
+}
+
 reboot_server() {
   local before now deadline
-  before="$(rsh 'cat /proc/sys/kernel/random/boot_id')" || die "cannot reach $HOST"
-  rsh '$S systemd-run --quiet --on-active=2 /usr/bin/systemctl reboot' >/dev/null || die "cannot reboot $HOST"
+  before="$(retry rsh 'cat /proc/sys/kernel/random/boot_id')" || die "cannot reach $HOST"
+  retry rsh '$S systemd-run --quiet --on-active=2 /usr/bin/systemctl reboot' >/dev/null || die "cannot reboot $HOST"
   deadline=$(( SECONDS + 600 ))
   until now="$(rsh 'cat /proc/sys/kernel/random/boot_id' 2>/dev/null)" && [[ -n "$now" && "$now" != "$before" ]]; do
     (( SECONDS < deadline )) || die "$HOST did not come back within ten minutes of the reboot"
@@ -236,14 +256,15 @@ run() {
 
 trap release EXIT
 log "holding the server's timers and snap refreshes"
-rsh "$HOLD" "$STATE"
+rsh "$HOLD" "$STATE" || die "cannot hold the server's timers and snap refreshes"
 prepare
 
 for _ in 1 2; do
   for round in $(seq "$ROUNDS"); do
     for s in $SCENARIOS; do
       for t in $TARGETS; do
-        (( $(held_runs "$t" "$s") >= round )) && continue
+        n="$(held_runs "$t" "$s")" || die "cannot count the campaign's runs of $t on $s"
+        (( n >= round )) && continue
         run "$round" "$s" "$t"
       done
     done
@@ -254,7 +275,7 @@ node "$REPO_DIR/tools/small-report.mjs"
 missing=0
 for s in $SCENARIOS; do
   for t in $TARGETS; do
-    n="$(held_runs "$t" "$s")"
+    n="$(held_runs "$t" "$s")" || die "cannot count the campaign's runs of $t on $s"
     if (( n < ROUNDS )); then
       warn "$t on $s has $n of $ROUNDS runs"
       missing=1

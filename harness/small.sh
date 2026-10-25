@@ -7,9 +7,11 @@
 # generator never takes the server's CPU. One run:
 #
 #   rig     read the server's CPU model, core count, memory, kernel and Docker
-#   images  for each image the server lacks, it pulls a public one by the digest
-#           this machine holds, and every one it cannot pull is streamed to it
-#           over SSH. The record names the image ID the server runs
+#   clear   remove a stack an earlier run could not tear down
+#   images  for each image the server lacks, or holds with other bytes than
+#           this machine's, it pulls a public one by the digest this machine
+#           holds, and every one it cannot pull is streamed to it over SSH.
+#           The record names the image ID the server runs
 #   boot    compose up, then time the first answer on the target's ready path
 #   idle    settle 45 s, then five samples of free and docker stats
 #   seed    the shared dataset, sent over the network
@@ -21,6 +23,7 @@
 #
 # A run during which this machine's address changed is marked void, because the
 # firewall rule then dropped its requests and the target would read as failing.
+# So is a run that lost its SSH connection to the server.
 #
 # Usage:
 #   HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm ./small.sh --target lyeve
@@ -194,17 +197,43 @@ client="$(sed -n 's/^client=//p' <<<"$rig_remote")"
 [[ "$(sed -n 's/^server_arch=//p' <<<"$rig_remote")" == "$(uname -m)" ]] \
   || die "the server is $(sed -n 's/^server_arch=//p' <<<"$rig_remote") and this machine is $(uname -m): the images would not be the ones the local rig measured"
 
+# A stack whose run could not tear it down would hold the port, or answer this
+# run in its place with the data that run seeded. Its containers, their volumes
+# and its sampler go before anything else.
+left="$(rsh '
+  [ -f "$1/sampler.pid" ] && kill "$(cat "$1/sampler.pid")" 2>/dev/null
+  c=$($D ps -aq --filter name=^bench-); v=$($D volume ls -q | grep "^bench-")
+  [ -z "$c" ] || $D rm -f -v $c >/dev/null || exit 1
+  [ -z "$v" ] || $D volume rm $v >/dev/null || exit 1
+  echo $c $v' "$W")" || die "cannot remove what an earlier run left on the server"
+[[ -n "$left" ]] && warn "[$TARGET] removed the containers and volumes an earlier run left: $left"
+
 # ── images ───────────────────────────────────────────────────────────────────
-# An image the server already holds stays as it is, so this machine needs the
-# images only to bring one the server lacks.
+# An image the server already holds stays when it holds the same bytes as this
+# machine's, or when this machine has none, so a load generator needs no images
+# to drive a server prepared by the machine that has them. The ID for one
+# platform names the same bytes on every machine. The plain ID does not,
+# because docker save gives the copy an index of its own.
 mapfile -t images < <(docker compose -f "$compose_file" config --images)
 image_lines=()
 for img in "${images[@]}"; do
   repo="${img%:*}"
-  if rsh '$D image inspect "$1" >/dev/null 2>&1' "$img"; then
+  mine=""
+  if docker image inspect "$img" >/dev/null 2>&1; then
+    platform="linux/$(docker image inspect -f '{{.Architecture}}' "$img")"
+    mine="$(docker image inspect --platform "$platform" -f '{{.Id}}' "$img")"
+    theirs="$(rsh '$D image inspect --platform "$2" -f "{{.Id}}" "$1" 2>/dev/null' "$img" "$platform" || true)"
+  else
+    theirs="$(rsh '$D image inspect -f "{{.Id}}" "$1" 2>/dev/null' "$img" || true)"
+  fi
+  if [[ -n "$theirs" && ( -z "$mine" || "$theirs" == "$mine" ) ]]; then
     log "[$TARGET] $img is already on the server"
   else
-    if ! docker image inspect "$img" >/dev/null 2>&1; then
+    if [[ -n "$theirs" ]]; then
+      log "[$TARGET] the server's $img holds other bytes than this machine's, replacing it"
+      rsh '$D image rm "$1" >/dev/null' "$img" || die "cannot remove the server's $img"
+    fi
+    if [[ -z "$mine" ]]; then
       log "[$TARGET] $img is not on this machine, building or pulling it"
       docker compose -f "$compose_file" build >/dev/null 2>&1 || true
       docker image inspect "$img" >/dev/null 2>&1 || docker pull "$img" >/dev/null || die "cannot get $img on this machine"
@@ -266,6 +295,13 @@ restarts={{.RestartCount}}" "$app"
 
 app_running() { rsh 'cd "$1"; app=$($D compose -f "$2" ps -q app | head -1); [ -n "$app" ] && [ "$($D inspect -f "{{.State.Running}}" "$app")" = true ]' "$W" "$compose_name"; }
 
+# void <reason> <what happened>: the run measured the rig rather than the
+# target, so it is kept for the record and no report reads it.
+void() {
+  echo "reason=$1" > "$out_dir/void.txt"
+  warn "[$TARGET] $2, so the run is void"
+}
+
 # The firewall rule admits only the address the run started from. When this
 # machine's address changes during a run, the server drops every request after
 # the change, so the run is void rather than a result.
@@ -273,8 +309,7 @@ check_client() {
   local now
   now="$(rsh 'echo "${SSH_CLIENT%% *}"' 2>/dev/null || true)"
   if [[ -n "$now" && "$now" != "$client" ]]; then
-    echo "reason=client-address-changed" > "$out_dir/void.txt"
-    warn "[$TARGET] this machine's address changed during the run, so the run is void"
+    void client-address-changed "this machine's address changed during the run"
   fi
 }
 
@@ -283,12 +318,16 @@ log "[$TARGET] starting the stack on the server (limit ${BOOT_TIMEOUT}s)"
 boot_start="$(_ms)"
 boot_status="ok"; boot_reason=""
 # The setup token travels on stdin, so it is never in a file or an argument on
-# the server, and it leaves with the containers.
+# the server, and it leaves with the containers. ssh exits 255 when the
+# connection failed, which says nothing about the stack.
+rc=0
 printf '%s\n' "$LYEVE_SETUP_TOKEN" | rsh '
   cd "$1"; IFS= read -r LYEVE_SETUP_TOKEN; export LYEVE_SETUP_TOKEN BENCH_PORT="$3"
   [ -n "$4" ] && export LYEVE_IMAGE="$4"
   $S ${S:+--preserve-env=LYEVE_SETUP_TOKEN,BENCH_PORT,LYEVE_IMAGE} docker compose -f "$2" up -d --no-build --pull never >/dev/null 2>&1
-' "$W" "$compose_name" "$BENCH_PORT" "${LYEVE_IMAGE:-}" || { boot_status="failed"; boot_reason="compose-up-failed"; }
+' "$W" "$compose_name" "$BENCH_PORT" "${LYEVE_IMAGE:-}" || rc=$?
+(( rc == 255 )) && void ssh-lost "lost the connection to the server at compose up"
+(( rc )) && { boot_status="failed"; boot_reason="compose-up-failed"; }
 if [[ "$boot_status" == "ok" ]]; then
   deadline=$(( boot_start + BOOT_TIMEOUT * 1000 ))
   boot_status="failed"; boot_reason="not-ready-within-limit"
@@ -370,7 +409,12 @@ if [[ "$seeded" == "0" ]]; then
 else
   BENCH_TOKEN="$(cat "$token_file" 2>/dev/null || true)"
   for rate in $RATES; do
-    if ! app_running; then
+    up=0
+    app_running || up=$?
+    if (( up == 255 )); then
+      void ssh-lost "lost the connection to the server before ${rate} req/s"
+      break
+    elif (( up )); then
       echo "stopped=app-not-running before ${rate}" >> "$out_dir/load.txt"
       warn "[$TARGET] the application is no longer running, stopping before ${rate} req/s"
       break

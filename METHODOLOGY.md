@@ -309,15 +309,19 @@ make small-sweep HOST=ubuntu@10.0.1.20 KEY=~/.ssh/bench.pem CAMPAIGN=<name> PROV
 ```
 
 **Same rules.** The images are the ones the local rig measures, byte for byte.
-The server pulls each public image by the digest the harness machine holds,
-and an image it cannot pull (one built locally, or one whose registry refuses
+The server pulls each public image by the digest the harness machine holds, and
+an image it cannot pull (one built locally, or one whose registry refuses
 anonymous pulls) is copied to it over SSH. So the server has to share the
-harness machine's CPU architecture. An image already on the server stays, and
-every run records the image ID the server ran, so a campaign shows that each
-of its runs used the same bytes. The dataset, the seed, the scenarios, the
-stock configuration and the provenance tags are unchanged. Each target runs
-alone, with its own PostgreSQL on the same server, the way a small-server user
-would run it.
+harness machine's CPU architecture. An image already on the server stays when
+it holds the same bytes as the harness machine's copy, compared by the image ID
+for the server's platform, which a copy keeps. When the bytes differ, as after
+a rebuild or a moved tag, the harness machine's copy replaces it. A load
+generator that holds no images leaves the server's as they are, which is why
+the machine that holds the images prepares the server. Every run records the
+image ID the server ran, so a campaign shows that each of its runs used the
+same bytes. The dataset, the seed, the scenarios, the stock configuration and
+the provenance tags are unchanged. Each target runs alone, with its own
+PostgreSQL on the same server, the way a small-server user would run it.
 
 **A remote load generator.** k6 runs on a separate machine and reaches the
 server over the network, so the load generator never takes the server's one
@@ -345,7 +349,9 @@ every other source, and teardown removes it. That keeps strangers' scans out of
 the measurement, and it keeps a stack with published benchmark credentials off
 the open internet. If the load generator's address changes during a run, the
 rule drops its requests from then on, and the target would read as failing.
-Such a run is void: it is set aside, never reported, and run again.
+Such a run is void: it is set aside, never reported, and run again. So is a run
+that lost its SSH connection to the server, which would otherwise read as a
+target that stopped.
 
 **What a run measures.**
 
@@ -371,20 +377,23 @@ Such a run is void: it is set aside, never reported, and run again.
 **Campaigns.** `make small-sweep` runs a campaign: every self-hosted target on
 every read scenario, three rounds by default, all on one server. Before every
 run the server reboots, so nothing one target left behind (memory, page cache,
-a kernel log) is read as another's, and the run starts only once the server
-has been up two minutes with Docker running and its one-minute load under 0.3,
-and the load generator's load is under half its cores. For the whole campaign
-the server's timers are masked and its snap refreshes held, so no package or
-maintenance job shares the CPU with a step. Both come back when the sweep
-ends. The rounds interleave the targets (each scenario takes every target in
-turn before the next round), so a slow hour at the provider spreads over all
-of them instead of landing on one. Every run carries the campaign's name, and
-a stopped sweep resumes where it left off. `make small-report` turns the
-campaigns into `results/SMALL.md` and `results/small.json`: each figure is the
-median of the campaign's runs, with the lowest and highest and the number of
-runs. Campaigns accumulate, newest first, so a later engine release or another
-provider's plan reads beside the earlier ones, and a reader compares two
-campaigns only where their rigs match.
+a kernel log) is read as another's, and the run starts only once the server has
+been up two minutes with Docker running and its one-minute load under 0.3, and
+the load generator's load is under half its cores. Each wait gives up after ten
+minutes, and every run records the load it started at. A stack an earlier run
+could not tear down is removed before the next run starts. For the whole
+campaign the server's timers are masked and its snap refreshes held, so no
+package or maintenance job shares the CPU with a step. Both come back when the
+sweep ends, and `harness/small-sweep.sh --restore` brings them back after a
+sweep that could not reach the server at its end. The rounds interleave the
+targets (each scenario takes every target in turn before the next round), so a
+slow hour at the provider spreads over all of them instead of landing on one.
+Every run carries the campaign's name, and a stopped sweep resumes where it
+left off. `make small-report` turns the campaigns into `results/SMALL.md` and
+`results/small.json`: each figure is the median of the campaign's runs, with
+the lowest and highest and the number of runs. Campaigns accumulate, newest
+first, so a later engine release or another provider's plan reads beside the
+earlier ones, and a reader compares two campaigns only where their rigs match.
 
 **What a boot failure means.** A target that does not answer within the limit,
 exits, or is killed has a result, not a missing number: in its stock
