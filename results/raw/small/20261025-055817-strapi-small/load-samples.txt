@@ -1,0 +1,122 @@
+sample 1792908029
+vm 951 541 410
+ctr bench-strapi-app-1 180.8MiB / 951.9MiB 23.08%
+ctr bench-strapi-db-1 39.31MiB / 951.9MiB 5.11%
+sample 1792908036
+vm 951 558 393
+ctr bench-strapi-app-1 181.2MiB / 951.9MiB 21.60%
+ctr bench-strapi-db-1 40.55MiB / 951.9MiB 6.15%
+sample 1792908043
+vm 951 558 392
+ctr bench-strapi-app-1 181.5MiB / 951.9MiB 29.44%
+ctr bench-strapi-db-1 40.78MiB / 951.9MiB 10.05%
+sample 1792908050
+vm 951 548 403
+ctr bench-strapi-app-1 181.4MiB / 951.9MiB 34.63%
+ctr bench-strapi-db-1 40.54MiB / 951.9MiB 6.64%
+sample 1792908057
+vm 951 550 401
+ctr bench-strapi-app-1 181.5MiB / 951.9MiB 21.22%
+ctr bench-strapi-db-1 46.09MiB / 951.9MiB 5.94%
+sample 1792908064
+vm 951 554 396
+ctr bench-strapi-app-1 181.5MiB / 951.9MiB 23.81%
+ctr bench-strapi-db-1 46.15MiB / 951.9MiB 10.21%
+sample 1792908071
+vm 951 558 393
+ctr bench-strapi-app-1 182.1MiB / 951.9MiB 26.37%
+ctr bench-strapi-db-1 47.13MiB / 951.9MiB 6.16%
+sample 1792908079
+vm 951 560 391
+ctr bench-strapi-app-1 183MiB / 951.9MiB 24.35%
+ctr bench-strapi-db-1 47.39MiB / 951.9MiB 10.44%
+sample 1792908086
+vm 951 553 398
+ctr bench-strapi-app-1 183MiB / 951.9MiB 19.06%
+ctr bench-strapi-db-1 45.89MiB / 951.9MiB 5.79%
+sample 1792908093
+vm 951 558 393
+ctr bench-strapi-app-1 184.2MiB / 951.9MiB 20.59%
+ctr bench-strapi-db-1 45.85MiB / 951.9MiB 10.89%
+sample 1792908100
+vm 951 561 390
+ctr bench-strapi-app-1 185.3MiB / 951.9MiB 42.92%
+ctr bench-strapi-db-1 46.12MiB / 951.9MiB 6.99%
+sample 1792908107
+vm 951 559 392
+ctr bench-strapi-app-1 176.7MiB / 951.9MiB 35.63%
+ctr bench-strapi-db-1 51.82MiB / 951.9MiB 11.28%
+sample 1792908114
+vm 951 559 392
+ctr bench-strapi-app-1 183.3MiB / 951.9MiB 36.07%
+ctr bench-strapi-db-1 56.36MiB / 951.9MiB 11.43%
+sample 1792908121
+vm 951 567 384
+ctr bench-strapi-app-1 185MiB / 951.9MiB 45.58%
+ctr bench-strapi-db-1 56.29MiB / 951.9MiB 11.66%
+sample 1792908128
+vm 951 571 380
+ctr bench-strapi-app-1 185MiB / 951.9MiB 36.36%
+ctr bench-strapi-db-1 57.12MiB / 951.9MiB 16.76%
+sample 1792908135
+vm 951 572 379
+ctr bench-strapi-app-1 184.9MiB / 951.9MiB 41.04%
+ctr bench-strapi-db-1 57.08MiB / 951.9MiB 11.60%
+sample 1792908143
+vm 951 574 377
+ctr bench-strapi-app-1 186MiB / 951.9MiB 48.92%
+ctr bench-strapi-db-1 51.62MiB / 951.9MiB 15.90%
+sample 1792908150
+vm 951 574 377
+ctr bench-strapi-app-1 186MiB / 951.9MiB 37.19%
+ctr bench-strapi-db-1 51.9MiB / 951.9MiB 12.10%
+sample 1792908157
+vm 951 559 392
+ctr bench-strapi-app-1 185.7MiB / 951.9MiB 35.66%
+ctr bench-strapi-db-1 49.5MiB / 951.9MiB 16.87%
+sample 1792908164
+vm 951 563 388
+ctr bench-strapi-app-1 186MiB / 951.9MiB 35.81%
+ctr bench-strapi-db-1 51.04MiB / 951.9MiB 11.95%
+sample 1792908171
+vm 951 564 387
+ctr bench-strapi-app-1 185.5MiB / 951.9MiB 73.61%
+ctr bench-strapi-db-1 51.29MiB / 951.9MiB 15.86%
+sample 1792908178
+vm 951 580 371
+ctr bench-strapi-app-1 189.6MiB / 951.9MiB 74.53%
+ctr bench-strapi-db-1 56.3MiB / 951.9MiB 24.79%
+sample 1792908185
+vm 951 565 386
+ctr bench-strapi-app-1 195MiB / 951.9MiB 73.14%
+ctr bench-strapi-db-1 56.3MiB / 951.9MiB 26.00%
+sample 1792908192
+vm 951 576 375
+ctr bench-strapi-app-1 193.4MiB / 951.9MiB 78.20%
+ctr bench-strapi-db-1 56.22MiB / 951.9MiB 27.04%
+sample 1792908200
+vm 951 577 374
+ctr bench-strapi-app-1 196MiB / 951.9MiB 68.50%
+ctr bench-strapi-db-1 56.14MiB / 951.9MiB 21.91%
+sample 1792908207
+vm 951 581 370
+ctr bench-strapi-app-1 199MiB / 951.9MiB 70.05%
+ctr bench-strapi-db-1 56.48MiB / 951.9MiB 23.69%
+sample 1792908214
+vm 951 586 365
+ctr bench-strapi-app-1 201.5MiB / 951.9MiB 71.66%
+ctr bench-strapi-db-1 56.71MiB / 951.9MiB 23.77%
+sample 1792908221
+vm 951 584 367
+ctr bench-strapi-app-1 201MiB / 951.9MiB 70.88%
+ctr bench-strapi-db-1 56.68MiB / 951.9MiB 25.99%
+sample 1792908228
+vm 951 585 365
+ctr bench-strapi-app-1 199.8MiB / 951.9MiB 72.72%
+ctr bench-strapi-db-1 56.52MiB / 951.9MiB 26.44%
+sample 1792908235
+vm 951 587 364
+ctr bench-strapi-app-1 202.5MiB / 951.9MiB 71.68%
+ctr bench-strapi-db-1 56.51MiB / 951.9MiB 24.54%
+sample 1792908242
+vm 951 588 362

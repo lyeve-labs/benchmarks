@@ -1,0 +1,210 @@
+{
+  "mode": "small-server",
+  "target": "payload",
+  "date": "2026-10-25",
+  "campaign": "2026-10-25-aws-t2-micro",
+  "scenario": "S04",
+  "rig": {
+    "harness": "dab490ced7bb",
+    "provider": "AWS",
+    "plan": "t2.micro, T2 Unlimited, 15 GB gp3, ap-southeast-1a",
+    "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+    "nproc": 1,
+    "memoryTotalMB": 951,
+    "swapTotalMB": 0,
+    "cgroupMemoryMax": "none",
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-1014-aws",
+    "arch": "x86_64",
+    "docker": "29.9.2",
+    "dockerInstalledByRun": false,
+    "loadAtStart": "0.27 0.20 0.09",
+    "uptimeAtStartS": 139,
+    "loadGenerator": {
+      "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+      "nproc": 1,
+      "memoryTotalMB": 951,
+      "loadAtStart": "0.07 0.16 0.17",
+      "k6": "v2.3.0",
+      "where": "a separate machine, over the network"
+    },
+    "networkRttMs": 0.37,
+    "images": [
+      {
+        "ref": "bench-payload:local",
+        "digest": "sha256:34ae8ed30617bdb85ac0c5598ecf0bd4f487d86b2170bfb6c1264085180dce00",
+        "id": "sha256:34ae8ed30617bdb85ac0c5598ecf0bd4f487d86b2170bfb6c1264085180dce00"
+      },
+      {
+        "ref": "postgres:16-alpine",
+        "digest": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+        "id": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36"
+      }
+    ]
+  },
+  "boot": {
+    "status": "ok",
+    "provenance": "measured",
+    "value_ms": 14354,
+    "elapsed_ms": 14354,
+    "timeout_s": 300,
+    "readyPath": "/api/access",
+    "reason": null,
+    "container": {
+      "status": "running",
+      "exitCode": 0,
+      "oomKilled": false,
+      "restarts": 0,
+      "oomKernelLines": []
+    }
+  },
+  "idle": {
+    "provenance": "measured",
+    "samples": 5,
+    "vm": {
+      "totalMB": 951,
+      "usedMB": 509,
+      "availableMB": 442
+    },
+    "containersMB": {
+      "bench-payload-app-1": 160.2,
+      "bench-payload-db-1": 31.1
+    }
+  },
+  "load": {
+    "scenario": "S04",
+    "offeredRates": [
+      25,
+      50,
+      100,
+      200,
+      300,
+      500
+    ],
+    "warmup": "10s, discarded",
+    "window": "60s",
+    "errorBudget": 0.01,
+    "servedFloor": 0.9,
+    "steps": [
+      {
+        "rate": 25,
+        "provenance": "measured",
+        "served_rps": 25,
+        "served_share": 1.0018,
+        "p50_ms": 5.9,
+        "p95_ms": 11.2,
+        "p99_ms": 16.8,
+        "error_rate": 0.0006648936170212766,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 0,
+        "received_mb_s": 0.3,
+        "server_busy_pct": 21.1,
+        "server_iowait_pct": 0.1,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 4.7,
+        "loadgen_steal_pct": 0.1
+      },
+      {
+        "rate": 50,
+        "provenance": "measured",
+        "served_rps": 50,
+        "served_share": 1.0004,
+        "p50_ms": 5.1,
+        "p95_ms": 10,
+        "p99_ms": 38.6,
+        "error_rate": 0.00033288948069241014,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 1,
+        "received_mb_s": 0.6,
+        "server_busy_pct": 32,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 6.6,
+        "loadgen_steal_pct": 0.1
+      },
+      {
+        "rate": 100,
+        "provenance": "measured",
+        "served_rps": 100,
+        "served_share": 0.9999,
+        "p50_ms": 4.5,
+        "p95_ms": 16.2,
+        "p99_ms": 90.7,
+        "error_rate": 0.00016655562958027982,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 8,
+        "received_mb_s": 1.19,
+        "server_busy_pct": 52,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 8.1,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 200,
+        "provenance": "measured",
+        "served_rps": 199,
+        "served_share": 0.9959,
+        "p50_ms": 10.7,
+        "p95_ms": 200.2,
+        "p99_ms": 302.4,
+        "error_rate": 0.00008349336227769892,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 27,
+        "vus_peak": 59,
+        "received_mb_s": 2.37,
+        "server_busy_pct": 89.1,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 11,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 300,
+        "provenance": "measured",
+        "served_rps": 187,
+        "served_share": 0.6245,
+        "p50_ms": 1064.1,
+        "p95_ms": 1184.3,
+        "p99_ms": 1218.9,
+        "error_rate": 0.0000876731544800982,
+        "within_budget": true,
+        "kept_up": false,
+        "dropped_iterations": 6598,
+        "vus_peak": 200,
+        "received_mb_s": 2.23,
+        "server_busy_pct": 99.3,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 12.5,
+        "loadgen_steal_pct": 0
+      }
+    ],
+    "stopped": "served 62% of 300 req/s, 0.01% errors, p99 1218.9 ms, CPU busy 99% on the server and 13% here",
+    "highestRateKeptUp": 200
+  },
+  "peak": {
+    "provenance": "measured",
+    "samples": 51,
+    "vmUsedMB": 614,
+    "vmMinAvailableMB": 337,
+    "containersMB": {
+      "bench-payload-app-1": 246.1,
+      "bench-payload-db-1": 54
+    }
+  },
+  "end": {
+    "status": "running",
+    "exitCode": 0,
+    "oomKilled": false,
+    "restarts": 0,
+    "oomKernelLines": []
+  }
+}

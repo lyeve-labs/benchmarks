@@ -1,0 +1,126 @@
+sample 1792905655
+vm 951 541 410
+ctr bench-strapi-app-1 180.7MiB / 951.9MiB 48.88%
+ctr bench-strapi-db-1 38.5MiB / 951.9MiB 13.89%
+sample 1792905663
+vm 951 553 398
+ctr bench-strapi-app-1 180.9MiB / 951.9MiB 39.78%
+ctr bench-strapi-db-1 53.84MiB / 951.9MiB 15.25%
+sample 1792905670
+vm 951 557 394
+ctr bench-strapi-app-1 182.8MiB / 951.9MiB 40.97%
+ctr bench-strapi-db-1 53.93MiB / 951.9MiB 12.29%
+sample 1792905677
+vm 951 565 386
+ctr bench-strapi-app-1 181.2MiB / 951.9MiB 39.03%
+ctr bench-strapi-db-1 53.85MiB / 951.9MiB 17.60%
+sample 1792905684
+vm 951 566 385
+ctr bench-strapi-app-1 183.1MiB / 951.9MiB 38.17%
+ctr bench-strapi-db-1 53.77MiB / 951.9MiB 16.31%
+sample 1792905691
+vm 951 566 385
+ctr bench-strapi-app-1 183.2MiB / 951.9MiB 34.73%
+ctr bench-strapi-db-1 43.29MiB / 951.9MiB 16.21%
+sample 1792905698
+vm 951 567 384
+ctr bench-strapi-app-1 183.4MiB / 951.9MiB 47.41%
+ctr bench-strapi-db-1 43.23MiB / 951.9MiB 11.53%
+sample 1792905705
+vm 951 550 401
+ctr bench-strapi-app-1 183.5MiB / 951.9MiB 39.53%
+ctr bench-strapi-db-1 46.84MiB / 951.9MiB 10.49%
+sample 1792905712
+vm 951 555 396
+ctr bench-strapi-app-1 183.9MiB / 951.9MiB 37.95%
+ctr bench-strapi-db-1 47.82MiB / 951.9MiB 16.33%
+sample 1792905720
+vm 951 562 389
+ctr bench-strapi-app-1 184MiB / 951.9MiB 38.24%
+ctr bench-strapi-db-1 47.6MiB / 951.9MiB 12.08%
+sample 1792905727
+vm 951 563 388
+ctr bench-strapi-app-1 184.3MiB / 951.9MiB 72.03%
+ctr bench-strapi-db-1 47.85MiB / 951.9MiB 10.10%
+sample 1792905734
+vm 951 563 388
+ctr bench-strapi-app-1 185MiB / 951.9MiB 75.81%
+ctr bench-strapi-db-1 57.04MiB / 951.9MiB 27.62%
+sample 1792905741
+vm 951 572 379
+ctr bench-strapi-app-1 187MiB / 951.9MiB 68.13%
+ctr bench-strapi-db-1 56.94MiB / 951.9MiB 22.74%
+sample 1792905748
+vm 951 571 380
+ctr bench-strapi-app-1 186.1MiB / 951.9MiB 72.37%
+ctr bench-strapi-db-1 57.07MiB / 951.9MiB 24.82%
+sample 1792905755
+vm 951 579 372
+ctr bench-strapi-app-1 187.9MiB / 951.9MiB 76.92%
+ctr bench-strapi-db-1 57.08MiB / 951.9MiB 28.66%
+sample 1792905762
+vm 951 580 371
+ctr bench-strapi-app-1 190MiB / 951.9MiB 71.50%
+ctr bench-strapi-db-1 59.87MiB / 951.9MiB 24.85%
+sample 1792905770
+vm 951 565 386
+ctr bench-strapi-app-1 190.9MiB / 951.9MiB 75.58%
+ctr bench-strapi-db-1 56.85MiB / 951.9MiB 27.30%
+sample 1792905777
+vm 951 576 375
+ctr bench-strapi-app-1 192.1MiB / 951.9MiB 71.74%
+ctr bench-strapi-db-1 56.96MiB / 951.9MiB 24.71%
+sample 1792905784
+vm 951 578 372
+ctr bench-strapi-app-1 193.6MiB / 951.9MiB 72.09%
+ctr bench-strapi-db-1 56.77MiB / 951.9MiB 23.47%
+sample 1792905791
+vm 951 582 369
+ctr bench-strapi-app-1 194.4MiB / 951.9MiB 73.64%
+ctr bench-strapi-db-1 56.96MiB / 951.9MiB 24.91%
+sample 1792905798
+vm 951 585 366
+ctr bench-strapi-app-1 195.8MiB / 951.9MiB 67.66%
+ctr bench-strapi-db-1 57.05MiB / 951.9MiB 23.14%
+sample 1792905805
+vm 951 571 380
+ctr bench-strapi-app-1 193.2MiB / 951.9MiB 73.09%
+ctr bench-strapi-db-1 56.86MiB / 951.9MiB 24.22%
+sample 1792905812
+vm 951 586 365
+ctr bench-strapi-app-1 202.3MiB / 951.9MiB 67.64%
+ctr bench-strapi-db-1 56.87MiB / 951.9MiB 14.94%
+sample 1792905819
+vm 951 589 362
+ctr bench-strapi-app-1 196.3MiB / 951.9MiB 72.00%
+ctr bench-strapi-db-1 56.99MiB / 951.9MiB 24.78%
+sample 1792905827
+vm 951 590 361
+ctr bench-strapi-app-1 200.9MiB / 951.9MiB 72.21%
+ctr bench-strapi-db-1 56.82MiB / 951.9MiB 24.75%
+sample 1792905834
+vm 951 590 360
+ctr bench-strapi-app-1 201.5MiB / 951.9MiB 76.57%
+ctr bench-strapi-db-1 57.04MiB / 951.9MiB 28.68%
+sample 1792905841
+vm 951 592 359
+ctr bench-strapi-app-1 202.5MiB / 951.9MiB 71.57%
+ctr bench-strapi-db-1 57.41MiB / 951.9MiB 24.66%
+sample 1792905848
+vm 951 581 370
+ctr bench-strapi-app-1 203MiB / 951.9MiB 76.90%
+ctr bench-strapi-db-1 57.15MiB / 951.9MiB 24.91%
+sample 1792905855
+vm 951 591 360
+ctr bench-strapi-app-1 204.3MiB / 951.9MiB 71.37%
+ctr bench-strapi-db-1 57.25MiB / 951.9MiB 24.48%
+sample 1792905862
+vm 951 591 359
+ctr bench-strapi-app-1 202.4MiB / 951.9MiB 74.37%
+ctr bench-strapi-db-1 57.2MiB / 951.9MiB 26.76%
+sample 1792905869
+vm 951 598 353
+ctr bench-strapi-app-1 203.2MiB / 951.9MiB 78.90%
+ctr bench-strapi-db-1 57.31MiB / 951.9MiB 26.27%
+sample 1792905877
+vm 951 599 352

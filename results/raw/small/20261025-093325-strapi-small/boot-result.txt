@@ -1,0 +1,5 @@
+status=ok
+reason=
+boot_ms=16286
+timeout_s=300
+ready_path=/_health

@@ -1,0 +1,20 @@
+sample 1792900930
+vm 951 511 439
+ctr bench-strapi-app-1 134.7MiB / 951.9MiB 0.01%
+ctr bench-strapi-db-1 42.38MiB / 951.9MiB 3.20%
+sample 1792900935
+vm 951 507 444
+ctr bench-strapi-app-1 134.8MiB / 951.9MiB 0.01%
+ctr bench-strapi-db-1 42.23MiB / 951.9MiB 3.91%
+sample 1792900940
+vm 951 508 443
+ctr bench-strapi-app-1 135.3MiB / 951.9MiB 0.01%
+ctr bench-strapi-db-1 42.77MiB / 951.9MiB 1.35%
+sample 1792900945
+vm 951 508 443
+ctr bench-strapi-app-1 135.2MiB / 951.9MiB 0.01%
+ctr bench-strapi-db-1 42.75MiB / 951.9MiB 3.88%
+sample 1792900951
+vm 951 510 441
+ctr bench-strapi-app-1 135.6MiB / 951.9MiB 0.02%
+ctr bench-strapi-db-1 42.69MiB / 951.9MiB 0.02%
