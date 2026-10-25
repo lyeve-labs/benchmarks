@@ -39,11 +39,19 @@ function median(xs) {
   return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
 }
 
+// The lower of the two middle values when the count is even, so a figure that
+// has to be one of the offered rates stays one, and at least half the runs
+// reached it.
+function lowerMedian(xs) {
+  const a = xs.slice().sort((x, y) => x - y);
+  return a[Math.floor((a.length - 1) / 2)];
+}
+
 // The median of the numbers given, with the lowest, the highest and how many.
-function spread(xs) {
+function spread(xs, middle = median) {
   const v = xs.filter((x) => typeof x === 'number' && Number.isFinite(x));
   if (!v.length) return null;
-  return { median: median(v), min: Math.min(...v), max: Math.max(...v), n: v.length };
+  return { median: middle(v), min: Math.min(...v), max: Math.max(...v), n: v.length };
 }
 
 // Each distinct value with the number of runs that carried it, most common first.
@@ -83,10 +91,11 @@ function scenarioResult(id, runs) {
   return {
     id,
     runs: runs.length,
+    bootFailed: runs.length - booted.length,
     seedFailed: booted.length - measured.length,
     offeredRates: tally(measured.map((r) => r.load.offeredRates.join(' '))).map((x) => x.value),
     // A run that kept up at no rate counts as 0.
-    highestRateKeptUp: spread(measured.map((r) => r.load.highestRateKeptUp ?? 0)),
+    highestRateKeptUp: spread(measured.map((r) => r.load.highestRateKeptUp ?? 0), lowerMedian),
     peak: {
       vmUsedMB: spread(measured.map((r) => r.peak?.vmUsedMB)),
       containersMB: services(measured.map((r) => r.peak?.containersMB)),
@@ -145,12 +154,15 @@ function campaignResult(name, runs) {
       kernel: rig((g) => g.kernel),
       docker: rig((g) => g.docker),
       uptimeAtStartS: spread(runs.map((r) => r.rig?.uptimeAtStartS)),
+      // The one-minute load average when the run started.
+      loadAtStart: spread(runs.map((r) => parseFloat(r.rig?.loadAtStart))),
     },
     loadGenerator: {
       cpu: rig((g) => g.loadGenerator?.cpu),
       nproc: rig((g) => g.loadGenerator?.nproc),
       memoryTotalMB: rig((g) => g.loadGenerator?.memoryTotalMB),
       k6: rig((g) => g.loadGenerator?.k6),
+      loadAtStart: spread(runs.map((r) => parseFloat(r.rig?.loadGenerator?.loadAtStart))),
     },
     networkRttMs: spread(runs.map((r) => r.rig?.networkRttMs)),
     // The highest figure any measured step reached, so one line says whether
@@ -177,15 +189,28 @@ function cell(s, f = (x) => num(x), unit = '') {
 const ms = (x) => num(x);
 const seconds = (x) => num(x / 1000);
 const megabytes = (x) => num(x, 0);
-const share = (x) => String(Math.round(x * 100));
+// One decimal, so a share just under the 90% floor never reads as 90.
+const share = (x) => num(x * 100, 1);
 const percent = (x) => (x == null ? 'n/a' : `${num(x, 0)}%`);
 // Steal sits near zero on a healthy machine, so it keeps one decimal.
 const steal = (x) => (x == null ? 'n/a' : `${num(x, 1)}%`);
 const range = (s, f) => (s.min === s.max ? f(s.min) : `${f(s.min)} to ${f(s.max)}`);
 const errors = (x) => (x == null ? 'n/a' : `${(x * 100).toFixed(2)}%`);
 const rate = (x) => (x === 0 ? 'none' : num(x, 0));
+const load = (x) => num(x, 2);
 const shortId = (ref) => ref.replace(/ sha256:([0-9a-f]{12})[0-9a-f]*/g, ' `$1`');
 const scenarioTitle = (id) => scenariosDoc.scenarios.find((s) => s.id === id)?.title || id;
+
+// The highest rate a scenario kept up, with the runs that measured nothing
+// because the target did not boot or did not take the seed.
+function keptUp(s) {
+  const failed = [
+    s.bootFailed && `the target did not boot in ${s.bootFailed} of ${s.runs} runs`,
+    s.seedFailed && `seeding failed in ${s.seedFailed} of ${s.runs} runs`,
+  ].filter(Boolean);
+  const figure = s.highestRateKeptUp ? cell(s.highestRateKeptUp, rate) : s.runs ? 'no run measured' : 'n/a';
+  return failed.length ? `${figure}<br><sub>${failed.join(', ')}</sub>` : figure;
+}
 
 function campaignMarkdown(c) {
   const memory = (t) => (t.length ? t.map((x) => `${x.value} MB${t.length > 1 ? ` (${x.runs} runs)` : ''}`).join(', ') : 'n/a');
@@ -199,7 +224,8 @@ function campaignMarkdown(c) {
   md += `| Server software | ${one(c.server.os)}, Linux ${one(c.server.kernel)}, Docker ${one(c.server.docker)} |\n`;
   md += `| Load generator | ${one(c.loadGenerator.cpu)}, ${one(c.loadGenerator.nproc)} vCPU, ${memory(c.loadGenerator.memoryTotalMB)} memory, k6 ${one(c.loadGenerator.k6)} |\n`;
   md += `| Network | TCP connect from the load generator to the server: ${c.networkRttMs ? `${num(c.networkRttMs.median, 2)} ms (${num(c.networkRttMs.min, 2)} to ${num(c.networkRttMs.max, 2)}, n=${c.networkRttMs.n})` : 'n/a'} |\n`;
-  md += `| Runs | ${c.runs}, from ${c.firstRun} to ${c.lastRun}. Each started ${c.server.uptimeAtStartS ? `${range(c.server.uptimeAtStartS, (x) => num(x, 0))} s` : 'an unrecorded time'} after the server booted |\n`;
+  md += `| Runs | ${c.runs}, ${c.firstRun === c.lastRun ? `on ${c.firstRun}` : `from ${c.firstRun} to ${c.lastRun}`}. Each started ${c.server.uptimeAtStartS ? `${range(c.server.uptimeAtStartS, (x) => num(x, 0))} s` : 'an unrecorded time'} after the server booted |\n`;
+  md += `| Load at the start of a run | one-minute load average ${c.server.loadAtStart ? range(c.server.loadAtStart, load) : 'n/a'} on the server and ${c.loadGenerator.loadAtStart ? range(c.loadGenerator.loadAtStart, load) : 'n/a'} on the load generator |\n`;
   md += `| Offered rates | ${offered.length ? offered.map((o) => `${o.split(' ').join(', ')} req/s`).join('; ') : 'n/a'} |\n`;
   md += `| Harness | ${c.harness.length ? c.harness.map((h) => `\`${h.value}\`${c.harness.length > 1 ? ` (${h.runs} runs)` : ''}`).join(', ') : 'n/a'} |\n`;
   md += `| CPU steal | at most ${steal(c.worstStep.serverStealPct)} on the server and ${steal(c.worstStep.loadGeneratorStealPct)} on the load generator in any measured step |\n`;
@@ -217,10 +243,10 @@ function campaignMarkdown(c) {
   }
 
   md += '\n### Highest rate kept up\n\n';
-  md += 'A step keeps up when it serves at least 90% of its offered rate within the scenario\'s error budget. A run stops at the first step that does not, so the rates above the highest one kept up never ran.\n\n';
+  md += 'A step keeps up when it serves at least 90% of its offered rate within the scenario\'s error budget. A run stops at the first step that does not, so the rates above the highest one kept up never ran. With an even number of runs the figure is the lower of the two middle ones, so it is always a rate that was offered and at least half the runs reached it.\n\n';
   md += `| Target | ${scenarioIds.map((s) => `${s}: ${scenarioTitle(s)} (req/s)`).join(' | ')} |\n`;
   md += `|---|${scenarioIds.map(() => '---').join('|')}|\n`;
-  for (const t of c.targets) md += `| ${t.name} | ${t.scenarios.map((s) => cell(s.highestRateKeptUp, rate)).join(' | ')} |\n`;
+  for (const t of c.targets) md += `| ${t.name} | ${t.scenarios.map(keptUp).join(' | ')} |\n`;
 
   md += '\n### Peak memory under load\n\n';
   md += 'The highest of the samples the server took every 5 s while the steps ran: the whole server, and the application container.\n\n';
@@ -230,13 +256,13 @@ function campaignMarkdown(c) {
 
   for (const id of scenarioIds) {
     md += `\n### ${id}: ${scenarioTitle(id)}\n\n`;
-    md += 'Latencies in ms. CPU is the busy share of each machine while k6 ran the step.\n\n';
-    md += '| Target | Offered (req/s) | Runs | Served | p50 | p95 | p99 | Errors | Server CPU | Load generator CPU | Received (MB/s) |\n';
-    md += '|---|---:|---:|---|---:|---:|---|---:|---:|---:|---:|\n';
+    md += 'Latencies in ms. CPU is the busy share of each machine over the whole k6 process that ran the step, and steal is the share the hypervisor held back from the server.\n\n';
+    md += '| Target | Offered (req/s) | Runs | Served | p50 | p95 | p99 | Errors | Server CPU | Server steal | Load generator CPU | Received (MB/s) |\n';
+    md += '|---|---:|---:|---|---:|---:|---|---:|---:|---:|---:|---:|\n';
     for (const t of c.targets) {
       const s = t.scenarios.find((x) => x.id === id);
       for (const st of s.steps) {
-        md += `| ${t.name} | ${st.rate} | ${st.runs} | ${cell(st.served_share, share, '%')} | ${num(st.p50_ms?.median)} | ${num(st.p95_ms?.median)} | ${cell(st.p99_ms, ms)} | ${errors(st.error_rate?.median)} | ${percent(st.server_busy_pct?.median)} | ${percent(st.loadgen_busy_pct?.median)} | ${num(st.received_mb_s?.median, 2)} |\n`;
+        md += `| ${t.name} | ${st.rate} | ${st.runs} | ${cell(st.served_share, share, '%')} | ${num(st.p50_ms?.median)} | ${num(st.p95_ms?.median)} | ${cell(st.p99_ms, ms)} | ${errors(st.error_rate?.median)} | ${percent(st.server_busy_pct?.median)} | ${steal(st.server_steal_pct?.median)} | ${percent(st.loadgen_busy_pct?.median)} | ${num(st.received_mb_s?.median, 2)} |\n`;
       }
     }
   }

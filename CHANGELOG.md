@@ -25,6 +25,10 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 - Each small-server run records the harness commit, the image ID the server
   ran, and both machines' load when it started. A run during which the load
   generator's address changed is void and never reported.
+- The small-server report shows each step's CPU steal on the server, the load
+  every run started at, and the runs in which a target did not boot or take
+  the seed. With an even number of runs, the highest rate kept up is the lower
+  of the two middle ones, so it is always a rate that was offered.
 
 ### Changed
 
@@ -41,6 +45,8 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 - A small-server run removes the containers and volumes an earlier run could
   not tear down before it starts, so it never measures a leftover stack or the
   data that stack seeded.
+- A small-server step's served share shows one decimal, so 89.5% no longer
+  reads as 90%, the floor a step has to reach.
 
 ## [0.9.1] - 2026-10-22
 

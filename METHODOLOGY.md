@@ -331,17 +331,20 @@ a reader can subtract it. Put the load generator as close to the server as
 possible, in the same region and on the same provider's network if you can. A
 figure measured across a continent measures the continent.
 
-**Which machine ran out.** A step can fall short of its rate because the
-server is saturated, or because the load generator is. Each step reads the
-CPU counters of both machines just before and after its k6 process, which
-covers k6's start and its setup as well as the measured window, and records
-each machine's busy share and its steal share, the time the hypervisor held
-the CPU back. A step that falls short with the server near 100% busy measured
-the server. One with the load generator near 100% measured the load generator,
-and the report shows both shares beside every step. Steal also shows a burstable plan
-that ran out of CPU credits, which throttles the machine to its baseline. The
-step records the bytes received per second too, so a network ceiling shows as
-a flat line with neither CPU saturated.
+**Which machine ran out.** A step can fall short of its rate because the server
+is saturated, or because the load generator is. Each step reads the CPU
+counters of both machines just before and after its k6 process and records each
+machine's busy share and its steal share, the time the hypervisor held the CPU
+back. Both are averages over the whole process: k6's start, its setup and its
+stop add a few seconds to the measured window, in which the server mostly
+waits, so a server saturated through the window reads a point or two under
+100%. On a machine with more than one core the share is of all its cores
+together. A step that falls short with the server near 100% busy measured the
+server. One with the load generator near 100% measured the load generator, and
+the report shows both shares beside every step. Steal also shows a burstable
+plan that ran out of CPU credits, which throttles the machine to its baseline.
+The step records the bytes received per second over the same process too, so a
+network ceiling shows as a flat line with neither CPU saturated.
 
 **The network between them.** The application port answers only the load
 generator's address while a run lasts. A firewall rule on the server drops
@@ -391,9 +394,11 @@ slow hour at the provider spreads over all of them instead of landing on one.
 Every run carries the campaign's name, and a stopped sweep resumes where it
 left off. `make small-report` turns the campaigns into `results/SMALL.md` and
 `results/small.json`: each figure is the median of the campaign's runs, with
-the lowest and highest and the number of runs. Campaigns accumulate, newest
-first, so a later engine release or another provider's plan reads beside the
-earlier ones, and a reader compares two campaigns only where their rigs match.
+the lowest and highest and the number of runs. The highest rate kept up takes
+the lower of the two middle runs when their number is even, so it is always a
+rate that was offered. Campaigns accumulate, newest first, so a later engine
+release or another provider's plan reads beside the earlier ones, and a reader
+compares two campaigns only where their rigs match.
 
 **What a boot failure means.** A target that does not answer within the limit,
 exits, or is killed has a result, not a missing number: in its stock

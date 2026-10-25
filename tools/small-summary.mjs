@@ -119,7 +119,7 @@ function step(summaryPath, rate, budget) {
 }
 
 function describe(s) {
-  const pct = (x) => (x == null ? '?' : `${Math.round(x * 100)}%`);
+  const pct = (x) => (x == null ? '?' : `${Math.round(x * 1000) / 10}%`);
   const cpu = s.server_busy_pct != null && s.loadgen_busy_pct != null
     ? `, CPU busy ${Math.round(s.server_busy_pct)}% on the server and ${Math.round(s.loadgen_busy_pct)}% here`
     : '';
