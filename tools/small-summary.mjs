@@ -65,13 +65,16 @@ function parseSamples(s) {
 function state(dir, name) {
   if (!existsSync(join(dir, `${name}.txt`))) return null;
   const kv = keyValues(text(dir, `${name}.txt`));
-  if (!kv.status) return { status: 'unanswered', exitCode: null, oomKilled: null, restarts: null, oomKernelLines: [] };
+  // The kernel's lines come from a second call, which can answer when the
+  // first did not.
+  const oomKernelLines = lines(text(dir, `${name}-dmesg.txt`));
+  if (!kv.status) return { status: 'unanswered', exitCode: null, oomKilled: null, restarts: null, oomKernelLines };
   return {
     status: kv.status,
     exitCode: kv.exit_code != null ? Number(kv.exit_code) : null,
     oomKilled: kv.oom_killed === 'true',
     restarts: kv.restarts != null ? Number(kv.restarts) : null,
-    oomKernelLines: lines(text(dir, `${name}-dmesg.txt`)),
+    oomKernelLines,
   };
 }
 

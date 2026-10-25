@@ -17,8 +17,9 @@
 #           under 0.3, wait until this machine's load is under half its cores,
 #           then run small.sh. Each wait gives up after ten minutes, and the
 #           run records the load it started at. A server that does not answer
-#           before its reboot gets 30 minutes, because one a target ran out of
-#           memory answers again only once the kernel kills a process
+#           before its reboot gets 30 minutes, because a server that a target
+#           ran out of memory answers again only once the kernel kills a
+#           process
 #
 # The order interleaves the targets, so a slow hour at the provider spreads over
 # all of them instead of landing on one. A run the campaign already holds is not
@@ -184,9 +185,12 @@ reboot_server() {
   local before now deadline waited=""
   # A target that ran the server out of memory leaves it unable to answer
   # until the kernel kills a process, which once took 19 minutes, so the first
-  # read waits up to 30 minutes before the campaign stops.
+  # read waits up to 30 minutes before the campaign stops. ConnectTimeout ends
+  # at the banner, and an sshd starved of memory can stall after it, so each
+  # try has a limit of its own.
   deadline=$(( SECONDS + 1800 ))
-  until before="$(rsh 'cat /proc/sys/kernel/random/boot_id' 2>/dev/null)" && [[ -n "$before" ]]; do
+  until before="$(timeout 60 "${SSH[@]}" "$HOST" 'cat /proc/sys/kernel/random/boot_id' 2>/dev/null </dev/null)" \
+    && [[ -n "$before" ]]; do
     (( SECONDS < deadline )) \
       || die "cannot reach $HOST for 30 minutes: restart it from the provider's console, then run the same command to resume"
     [[ -n "$waited" ]] || warn "$HOST does not answer, waiting up to 30 minutes for it"

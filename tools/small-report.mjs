@@ -129,7 +129,8 @@ function targetResult(id, runs, scenarioIds) {
       containersMB: services(runs.map((r) => r.idle?.containersMB)),
     },
     oomKilledOrRestarted: runs.filter(trouble).length,
-    endUnanswered: runs.filter((r) => r.end?.status === 'unanswered').length,
+    // A run whose kernel lines show a kill already counts above.
+    endUnanswered: runs.filter((r) => r.end?.status === 'unanswered' && !trouble(r)).length,
     scenarios: scenarioIds.map((s) => scenarioResult(s, runs.filter((r) => r.scenario === s))),
   };
 }
@@ -205,12 +206,12 @@ const scenarioTitle = (id) => scenariosDoc.scenarios.find((s) => s.id === id)?.t
 
 // The highest rate a scenario kept up, with the runs that measured nothing
 // because the target did not boot or did not take the seed, and those after
-// which the server stopped answering.
+// whose steps the server did not answer.
 function keptUp(s) {
   const failed = [
     s.bootFailed && `the target did not boot in ${s.bootFailed} of ${s.runs} runs`,
     s.seedFailed && `seeding failed in ${s.seedFailed} of ${s.runs} runs`,
-    s.unanswered && `the server stopped answering in ${s.unanswered} of ${s.runs} runs`,
+    s.unanswered && `the server did not answer after the steps in ${s.unanswered} of ${s.runs} runs`,
   ].filter(Boolean);
   const figure = s.highestRateKeptUp ? cell(s.highestRateKeptUp, rate) : s.runs ? 'no run measured' : 'n/a';
   return failed.length ? `${figure}<br><sub>${failed.join(', ')}</sub>` : figure;
@@ -243,7 +244,7 @@ function campaignMarkdown(c) {
     const images = t.images.map((i) => `${shortId(i.value).split(', ').join('<br>')}${t.images.length > 1 ? ` (${i.runs} runs)` : ''}`).join('<br>');
     const failed = t.boot.failed ? `${t.boot.failed} of ${t.boot.runs}: ${t.boot.reasons.map((r) => r.value).join(', ')}` : `0 of ${t.boot.runs}`;
     const ctr = t.idle.containersMB;
-    const killed = `${t.oomKilledOrRestarted}${t.endUnanswered ? `<br><sub>unknown in ${t.endUnanswered}: the server did not answer at the end</sub>` : ''}`;
+    const killed = `${t.oomKilledOrRestarted}${t.endUnanswered ? `<br><sub>unknown in ${t.endUnanswered}: the server did not answer after the steps</sub>` : ''}`;
     md += `| ${t.name} | ${images} | ${cell(t.boot.ms, seconds, ' s')} | ${cell(t.idle.vmUsedMB, megabytes, ' MB')} | ${cell(ctr.app, megabytes, ' MB')} | ${cell(ctr.db, megabytes, ' MB')} | ${ctr.proxy ? cell(ctr.proxy, megabytes, ' MB') : 'none'} | ${failed} | ${killed} |\n`;
   }
 
