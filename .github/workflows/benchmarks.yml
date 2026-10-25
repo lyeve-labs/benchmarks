@@ -38,9 +38,21 @@ jobs:
             exit 1
           fi
 
+      - name: Small-server report is in sync with its runs
+        run: |
+          # Every run is summarized again from its raw files, so a summary an
+          # older summarizer wrote fails, and status rather than diff, so a
+          # report that was never committed fails too.
+          make small-report
+          if [ -n "$(git status --porcelain -- results/raw/small results/small.json results/SMALL.md)" ]; then
+            git status --short -- results/raw/small results/small.json results/SMALL.md
+            echo "::error::the small-server report is stale: run 'make small-report' and commit the result"
+            exit 1
+          fi
+
   shell:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Shell scripts parse
-        run: bash -n harness/run.sh harness/gen-license.sh harness/small.sh
+        run: bash -n harness/run.sh harness/gen-license.sh harness/small.sh harness/small-sweep.sh

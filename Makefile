@@ -45,6 +45,17 @@ profile: ## Run a real-world profile: make profile PROFILE=blog TARGET=lyeve [FU
 small: ## Run one target alone on a small remote server: make small TARGET=lyeve HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm [PROVIDER= PLAN= RATES="25 50 100"]
 	@harness/small.sh --target $(TARGET) --scenario $(SCENARIO)
 
+.PHONY: small-sweep
+small-sweep: ## Run a small-server campaign, every target and read scenario in rounds: make small-sweep HOST= KEY= CAMPAIGN= [ROUNDS=3 PROVIDER= PLAN=]
+	@harness/small-sweep.sh
+
+.PHONY: small-report
+small-report: ## Summarize every run in results/raw/small/ again, then regenerate results/small.json + results/SMALL.md
+	@for d in results/raw/small/*/; do \
+	  if [ -f "$$d/small.json" ]; then node tools/small-summary.mjs "$$d" >/dev/null || exit 1; fi; \
+	done
+	@node tools/small-report.mjs
+
 .PHONY: report
 report: ## Regenerate results.json + RESULTS.md from results/raw/
 	@node tools/generate-report.mjs

@@ -1,0 +1,190 @@
+{
+  "mode": "small-server",
+  "target": "directus",
+  "date": "2026-10-25",
+  "campaign": "2026-10-25-aws-t2-micro",
+  "scenario": "S04",
+  "rig": {
+    "harness": "dab490ced7bb",
+    "provider": "AWS",
+    "plan": "t2.micro, T2 Unlimited, 15 GB gp3, ap-southeast-1a",
+    "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+    "nproc": 1,
+    "memoryTotalMB": 951,
+    "swapTotalMB": 0,
+    "cgroupMemoryMax": "none",
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-1014-aws",
+    "arch": "x86_64",
+    "docker": "29.9.2",
+    "dockerInstalledByRun": false,
+    "loadAtStart": "0.24 0.19 0.08",
+    "uptimeAtStartS": 124,
+    "loadGenerator": {
+      "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+      "nproc": 1,
+      "memoryTotalMB": 951,
+      "loadAtStart": "0.13 0.14 0.12",
+      "k6": "v2.3.0",
+      "where": "a separate machine, over the network"
+    },
+    "networkRttMs": 0.56,
+    "images": [
+      {
+        "ref": "postgres:16-alpine",
+        "digest": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+        "id": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36"
+      },
+      {
+        "ref": "directus/directus:11",
+        "digest": "sha256:eb326f679ae847c0a776f93b972761dc2ebe84980e0b9d274a6bc31cd62809f7",
+        "id": "sha256:eb326f679ae847c0a776f93b972761dc2ebe84980e0b9d274a6bc31cd62809f7"
+      }
+    ]
+  },
+  "boot": {
+    "status": "ok",
+    "provenance": "measured",
+    "value_ms": 28897,
+    "elapsed_ms": 28897,
+    "timeout_s": 300,
+    "readyPath": "/server/health",
+    "reason": null,
+    "container": {
+      "status": "running",
+      "exitCode": 0,
+      "oomKilled": false,
+      "restarts": 0,
+      "oomKernelLines": []
+    }
+  },
+  "idle": {
+    "provenance": "measured",
+    "samples": 5,
+    "vm": {
+      "totalMB": 951,
+      "usedMB": 570,
+      "availableMB": 381
+    },
+    "containersMB": {
+      "bench-directus-app-1": 262.8,
+      "bench-directus-db-1": 36.6
+    }
+  },
+  "load": {
+    "scenario": "S04",
+    "offeredRates": [
+      25,
+      50,
+      100,
+      200,
+      300,
+      500
+    ],
+    "warmup": "10s, discarded",
+    "window": "60s",
+    "errorBudget": 0.01,
+    "servedFloor": 0.9,
+    "steps": [
+      {
+        "rate": 25,
+        "provenance": "measured",
+        "served_rps": 25,
+        "served_share": 1.0017,
+        "p50_ms": 6.1,
+        "p95_ms": 12.6,
+        "p99_ms": 23.7,
+        "error_rate": 0.0006648936170212766,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 1,
+        "received_mb_s": 0.25,
+        "server_busy_pct": 25.7,
+        "server_iowait_pct": 0.1,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 2.5,
+        "loadgen_steal_pct": 0.1
+      },
+      {
+        "rate": 50,
+        "provenance": "measured",
+        "served_rps": 50,
+        "served_share": 1.0006,
+        "p50_ms": 5.3,
+        "p95_ms": 11.6,
+        "p99_ms": 43.6,
+        "error_rate": 0.00033288948069241014,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 4,
+        "received_mb_s": 0.5,
+        "server_busy_pct": 37.4,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0,
+        "loadgen_busy_pct": 3.4,
+        "loadgen_steal_pct": 0.1
+      },
+      {
+        "rate": 100,
+        "provenance": "measured",
+        "served_rps": 100,
+        "served_share": 1.0001,
+        "p50_ms": 4.7,
+        "p95_ms": 41.6,
+        "p99_ms": 225.6,
+        "error_rate": 0.00016655562958027982,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 22,
+        "received_mb_s": 1,
+        "server_busy_pct": 60.1,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 4.3,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 200,
+        "provenance": "measured",
+        "served_rps": 155,
+        "served_share": 0.7725,
+        "p50_ms": 1284.3,
+        "p95_ms": 1424,
+        "p99_ms": 3306.3,
+        "error_rate": 0.00010656436487638534,
+        "within_budget": true,
+        "kept_up": false,
+        "dropped_iterations": 2620,
+        "vus_peak": 200,
+        "received_mb_s": 1.54,
+        "server_busy_pct": 99.5,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 14.5,
+        "loadgen_steal_pct": 0
+      }
+    ],
+    "stopped": "served 78% of 200 req/s, 0.01% errors, p99 3306.3 ms, CPU busy 100% on the server and 15% here",
+    "highestRateKeptUp": 100
+  },
+  "peak": {
+    "provenance": "measured",
+    "samples": 41,
+    "vmUsedMB": 700,
+    "vmMinAvailableMB": 250,
+    "containersMB": {
+      "bench-directus-app-1": 296.7,
+      "bench-directus-db-1": 62.8
+    }
+  },
+  "end": {
+    "status": "running",
+    "exitCode": 0,
+    "oomKilled": false,
+    "restarts": 0,
+    "oomKernelLines": []
+  }
+}

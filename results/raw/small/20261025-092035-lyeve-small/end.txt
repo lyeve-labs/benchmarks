@@ -1,0 +1,4 @@
+status=exited
+exit_code=137
+oom_killed=true
+restarts=0

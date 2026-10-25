@@ -305,17 +305,23 @@ come from a different host, so they never enter the head-to-head table (§2).
 
 ```bash
 make small TARGET=lyeve HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm PROVIDER=<provider> PLAN=<plan>
+make small-sweep HOST=ubuntu@10.0.1.20 KEY=~/.ssh/bench.pem CAMPAIGN=<name> PROVIDER=<provider> PLAN=<plan>
 ```
 
 **Same rules.** The images are the ones the local rig measures, byte for byte.
-The server pulls each public image by the digest the harness machine holds,
-and an image it cannot pull (one built locally, or one whose registry refuses
+The server pulls each public image by the digest the harness machine holds, and
+an image it cannot pull (one built locally, or one whose registry refuses
 anonymous pulls) is copied to it over SSH. So the server has to share the
-harness machine's CPU architecture. The dataset, the seed, the scenarios, the
-stock configuration and the provenance tags are unchanged. Each target runs
-alone, with its own PostgreSQL on the same server, the way a small-server user
-would run it. Use a fresh server for each target, so nothing one target left
-behind (page cache, a kernel log) is read as another's.
+harness machine's CPU architecture. An image already on the server stays when
+it holds the same bytes as the harness machine's copy, compared by the image ID
+for the server's platform, which a copy keeps. When the bytes differ, as after
+a rebuild or a moved tag, the harness machine's copy replaces it. A load
+generator that holds no images leaves the server's as they are, which is why
+the machine that holds the images prepares the server. Every run records the
+image ID the server ran, so a campaign shows that each of its runs used the
+same bytes. The dataset, the seed, the scenarios, the stock configuration and
+the provenance tags are unchanged. Each target runs alone, with its own
+PostgreSQL on the same server, the way a small-server user would run it.
 
 **A remote load generator.** k6 runs on a separate machine and reaches the
 server over the network, so the load generator never takes the server's one
@@ -325,11 +331,41 @@ a reader can subtract it. Put the load generator as close to the server as
 possible, in the same region and on the same provider's network if you can. A
 figure measured across a continent measures the continent.
 
+**Which machine ran out.** A step can fall short of its rate because the server
+is saturated, or because the load generator is. Each step reads the CPU
+counters of both machines just before and after its k6 process and records each
+machine's busy share and its steal share, the time the hypervisor held the CPU
+back. Both are averages over the whole process: k6's start, its setup and its
+stop add a few seconds to the measured window, in which the server mostly
+waits, so a server saturated through the window reads a point or two under
+100%. On a machine with more than one core the share is of all its cores
+together. A step that falls short with the server near 100% busy measured the
+server. One with the load generator near 100% measured the load generator, and
+the report shows both shares beside every step. Steal also shows a burstable
+plan that ran out of CPU credits, which throttles the machine to its baseline.
+The busy share counts neither idle time nor I/O wait, the time the CPU sat idle
+with a disk request outstanding, so each step records the server's I/O wait
+too. It rises with synchronous writes to disk, and on a server with no swap it
+rises far higher once memory runs out, because the kernel drops the cached code
+of the running programs and has to read it back. A step that falls short while
+the server's busy and I/O wait shares add up to nearly 100% measured the
+server, whichever of the two is larger. The step records the bytes received per
+second over the same process too, so a network ceiling shows as a flat line
+with neither CPU saturated.
+
 **The network between them.** The application port answers only the load
 generator's address while a run lasts. A firewall rule on the server drops
 every other source, and teardown removes it. That keeps strangers' scans out of
 the measurement, and it keeps a stack with published benchmark credentials off
-the open internet.
+the open internet. If the load generator's address changes during a run, the
+rule drops its requests from then on, and the target would read as failing.
+Such a run is void: it enters no figure and runs again, and the report counts
+it beside the figures it would have joined, with its reason. So is a run whose
+server did not answer SSH for a minute, which would otherwise read as a target
+that stopped. A target that stalls the server that long is voided on every
+pass, so its campaign stays incomplete and the report shows its void runs where
+its figures would be. Every void run stays in the results, under
+`results/raw/small/void/`.
 
 **What a run measures.**
 
@@ -345,10 +381,47 @@ the open internet.
    100, 200, 300 and 500 req/s. Each step gets the usual 10 s warm-up, which is
    discarded, and the scenario's measured window. Each step records the latency
    percentiles, the error rate and the share of the offered rate the target
-   served. Stepping stops after the first step that breaks the error budget or
-   serves less than 90% of its rate, because a higher rate would only measure
-   the same collapse for longer. While the steps run, a sampler on the server
-   records server and container memory every 5 s.
+   served, from k6's own request rate before any rounding. Stepping stops after
+   the first step that breaks the error budget or serves less than 90% of its
+   rate, because a higher rate would only measure the same collapse for longer.
+   Each step also records the busy and steal shares of both machines' CPUs, the
+   iterations k6 dropped, the most virtual users it held and the bytes it
+   received per second. While the steps run, a sampler on the server records
+   server and container memory every 5 s.
+
+**Campaigns.** `make small-sweep` runs a campaign: every self-hosted target on
+every read scenario, three rounds by default, all on one server. Before every
+run the server reboots, so nothing one target left behind (memory, page cache,
+a kernel log) is read as another's, and the run starts only once the server has
+been up two minutes with Docker running and its one-minute load under 0.3, and
+the load generator's load is under half its cores. Each wait gives up after ten
+minutes, and every run records the load it started at. That load is read a few
+seconds after the wait, once the run has logged in to the server, so it can sit
+a little above 0.3 on a server that was quiet. A stack an earlier run could not
+tear down, with its firewall rule, is removed before the next run starts, and
+its containers before the server reboots, because a stack with a restart policy
+would start again at boot. For the whole campaign the server's timers are
+masked and its snap refreshes held, so no package or maintenance job shares the
+CPU with a step. Both come back when the sweep ends, and
+`harness/small-sweep.sh --restore` brings them back after a sweep that could
+not reach the server at its end. The rounds interleave the targets (each
+scenario takes every target in turn before the next round), so a slow hour at
+the provider spreads over all of them instead of landing on one. Every run
+carries the campaign's name, and a stopped sweep resumes where it left off. A
+target that leaves the server unable to answer once its steps are over keeps
+its run, because every step was measured: the report says so beside the highest
+rate kept up, and the run's end state reads unknown. Before the next run the
+sweep waits up to 30 minutes for the server to answer again, because a server
+out of memory recovers once the kernel kills a process, which took 19 minutes
+in the first campaign. After that it stops, since only the provider can restart
+a server that does not answer: restart it from the provider's console, then run
+the same command. `make small-report` turns the campaigns into
+`results/SMALL.md` and `results/small.json`: each figure is the median of the
+campaign's runs, with the lowest and highest and the number of runs. The
+highest rate kept up takes the lower of the two middle runs when their number
+is even, so it is always a rate that was offered. Campaigns accumulate, newest
+first, so a later engine release or another provider's plan reads beside the
+earlier ones, and a reader compares two campaigns only where their rigs match.
 
 **What a boot failure means.** A target that does not answer within the limit,
 exits, or is killed has a result, not a missing number: in its stock
@@ -360,18 +433,21 @@ tuning until it passes, because a tuned target is not the one a reader would
 install.
 
 **Where results go.** Each run writes `results/raw/small/<run-id>/`: the raw
-text from the server, one k6 summary per step, the `M-*.json` files every run
-carries, and `small.json`. That file holds the rig (provider and plan as given,
-the CPU model, core count and memory read from the server itself), the boot
-result, idle and peak memory, and every step. The report generator does not
-read this directory, so a small-server figure cannot reach the head-to-head.
+text from the server, one k6 summary and one pair of CPU readings per step, the
+`M-*.json` files every run carries, and `small.json`. That file holds the rig
+(provider and plan as given, the harness commit, the CPU model, core count and
+memory read from the server itself, the server's load and uptime when the run
+started, and the same for the load generator), the boot result, idle and peak
+memory, and every step. `results/SMALL.md` reports the campaigns. The
+head-to-head's report generator does not read this directory, so a
+small-server figure cannot reach the head-to-head.
 
 **Nothing secret stays on the server.** The one credential a run creates, the
 engine's setup token, travels over SSH on standard input and lives only in the
 container. Teardown removes the stack with its volumes, the images the run
-brought, the firewall rules and the work directory. When the server has no
-Docker, the harness installs it with Docker's own install script and leaves it
-installed.
+brought, the firewall rules and the work directory. A campaign keeps the
+images between its runs. When the server has no Docker, the harness installs
+it with Docker's own install script and leaves it installed.
 
 ---
 

@@ -1,0 +1,230 @@
+{
+  "mode": "small-server",
+  "target": "payload",
+  "date": "2026-10-25",
+  "campaign": "2026-10-25-aws-t2-micro",
+  "scenario": "S01",
+  "rig": {
+    "harness": "dab490ced7bb",
+    "provider": "AWS",
+    "plan": "t2.micro, T2 Unlimited, 15 GB gp3, ap-southeast-1a",
+    "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+    "nproc": 1,
+    "memoryTotalMB": 951,
+    "swapTotalMB": 0,
+    "cgroupMemoryMax": "none",
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-1014-aws",
+    "arch": "x86_64",
+    "docker": "29.9.2",
+    "dockerInstalledByRun": false,
+    "loadAtStart": "0.27 0.21 0.09",
+    "uptimeAtStartS": 124,
+    "loadGenerator": {
+      "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+      "nproc": 1,
+      "memoryTotalMB": 951,
+      "loadAtStart": "0.14 0.16 0.17",
+      "k6": "v2.3.0",
+      "where": "a separate machine, over the network"
+    },
+    "networkRttMs": 0.51,
+    "images": [
+      {
+        "ref": "postgres:16-alpine",
+        "digest": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+        "id": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36"
+      },
+      {
+        "ref": "bench-payload:local",
+        "digest": "sha256:34ae8ed30617bdb85ac0c5598ecf0bd4f487d86b2170bfb6c1264085180dce00",
+        "id": "sha256:34ae8ed30617bdb85ac0c5598ecf0bd4f487d86b2170bfb6c1264085180dce00"
+      }
+    ]
+  },
+  "boot": {
+    "status": "ok",
+    "provenance": "measured",
+    "value_ms": 14389,
+    "elapsed_ms": 14389,
+    "timeout_s": 300,
+    "readyPath": "/api/access",
+    "reason": null,
+    "container": {
+      "status": "running",
+      "exitCode": 0,
+      "oomKilled": false,
+      "restarts": 0,
+      "oomKernelLines": []
+    }
+  },
+  "idle": {
+    "provenance": "measured",
+    "samples": 5,
+    "vm": {
+      "totalMB": 951,
+      "usedMB": 520,
+      "availableMB": 431
+    },
+    "containersMB": {
+      "bench-payload-app-1": 152.2,
+      "bench-payload-db-1": 31.1
+    }
+  },
+  "load": {
+    "scenario": "S01",
+    "offeredRates": [
+      25,
+      50,
+      100,
+      200,
+      300,
+      500
+    ],
+    "warmup": "10s, discarded",
+    "window": "60s",
+    "errorBudget": 0.01,
+    "servedFloor": 0.9,
+    "steps": [
+      {
+        "rate": 25,
+        "provenance": "measured",
+        "served_rps": 25,
+        "served_share": 1.0009,
+        "p50_ms": 4.3,
+        "p95_ms": 8.3,
+        "p99_ms": 12,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 0,
+        "received_mb_s": 0.03,
+        "server_busy_pct": 16.5,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.2,
+        "loadgen_busy_pct": 2.6,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 50,
+        "provenance": "measured",
+        "served_rps": 50,
+        "served_share": 1.0001,
+        "p50_ms": 3.7,
+        "p95_ms": 7.7,
+        "p99_ms": 17.8,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 1,
+        "received_mb_s": 0.05,
+        "server_busy_pct": 25,
+        "server_iowait_pct": 0.1,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 3.7,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 100,
+        "provenance": "measured",
+        "served_rps": 100,
+        "served_share": 0.9999,
+        "p50_ms": 3,
+        "p95_ms": 7.5,
+        "p99_ms": 47.3,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 12,
+        "received_mb_s": 0.1,
+        "server_busy_pct": 36.9,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 6,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 200,
+        "provenance": "measured",
+        "served_rps": 200,
+        "served_share": 0.9997,
+        "p50_ms": 2.8,
+        "p95_ms": 36.1,
+        "p99_ms": 115.1,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 20,
+        "received_mb_s": 0.21,
+        "server_busy_pct": 59.8,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 8.6,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 300,
+        "provenance": "measured",
+        "served_rps": 299,
+        "served_share": 0.997,
+        "p50_ms": 3.8,
+        "p95_ms": 183.9,
+        "p99_ms": 263.7,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 45,
+        "vus_peak": 67,
+        "received_mb_s": 0.31,
+        "server_busy_pct": 85.2,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 12.9,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 500,
+        "provenance": "measured",
+        "served_rps": 297,
+        "served_share": 0.5933,
+        "p50_ms": 674.4,
+        "p95_ms": 817.1,
+        "p99_ms": 887.1,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": false,
+        "dropped_iterations": 12073,
+        "vus_peak": 200,
+        "received_mb_s": 0.3,
+        "server_busy_pct": 99.3,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0,
+        "loadgen_busy_pct": 13.9,
+        "loadgen_steal_pct": 0
+      }
+    ],
+    "stopped": "served 59% of 500 req/s, 0.00% errors, p99 887.1 ms, CPU busy 99% on the server and 14% here",
+    "highestRateKeptUp": 300
+  },
+  "peak": {
+    "provenance": "measured",
+    "samples": 61,
+    "vmUsedMB": 613,
+    "vmMinAvailableMB": 338,
+    "containersMB": {
+      "bench-payload-app-1": 236.8,
+      "bench-payload-db-1": 54.1
+    }
+  },
+  "end": {
+    "status": "running",
+    "exitCode": 0,
+    "oomKilled": false,
+    "restarts": 0,
+    "oomKernelLines": []
+  }
+}

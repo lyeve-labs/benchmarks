@@ -8,6 +8,68 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
+## [Unreleased]
+
+### Added
+
+- Small-server campaigns. `make small-sweep` runs every self-hosted target on
+  every read scenario in rounds against one server, which reboots before each
+  run and starts it only once quiet, with its timers masked and snap refreshes
+  held until the sweep ends. A stopped sweep resumes where it left off.
+  `make small-report` writes `results/SMALL.md` and `results/small.json`, each
+  figure the median of a campaign's runs with its range, newest campaign first.
+- Each small-server step records the busy and steal shares of the server's
+  and the load generator's CPU, the server's I/O wait, k6's dropped iterations
+  and peak virtual users, and the bytes received per second, so a step that
+  falls short shows which machine ran out, and whether the server ran out of
+  CPU or sat waiting on its disk.
+- Each small-server run records the harness commit, the image ID the server
+  ran, and both machines' load when it started. A run during which the load
+  generator's address changed is void: it enters no figure, and the report
+  counts it.
+- The small-server report shows each step's I/O wait and CPU steal on the
+  server, the load every run started at, the runs in which a target did not
+  boot, did not take the seed, or was killed for memory or restarted, and the
+  void runs set aside. A CPU figure measured in fewer runs than its step shows
+  its own run count. With an even number of runs, the highest rate
+  kept up is the lower of the two middle ones, so it is always a rate that was
+  offered.
+- The first small-server campaign, `2026-10-25-aws-t2-micro`: LyEve, Strapi,
+  Directus and Payload on S01, S02 and S04, three rounds each, on an AWS
+  t2.micro in Singapore driven by a second t2.micro on its private network.
+  `results/SMALL.md` holds the figures and `results/raw/small/` every run.
+
+### Changed
+
+- `make small` leaves an image the server already holds in place when it holds
+  the same bytes as this machine's copy, or when this machine has none, so a
+  load generator without the images can drive a server prepared by the machine
+  that has them (`harness/small-sweep.sh --prepare`). An image whose bytes
+  differ from this machine's is replaced.
+
+### Fixed
+
+- A small-server run whose server does not answer SSH for a minute is void,
+  instead of reading as a target that stopped or failed to start.
+- A small-server run removes the containers, volumes and firewall rules an
+  earlier run could not tear down before it starts, so it never measures a
+  leftover stack or the data that stack seeded. The sweep removes those
+  containers before it reboots the server, and again once Docker runs after the
+  reboot, because a stack with a restart policy starts again at boot and would
+  load the server through the quiet wait.
+- A small-server step keeps up only when k6's own request rate reaches 90% of
+  the offered rate. The rate was rounded to a whole request per second first,
+  so a step that served 449.6 of 500 req/s counted as 90% and the next rate
+  ran. Served shares are stored with four decimals and printed with one, both
+  rounded down, so a share under the floor never reads as 90%.
+- A small-server run whose server did not answer after its steps read as
+  ending cleanly, with nothing killed or restarted. Its end state now reads
+  unknown unless the kernel's lines show a kill, and the report says so beside
+  the highest rate kept up. Before the next run the sweep waits up to 30
+  minutes for the server to answer again, instead of three tries over 30
+  seconds, and only then says to restart it from the provider's console and
+  run the same command.
+
 ## [0.9.1] - 2026-10-22
 
 ### Changed
