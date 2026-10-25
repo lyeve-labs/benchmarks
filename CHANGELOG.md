@@ -54,9 +54,9 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 - A small-server run removes the containers, volumes and firewall rules an
   earlier run could not tear down before it starts, so it never measures a
   leftover stack or the data that stack seeded. The sweep removes those
-  containers as soon as the server is back from its reboot, because a stack
-  with a restart policy starts again at boot and would load the server through
-  the quiet wait.
+  containers before it reboots the server, and again once Docker runs after the
+  reboot, because a stack with a restart policy starts again at boot and would
+  load the server through the quiet wait.
 - A small-server step keeps up only when k6's own request rate reaches 90% of
   the offered rate. The rate was rounded to a whole request per second first,
   so a step that served 449.6 of 500 req/s counted as 90% and the next rate

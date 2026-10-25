@@ -197,6 +197,11 @@ reboot_server() {
     waited=1
     sleep 30
   done
+  # A stack its run could not tear down starts again at boot when it has a
+  # restart policy, and fills the new boot's page cache, so its containers go
+  # before the reboot.
+  rsh 'c=$($S docker ps -aq --filter name=^bench-); [ -z "$c" ] || { $S docker rm -f -v $c >/dev/null && echo "removed the containers an earlier run left:" $c; }' \
+    || warn "could not remove the containers an earlier run left, rebooting all the same"
   # Not retried: a call that reached systemd-run and lost its answer has
   # already scheduled the reboot. A new boot id is the proof either way.
   rsh '$S systemd-run --quiet --on-active=2 /usr/bin/systemctl reboot' >/dev/null \
@@ -210,9 +215,10 @@ reboot_server() {
 
 # The server counts as quiet once it has been up two minutes, Docker runs and
 # the one-minute load is under 0.3. A run starts after ten minutes regardless,
-# and the rig record keeps the load it started at. A stack an earlier run could
-# not tear down starts again at boot when it has a restart policy, so its
-# containers go as soon as Docker runs, before they can load the wait.
+# and the rig record keeps the load it started at. The containers of a stack an
+# earlier run could not tear down go before the reboot, and any that run all the
+# same, because that removal failed or the sweep does not reboot, go as soon as
+# Docker runs, before they can load the wait.
 wait_server() {
   rsh '
     cleared=""

@@ -399,10 +399,10 @@ minutes, and every run records the load it started at. That load is read a few
 seconds after the wait, once the run has logged in to the server, so it can sit
 a little above 0.3 on a server that was quiet. A stack an earlier run could not
 tear down, with its firewall rule, is removed before the next run starts, and
-its containers as soon as the server is back from its reboot, because a stack
-with a restart policy starts again at boot. For the whole campaign the server's
-timers are masked and its snap refreshes held, so no package or maintenance job
-shares the CPU with a step. Both come back when the sweep ends, and
+its containers before the server reboots, because a stack with a restart policy
+would start again at boot. For the whole campaign the server's timers are
+masked and its snap refreshes held, so no package or maintenance job shares the
+CPU with a step. Both come back when the sweep ends, and
 `harness/small-sweep.sh --restore` brings them back after a sweep that could
 not reach the server at its end. The rounds interleave the targets (each
 scenario takes every target in turn before the next round), so a slow hour at
