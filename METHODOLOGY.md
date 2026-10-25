@@ -397,28 +397,30 @@ been up two minutes with Docker running and its one-minute load under 0.3, and
 the load generator's load is under half its cores. Each wait gives up after ten
 minutes, and every run records the load it started at. A stack an earlier run
 could not tear down, with its firewall rule, is removed before the next run
-starts. For the whole campaign the server's timers are masked and its snap
-refreshes held, so no package or maintenance job shares the CPU with a step.
-Both come back when the sweep ends, and `harness/small-sweep.sh --restore`
-brings them back after a sweep that could not reach the server at its end. The
-rounds interleave the targets (each scenario takes every target in turn before
-the next round), so a slow hour at the provider spreads over all of them
-instead of landing on one. Every run carries the campaign's name, and a stopped
-sweep resumes where it left off. A target that leaves the server unable to
-answer once its steps are over keeps its run, because every step was measured:
-the report says so beside the highest rate kept up, and the run's end state
-reads unknown. Before the next run the sweep waits up to 30 minutes for the
-server to answer again, because a server out of memory recovers once the kernel
-kills a process, which took 19 minutes in the first campaign. After that it
-stops, since only the provider can restart a server that does not answer:
-restart it from the provider's console, then run the same command. `make
-small-report` turns the campaigns into `results/SMALL.md` and
-`results/small.json`: each figure is the median of the campaign's runs, with
-the lowest and highest and the number of runs. The highest rate kept up takes
-the lower of the two middle runs when their number is even, so it is always a
-rate that was offered. Campaigns accumulate, newest first, so a later engine
-release or another provider's plan reads beside the earlier ones, and a reader
-compares two campaigns only where their rigs match.
+starts, and its containers as soon as the server is back from its reboot,
+because a stack with a restart policy starts again at boot. For the whole
+campaign the server's timers are masked and its snap refreshes held, so no
+package or maintenance job shares the CPU with a step. Both come back when the
+sweep ends, and `harness/small-sweep.sh --restore` brings them back after a
+sweep that could not reach the server at its end. The rounds interleave the
+targets (each scenario takes every target in turn before the next round), so a
+slow hour at the provider spreads over all of them instead of landing on one.
+Every run carries the campaign's name, and a stopped sweep resumes where it
+left off. A target that leaves the server unable to answer once its steps are
+over keeps its run, because every step was measured: the report says so beside
+the highest rate kept up, and the run's end state reads unknown. Before the
+next run the sweep waits up to 30 minutes for the server to answer again,
+because a server out of memory recovers once the kernel kills a process, which
+took 19 minutes in the first campaign. After that it stops, since only the
+provider can restart a server that does not answer: restart it from the
+provider's console, then run the same command. `make small-report` turns the
+campaigns into `results/SMALL.md` and `results/small.json`: each figure is the
+median of the campaign's runs, with the lowest and highest and the number of
+runs. The highest rate kept up takes the lower of the two middle runs when
+their number is even, so it is always a rate that was offered. Campaigns
+accumulate, newest first, so a later engine release or another provider's plan
+reads beside the earlier ones, and a reader compares two campaigns only where
+their rigs match.
 
 **What a boot failure means.** A target that does not answer within the limit,
 exits, or is killed has a result, not a missing number: in its stock

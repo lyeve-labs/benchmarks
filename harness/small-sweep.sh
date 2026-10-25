@@ -210,11 +210,19 @@ reboot_server() {
 
 # The server counts as quiet once it has been up two minutes, Docker runs and
 # the one-minute load is under 0.3. A run starts after ten minutes regardless,
-# and the rig record keeps the load it started at.
+# and the rig record keeps the load it started at. A stack an earlier run could
+# not tear down starts again at boot when it has a restart policy, so its
+# containers go as soon as Docker runs, before they can load the wait.
 wait_server() {
   rsh '
+    cleared=""
     for _ in $(seq 120); do
       up=$(cut -d. -f1 /proc/uptime); load=$(cut -d" " -f1 /proc/loadavg)
+      if [ -z "$cleared" ] && systemctl is-active --quiet docker; then
+        c=$($S docker ps -aq --filter name=^bench-)
+        [ -z "$c" ] || { $S docker rm -f -v $c >/dev/null; echo "removed the containers an earlier run left:" $c; }
+        cleared=1
+      fi
       if [ "$up" -ge 120 ] && systemctl is-active --quiet docker && awk "BEGIN{exit !($load < 0.3)}"; then
         echo "server quiet: up ${up}s, load $load"; exit 0
       fi
