@@ -8,6 +8,30 @@ Each release adds one self-hosted competitor to the head-to-head, measured throu
 the same rig: Directus first, then Strapi, then Payload. The full table with every
 value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS.md).
 
+## [Unreleased]
+
+### Added
+
+- Small-server campaigns. `make small-sweep` runs every self-hosted target on
+  every read scenario in rounds against one server, which reboots before each
+  run and starts it only once quiet, with its timers masked and snap refreshes
+  held until the sweep ends. A stopped sweep resumes where it left off.
+  `make small-report` writes `results/SMALL.md` and `results/small.json`, each
+  figure the median of a campaign's runs with its range, newest campaign first.
+- Each small-server step records the busy and steal shares of the server's
+  and the load generator's CPU, k6's dropped iterations and peak virtual
+  users, and the bytes received per second, so a step that falls short shows
+  which machine ran out.
+- Each small-server run records the harness commit, the image ID the server
+  ran, and both machines' load when it started. A run during which the load
+  generator's address changed is void and never reported.
+
+### Changed
+
+- `make small` leaves an image the server already holds in place, so a load
+  generator without the images can drive a server prepared by the machine that
+  has them (`harness/small-sweep.sh --prepare`).
+
 ## [0.9.1] - 2026-10-22
 
 ### Changed

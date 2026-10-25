@@ -38,9 +38,17 @@ jobs:
             exit 1
           fi
 
+      - name: Small-server report is in sync with its runs
+        run: |
+          node tools/small-report.mjs
+          if ! git diff --exit-code -- results/small.json results/SMALL.md; then
+            echo "::error::the small-server report is stale: run 'make small-report' and commit the result"
+            exit 1
+          fi
+
   shell:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
       - name: Shell scripts parse
-        run: bash -n harness/run.sh harness/gen-license.sh harness/small.sh
+        run: bash -n harness/run.sh harness/gen-license.sh harness/small.sh harness/small-sweep.sh

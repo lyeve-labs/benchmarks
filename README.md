@@ -62,7 +62,7 @@ baseline), so you can iterate on the report without re-running the load tests.
 The head-to-head runs every target on one capable machine. `make small`
 answers a second question: what one target does alone on the smallest server
 people rent, 1 vCPU and 1 GB. The target and its own PostgreSQL run on the
-remote server, and k6 drives them from your machine over the network.
+remote server, and k6 drives them from another machine over the network.
 
 ```bash
 make small TARGET=lyeve HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm PROVIDER=<provider> PLAN=<plan>
@@ -86,6 +86,44 @@ the reason the server shows. Each run lands in
 | `RATES` | `25 50 100 200 300 500` | offered rates in req/s, run in order |
 | `BOOT_TIMEOUT` | `300` | seconds the target has to answer after it starts |
 | `BENCH_PORT` | `8080` | application port on the server |
+
+### Campaigns
+
+A campaign runs every self-hosted target on every read scenario against one
+server, three times each, and reports each figure as the median of its runs
+with the lowest and highest. Put the load generator in the server's region,
+on the same provider's network if you can, and run the sweep there. The
+machine that holds the images (the one that built Strapi and Payload) puts
+them on the server first, so the load generator needs only the Docker CLI,
+Node and k6:
+
+```bash
+# from the machine that holds the images, once per server
+HOST=ubuntu@203.0.113.10 KEY=~/.ssh/bench.pem harness/small-sweep.sh --prepare
+# from the load generator, by the server's private address
+make small-sweep HOST=ubuntu@10.0.1.20 KEY=~/.ssh/bench.pem \
+  CAMPAIGN=2026-10-25-aws-t2-micro PROVIDER=AWS PLAN="t2.micro, ap-southeast-1a"
+make small-report
+```
+
+The sweep reboots the server before every run and waits until it is quiet,
+masks its timers and holds its snap refreshes until it ends, and resumes where
+it stopped when it runs again with the same `CAMPAIGN`. If it stops without
+restoring the timers, `harness/small-sweep.sh --restore` does. `make
+small-report` writes [`results/SMALL.md`](./results/SMALL.md) and
+`results/small.json`, newest campaign first, so a new engine release or
+another provider's plan reads beside the campaigns before it. To measure
+another engine image, set `LYEVE_IMAGE` for both commands.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `CAMPAIGN` | required | the name every run of the sweep carries |
+| `ROUNDS` | `3` | runs of each target on each scenario |
+| `TARGETS` | every self-hosted target | targets, in the order they run |
+| `SCENARIOS` | every read scenario | read scenarios, in the order they run |
+| `REBOOT` | `1` | `0` runs without rebooting the server first |
+
+Every variable `make small` reads applies to each run of the sweep.
 
 See [`METHODOLOGY.md`](./METHODOLOGY.md) §13 for the rules and what a boot
 failure means.

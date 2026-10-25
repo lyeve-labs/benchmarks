@@ -3,6 +3,9 @@
 # the scratch output from ad-hoc local runs.
 results/raw/tmp/
 results/raw/**/*.tmp
+# Small-server runs set aside as void stay on the machine that made them, for a
+# look. No report reads them and they are never committed.
+results/raw/small/void/
 *.local.json
 
 # Node

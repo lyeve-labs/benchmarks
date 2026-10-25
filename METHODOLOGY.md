@@ -305,17 +305,19 @@ come from a different host, so they never enter the head-to-head table (§2).
 
 ```bash
 make small TARGET=lyeve HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm PROVIDER=<provider> PLAN=<plan>
+make small-sweep HOST=ubuntu@10.0.1.20 KEY=~/.ssh/bench.pem CAMPAIGN=<name> PROVIDER=<provider> PLAN=<plan>
 ```
 
 **Same rules.** The images are the ones the local rig measures, byte for byte.
 The server pulls each public image by the digest the harness machine holds,
 and an image it cannot pull (one built locally, or one whose registry refuses
 anonymous pulls) is copied to it over SSH. So the server has to share the
-harness machine's CPU architecture. The dataset, the seed, the scenarios, the
+harness machine's CPU architecture. An image already on the server stays, and
+every run records the image ID the server ran, so a campaign shows that each
+of its runs used the same bytes. The dataset, the seed, the scenarios, the
 stock configuration and the provenance tags are unchanged. Each target runs
 alone, with its own PostgreSQL on the same server, the way a small-server user
-would run it. Use a fresh server for each target, so nothing one target left
-behind (page cache, a kernel log) is read as another's.
+would run it.
 
 **A remote load generator.** k6 runs on a separate machine and reaches the
 server over the network, so the load generator never takes the server's one
@@ -325,11 +327,25 @@ a reader can subtract it. Put the load generator as close to the server as
 possible, in the same region and on the same provider's network if you can. A
 figure measured across a continent measures the continent.
 
+**Which machine ran out.** A step can fall short of its rate because the
+server is saturated, or because the load generator is. Each step reads the
+CPU counters of both machines just before and after its k6 process, which
+covers k6's start and its setup as well as the measured window, and records
+each machine's busy share and its steal share, the time the hypervisor held
+the CPU back. A step that falls short with the server near 100% busy measured
+the server. One with the load generator near 100% measured the load generator,
+and the report shows both shares beside every step. Steal also shows a burstable plan
+that ran out of CPU credits, which throttles the machine to its baseline. The
+step records the bytes received per second too, so a network ceiling shows as
+a flat line with neither CPU saturated.
+
 **The network between them.** The application port answers only the load
 generator's address while a run lasts. A firewall rule on the server drops
 every other source, and teardown removes it. That keeps strangers' scans out of
 the measurement, and it keeps a stack with published benchmark credentials off
-the open internet.
+the open internet. If the load generator's address changes during a run, the
+rule drops its requests from then on, and the target would read as failing.
+Such a run is void: it is set aside, never reported, and run again.
 
 **What a run measures.**
 
@@ -347,8 +363,28 @@ the open internet.
    percentiles, the error rate and the share of the offered rate the target
    served. Stepping stops after the first step that breaks the error budget or
    serves less than 90% of its rate, because a higher rate would only measure
-   the same collapse for longer. While the steps run, a sampler on the server
-   records server and container memory every 5 s.
+   the same collapse for longer. Each step also records the busy and steal
+   shares of both machines' CPUs, the iterations k6 dropped, the most virtual
+   users it held and the bytes it received per second. While the steps run, a
+   sampler on the server records server and container memory every 5 s.
+
+**Campaigns.** `make small-sweep` runs a campaign: every self-hosted target on
+every read scenario, three rounds by default, all on one server. Before every
+run the server reboots, so nothing one target left behind (memory, page cache,
+a kernel log) is read as another's, and the run starts only once the server
+has been up two minutes with Docker running and its one-minute load under 0.3,
+and the load generator's load is under half its cores. For the whole campaign
+the server's timers are masked and its snap refreshes held, so no package or
+maintenance job shares the CPU with a step. Both come back when the sweep
+ends. The rounds interleave the targets (each scenario takes every target in
+turn before the next round), so a slow hour at the provider spreads over all
+of them instead of landing on one. Every run carries the campaign's name, and
+a stopped sweep resumes where it left off. `make small-report` turns the
+campaigns into `results/SMALL.md` and `results/small.json`: each figure is the
+median of the campaign's runs, with the lowest and highest and the number of
+runs. Campaigns accumulate, newest first, so a later engine release or another
+provider's plan reads beside the earlier ones, and a reader compares two
+campaigns only where their rigs match.
 
 **What a boot failure means.** A target that does not answer within the limit,
 exits, or is killed has a result, not a missing number: in its stock
@@ -360,18 +396,21 @@ tuning until it passes, because a tuned target is not the one a reader would
 install.
 
 **Where results go.** Each run writes `results/raw/small/<run-id>/`: the raw
-text from the server, one k6 summary per step, the `M-*.json` files every run
-carries, and `small.json`. That file holds the rig (provider and plan as given,
-the CPU model, core count and memory read from the server itself), the boot
-result, idle and peak memory, and every step. The report generator does not
-read this directory, so a small-server figure cannot reach the head-to-head.
+text from the server, one k6 summary and one pair of CPU readings per step, the
+`M-*.json` files every run carries, and `small.json`. That file holds the rig
+(provider and plan as given, the harness commit, the CPU model, core count and
+memory read from the server itself, the server's load and uptime when the run
+started, and the same for the load generator), the boot result, idle and peak
+memory, and every step. `results/SMALL.md` reports the campaigns. The
+head-to-head's report generator does not read this directory, so a
+small-server figure cannot reach the head-to-head.
 
 **Nothing secret stays on the server.** The one credential a run creates, the
 engine's setup token, travels over SSH on standard input and lives only in the
 container. Teardown removes the stack with its volumes, the images the run
-brought, the firewall rules and the work directory. When the server has no
-Docker, the harness installs it with Docker's own install script and leaves it
-installed.
+brought, the firewall rules and the work directory. A campaign keeps the
+images between its runs. When the server has no Docker, the harness installs
+it with Docker's own install script and leaves it installed.
 
 ---
 
