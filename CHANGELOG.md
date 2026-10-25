@@ -31,6 +31,10 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   not boot or take the seed. With an even number of runs, the highest rate
   kept up is the lower of the two middle ones, so it is always a rate that was
   offered.
+- The first small-server campaign, `2026-10-25-aws-t2-micro`: LyEve, Strapi,
+  Directus and Payload on S01, S02 and S04, three rounds each, on an AWS
+  t2.micro in Singapore driven by a second t2.micro on its private network.
+  `results/SMALL.md` holds the figures and `results/raw/small/` every run.
 
 ### Changed
 
