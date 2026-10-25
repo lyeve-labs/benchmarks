@@ -16,7 +16,9 @@
 #           until it has been up two minutes with Docker active and its load
 #           under 0.3, wait until this machine's load is under half its cores,
 #           then run small.sh. Each wait gives up after ten minutes, and the
-#           run records the load it started at
+#           run records the load it started at. A server that does not answer
+#           before its reboot gets 30 minutes, because one a target ran out of
+#           memory answers again only once the kernel kills a process
 #
 # The order interleaves the targets, so a slow hour at the provider spreads over
 # all of them instead of landing on one. A run the campaign already holds is not
@@ -178,21 +180,19 @@ node -e '
 # small.sh reads both. The images stay on the server between runs.
 export CAMPAIGN KEEP_IMAGES=1
 
-# retry <command...>: three tries, ten seconds apart, so one refused connection
-# does not end a campaign.
-retry() {
-  local i
-  for i in 1 2 3; do
-    "$@" && return 0
-    (( i < 3 )) && sleep 10
-  done
-  return 1
-}
-
 reboot_server() {
-  local before now deadline
-  before="$(retry rsh 'cat /proc/sys/kernel/random/boot_id')" \
-    || die "cannot reach $HOST: restart it from the provider's console, then run the same command to resume"
+  local before now deadline waited=""
+  # A target that ran the server out of memory leaves it unable to answer
+  # until the kernel kills a process, which once took 19 minutes, so the first
+  # read waits up to 30 minutes before the campaign stops.
+  deadline=$(( SECONDS + 1800 ))
+  until before="$(rsh 'cat /proc/sys/kernel/random/boot_id' 2>/dev/null)" && [[ -n "$before" ]]; do
+    (( SECONDS < deadline )) \
+      || die "cannot reach $HOST for 30 minutes: restart it from the provider's console, then run the same command to resume"
+    [[ -n "$waited" ]] || warn "$HOST does not answer, waiting up to 30 minutes for it"
+    waited=1
+    sleep 30
+  done
   # Not retried: a call that reached systemd-run and lost its answer has
   # already scheduled the reboot. A new boot id is the proof either way.
   rsh '$S systemd-run --quiet --on-active=2 /usr/bin/systemctl reboot' >/dev/null \

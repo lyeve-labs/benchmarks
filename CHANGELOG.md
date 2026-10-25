@@ -55,8 +55,9 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 - A small-server run whose server stopped answering after its steps read as
   ending cleanly, with nothing killed or restarted. Its end state now reads
   unknown, and the report says beside the highest rate kept up that the server
-  stopped answering. When the sweep cannot reach the server for the next run,
-  it says to restart the server from the provider's console and run the same
+  stopped answering. Before the next run the sweep waits up to 30 minutes for
+  the server to answer again, instead of three tries over 30 seconds, and only
+  then says to restart it from the provider's console and run the same
   command.
 
 ## [0.9.1] - 2026-10-22

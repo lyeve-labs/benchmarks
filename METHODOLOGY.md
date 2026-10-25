@@ -404,15 +404,18 @@ instead of landing on one. Every run carries the campaign's name, and a stopped
 sweep resumes where it left off. A target that leaves the server unable to
 answer once its steps are over keeps its run, because every step was measured:
 the report says so beside the highest rate kept up, and the run's end state
-reads unknown. The sweep then stops at the next reboot, since only the provider
-can restart a server that does not answer: restart it from the provider's
-console, then run the same command. `make small-report` turns the campaigns
-into `results/SMALL.md` and `results/small.json`: each figure is the median of
-the campaign's runs, with the lowest and highest and the number of runs. The
-highest rate kept up takes the lower of the two middle runs when their number
-is even, so it is always a rate that was offered. Campaigns accumulate, newest
-first, so a later engine release or another provider's plan reads beside the
-earlier ones, and a reader compares two campaigns only where their rigs match.
+reads unknown. Before the next run the sweep waits up to 30 minutes for the
+server to answer again, because a server out of memory recovers once the kernel
+kills a process, which took 19 minutes in the first campaign. After that it
+stops, since only the provider can restart a server that does not answer:
+restart it from the provider's console, then run the same command. `make
+small-report` turns the campaigns into `results/SMALL.md` and
+`results/small.json`: each figure is the median of the campaign's runs, with
+the lowest and highest and the number of runs. The highest rate kept up takes
+the lower of the two middle runs when their number is even, so it is always a
+rate that was offered. Campaigns accumulate, newest first, so a later engine
+release or another provider's plan reads beside the earlier ones, and a reader
+compares two campaigns only where their rigs match.
 
 **What a boot failure means.** A target that does not answer within the limit,
 exits, or is killed has a result, not a missing number: in its stock
