@@ -51,6 +51,10 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 
 ### Changed
 
+- The website's benchmarks page leads with one small-server campaign from
+  `results/small.json` and shows the head-to-head from `results/results.json`
+  after it. The README and METHODOLOGY §8 named `results.json` as its only
+  input, and now name both.
 - `make small` leaves an image the server already holds in place when it holds
   the same bytes as this machine's copy, or when this machine has none, so a
   load generator without the images can drive a server prepared by the machine

@@ -28,7 +28,9 @@ reproduced, or challenged.
 | [`scenarios/`](./scenarios/) | The workload catalog: one file per scenario, plus a machine-readable `scenarios.json`. Includes a fully **worked example** ([`S01`](./scenarios/S01-content-read-by-id.md)). |
 | [`targets/targets.json`](./targets/targets.json) | The vendor registry: LyEve + each competitor, how each is deployed, and what's fair to compare. |
 | [`harness/`](./harness/) | The runnable test rig: portable k6 scripts, a Docker Compose stack per target, seed scripts, and the `run.sh` orchestrator. |
-| [`results/results.json`](./results/results.json) | Canonical machine-readable results. **Every number on the website comes from this file.** |
+| [`results/SMALL.md`](./results/SMALL.md) | The small-server campaigns: each target alone on one virtual CPU and 1 GB. The website leads with one of them. |
+| [`results/small.json`](./results/small.json) | The same campaigns, machine-readable. |
+| [`results/results.json`](./results/results.json) | Canonical machine-readable results of the head-to-head on one capable machine. |
 | [`results/RESULTS.md`](./results/RESULTS.md) | Human-readable report, generated from `results.json`. |
 | [`results/ERRATA.md`](./results/ERRATA.md) | Corrections to figures we have published, with the measurements that prove them. |
 | [`tools/`](./tools/) | The generator (`generate-report.mjs`) and the k6-output parser (`collect.mjs`). |
@@ -135,13 +137,18 @@ failure means.
 ## How this reaches the website
 
 This repo is the source of truth. [lyeve.com/benchmarks](https://lyeve.com/benchmarks)
-renders a copy of [`results/results.json`](./results/results.json) from a
-published release. If the page and this repo ever disagree, this repo is right
-and the page is stale. See [`METHODOLOGY.md`](./METHODOLOGY.md) §8.
+leads with one small-server campaign from [`results/small.json`](./results/small.json)
+and follows with the head-to-head from [`results/results.json`](./results/results.json),
+both copied from a published release. If the page and this repo ever disagree,
+this repo is right and the page is stale. See [`METHODOLOGY.md`](./METHODOLOGY.md) §8.
 
 ---
 
 ## Status
+
+The small-server campaigns run LyEve, Directus, Strapi and Payload each alone
+on an AWS t2.micro, one virtual CPU and 1 GB, in three rounds.
+[`results/SMALL.md`](./results/SMALL.md) holds every campaign, newest first.
 
 The head-to-head is **measured for four engines**: LyEve, Directus 11, Strapi 5,
 and Payload 3, across image size, idle memory, cold start, and all five
