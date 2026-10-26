@@ -11,6 +11,7 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
 ## [Unreleased]
 
 ### Added
+- Re-measured every figure on the v0.56.0 engine image: the head-to-head, the application profiles and the micro-benchmarks.
 
 - Small-server campaigns. `make small-sweep` runs every self-hosted target on
   every read scenario in rounds against one server, which reboots before each
