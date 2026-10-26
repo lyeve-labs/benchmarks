@@ -30,7 +30,7 @@ services:
     # Anonymous pulls of this package answer 403, so a reader outside the
     # publishing org cannot run this file as written. Build the image from a
     # source checkout and name it in LYEVE_IMAGE instead. See README.
-    image: ${LYEVE_IMAGE:-ghcr.io/lyeve-labs/lyeve-core:0.55.0}
+    image: ${LYEVE_IMAGE:-ghcr.io/lyeve-labs/lyeve-core:0.56.0}
     depends_on:
       db:
         condition: service_healthy
