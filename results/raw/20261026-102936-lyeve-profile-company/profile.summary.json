@@ -1,0 +1,309 @@
+{
+  "metrics": {
+    "http_req_duration{expected_response:true}": {
+      "p(99)": 2.4357705999999966,
+      "max": 53.81189,
+      "avg": 1.5776181106052252,
+      "min": 0.702693,
+      "med": 1.528364,
+      "p(95)": 2.1044913999999997
+    },
+    "http_req_receiving": {
+      "avg": 0.0784590828428654,
+      "min": 0.02607,
+      "med": 0.067545,
+      "p(95)": 0.14323919999999993,
+      "p(99)": 0.21485795999999957,
+      "max": 1.142794
+    },
+    "iterations": {
+      "count": 9001,
+      "rate": 149.85176962452502
+    },
+    "profile_latency": {
+      "min": 0.702693,
+      "med": 1.528364,
+      "p(95)": 2.103957,
+      "p(99)": 2.432089,
+      "max": 7.806928,
+      "avg": 1.5719078573491885,
+      "thresholds": {
+        "p(95)<100": false
+      }
+    },
+    "profile_ok": {
+      "passes": 9001,
+      "fails": 0,
+      "thresholds": {
+        "rate>0.99": false
+      },
+      "value": 1
+    },
+    "http_req_waiting": {
+      "p(99)": 2.3072800399999993,
+      "max": 53.606735,
+      "avg": 1.482284008550806,
+      "min": 0.666856,
+      "med": 1.433774,
+      "p(95)": 1.9821361999999998
+    },
+    "checks": {
+      "passes": 9001,
+      "fails": 0,
+      "value": 1
+    },
+    "http_req_failed": {
+      "passes": 0,
+      "fails": 9005,
+      "thresholds": {
+        "rate<0.01": false
+      },
+      "value": 0
+    },
+    "http_req_duration": {
+      "min": 0.702693,
+      "med": 1.528364,
+      "p(95)": 2.1044913999999997,
+      "p(99)": 2.4357705999999966,
+      "max": 53.81189,
+      "avg": 1.5776181106052252
+    },
+    "http_req_blocked": {
+      "min": 0.002146,
+      "med": 0.005047,
+      "p(95)": 0.0080918,
+      "p(99)": 0.012570599999999904,
+      "max": 0.609175,
+      "avg": 0.006206804886174339
+    },
+    "data_received": {
+      "rate": 816984.2230500721,
+      "count": 49072994
+    },
+    "vus": {
+      "value": 0,
+      "min": 0,
+      "max": 1
+    },
+    "data_sent": {
+      "count": 5801955,
+      "rate": 96592.95900809477
+    },
+    "http_req_sending": {
+      "min": 0.006762,
+      "med": 0.015625,
+      "p(95)": 0.025544999999999995,
+      "p(99)": 0.0333142799999999,
+      "max": 0.192824,
+      "avg": 0.01687501921154909
+    },
+    "http_req_connecting": {
+      "avg": 0.0004989712382009994,
+      "min": 0,
+      "med": 0,
+      "p(95)": 0,
+      "p(99)": 0,
+      "max": 0.258188
+    },
+    "http_req_tls_handshaking": {
+      "avg": 0,
+      "min": 0,
+      "med": 0,
+      "p(95)": 0,
+      "p(99)": 0,
+      "max": 0
+    },
+    "iteration_duration": {
+      "avg": 1.794469578713475,
+      "min": 0.844805,
+      "med": 1.742793,
+      "p(95)": 2.383716,
+      "p(99)": 2.742891,
+      "max": 8.131409
+    },
+    "vus_max": {
+      "value": 38,
+      "min": 38,
+      "max": 38
+    },
+    "http_reqs": {
+      "count": 9005,
+      "rate": 149.91836301175957
+    }
+  },
+  "setup_data": {
+    "pools": {
+      "site_openings": {
+        "ids": [
+          "c55ade77-3ef8-480b-82fd-809c7b10feff",
+          "39944108-95d2-4118-b9cb-b46258b68062",
+          "450f01ca-e68f-433d-bd1b-2ac80421b61f",
+          "40212fd1-2409-43c5-b95e-35896169c332",
+          "d7c7aa2c-11fe-4f45-8c02-e99396ad0bed",
+          "74b91e78-4834-4a4b-9a6e-fd9e0eaf5377",
+          "2d4590aa-57df-4e80-9e63-0d176ead66c4",
+          "09f7376d-5d86-470d-92d9-32d9840ba75d",
+          "75b45e88-492b-409e-b700-b76f550a8107",
+          "82c21aa3-29c1-4bec-94e8-40ebd063d227"
+        ],
+        "slugs": [
+          "site_openings-9-onyx",
+          "site_openings-8-pulse",
+          "site_openings-7-lumen",
+          "site_openings-6-delta",
+          "site_openings-5-flux",
+          "site_openings-4-ember",
+          "site_openings-3-pulse",
+          "site_openings-2-edge",
+          "site_openings-1-delta",
+          "site_openings-0-atlas"
+        ]
+      },
+      "site_pages": {
+        "ids": [
+          "1d413f6b-0c43-4bf8-8faa-65d4c896749a",
+          "42b873a4-cc3a-427b-9e3a-fbb2171497c1",
+          "c3203d48-792e-471f-b838-9bcb8f774ba4",
+          "29148f17-bd1c-489a-94cb-6bfc7e3dcccb",
+          "087590e2-acec-4438-a439-9b38a22d3c35",
+          "d6cd644c-ebe5-4fe7-b7e8-325d0131082b",
+          "428e1c1b-c3e9-44b6-b334-51385653d960",
+          "0aad8532-a799-4cd8-956d-778607f50da5",
+          "f84246ac-2350-49fd-9dbe-7ad33386a5b9",
+          "44d58ea1-7fdc-4bb0-95d0-49373c90e835",
+          "587042e7-f3b6-4d65-85fc-334d4b7c8daa",
+          "7b2c1302-f322-4f7c-aa7e-237fd67c0329",
+          "c4e34ea5-5c7f-4fad-83f0-8a1f06a98a2d",
+          "57196431-dca0-42db-b659-be8fbc4bb71b",
+          "387fcd88-fc19-401d-94b6-a93d9de63b7b",
+          "708fbc4c-4a35-4770-9e9d-8ed21c738a32",
+          "e8121029-aa37-41e0-9adc-10576171b533",
+          "386a1472-5c74-4ff1-8645-4ef251d3c4ce",
+          "6ef28763-da36-40c1-bb8a-0a9365d79ed6",
+          "155b41ec-8628-4367-b07f-5fc14f7cb55e",
+          "a1746940-5141-434e-8c26-900bc1cb25cb",
+          "b851c191-ee46-45e0-b28a-45a4febb61d0",
+          "03a39ea4-a45f-4de2-adeb-b2ef3a69084b",
+          "ee794db1-d8a2-4a1d-8367-d24955b77e9c",
+          "406f7009-8be7-4cad-b3b6-f7f77592d566",
+          "edfd66de-b039-44c8-b28c-86a9c0c24b8a",
+          "272ce6af-c8eb-4ca3-8e74-3fd8ef1cf081",
+          "4ca4fc50-45a6-4a36-853f-7bc98f8e47a6",
+          "40525b81-e062-4e25-88bc-199fffd19b32",
+          "68200c7b-96a7-4e53-b55d-b3199fdb2f8c"
+        ],
+        "slugs": [
+          "site_pages-29-edge",
+          "site_pages-28-ember",
+          "site_pages-27-zephyr",
+          "site_pages-26-nova",
+          "site_pages-25-edge",
+          "site_pages-24-pulse",
+          "site_pages-23-edge",
+          "site_pages-22-lumen",
+          "site_pages-21-edge",
+          "site_pages-20-cobalt",
+          "site_pages-19-delta",
+          "site_pages-18-edge",
+          "site_pages-17-lumen",
+          "site_pages-16-onyx",
+          "site_pages-15-ember",
+          "site_pages-14-nova",
+          "site_pages-13-pulse",
+          "site_pages-12-onyx",
+          "site_pages-11-cobalt",
+          "site_pages-10-nova",
+          "site_pages-9-delta",
+          "site_pages-8-cobalt",
+          "site_pages-7-lumen",
+          "site_pages-6-pulse",
+          "site_pages-5-ember",
+          "site_pages-4-nova",
+          "site_pages-3-onyx",
+          "site_pages-2-cobalt",
+          "site_pages-1-delta",
+          "site_pages-0-lumen"
+        ]
+      },
+      "site_team": {
+        "ids": [
+          "d8421193-254e-4392-8950-c4feb4a1968b",
+          "2e8363fb-6d20-4de5-b5b4-4674be422d68",
+          "8ff5c569-7fb4-4f8c-82e8-78aed4874b18",
+          "38baa45d-0dce-4900-9a61-c6b185ba2d79",
+          "544b9e90-a2c3-481a-8cb0-fbeb7fd7e219",
+          "2d85e972-3812-4984-99f2-adc59c92d59e",
+          "915b59c0-7cff-4fbb-a913-34c5889346c3",
+          "5fe405ae-79a3-4098-89fe-90ff59a8393c",
+          "2bd956c8-6cba-4bde-9d4b-16e4fe77a3f8",
+          "2d133c8d-950f-472d-9531-1a460aa6f51f",
+          "734acd21-9c82-4b97-9b10-c3bb53fdc880",
+          "727fc017-3e80-40d2-bbfd-b7b3c2dcc362",
+          "80a7f6e9-15dd-40fb-b0db-3fb140d97b80",
+          "acb17115-9f20-4963-b9e3-92a7e92172b4",
+          "d0ad8bf3-ed0c-4b31-a60c-e4be341c0baf"
+        ],
+        "slugs": [
+          "site_team-14-flux",
+          "site_team-13-flux",
+          "site_team-12-flux",
+          "site_team-11-onyx",
+          "site_team-10-edge",
+          "site_team-9-pulse",
+          "site_team-8-ember",
+          "site_team-7-onyx",
+          "site_team-6-nova",
+          "site_team-5-nova",
+          "site_team-4-ember",
+          "site_team-3-edge",
+          "site_team-2-pulse",
+          "site_team-1-delta",
+          "site_team-0-nova"
+        ]
+      }
+    }
+  },
+  "root_group": {
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": {},
+    "checks": {
+      "company:openings-list": {
+        "passes": 1667,
+        "fails": 0,
+        "name": "company:openings-list",
+        "path": "::company:openings-list",
+        "id": "4996bc483813c16eefe5efba7c0021de"
+      },
+      "company:page-read": {
+        "path": "::company:page-read",
+        "id": "c034b71c115ad61f3c2b0c0ecbe5a894",
+        "passes": 3613,
+        "fails": 0,
+        "name": "company:page-read"
+      },
+      "company:team-list": {
+        "name": "company:team-list",
+        "path": "::company:team-list",
+        "id": "8a03648be2d6af5c2257bd7558885bcd",
+        "passes": 1325,
+        "fails": 0
+      },
+      "company:page-list": {
+        "name": "company:page-list",
+        "path": "::company:page-list",
+        "id": "f6d6a61c768a4807affc8b6b372a03be",
+        "passes": 637,
+        "fails": 0
+      },
+      "company:page-by-slug": {
+        "passes": 1759,
+        "fails": 0,
+        "name": "company:page-by-slug",
+        "path": "::company:page-by-slug",
+        "id": "3e582d0260408272ea089fd482b5dedd"
+      }
+    },
+    "name": ""
+  }
+}

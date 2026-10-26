@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-10-20",
+  "generatedAt": "2026-10-26",
   "sourceRepo": "LyEve-Labs/benchmarks",
   "reference": {
     "host": "local-rig",
@@ -29,7 +29,7 @@
       "runtimeDetail": "single compiled binary",
       "kind": "self-host",
       "site": "https://lyeve.com",
-      "versionPin": "0.55.0"
+      "versionPin": "0.56.0"
     },
     {
       "id": "strapi",
@@ -68,13 +68,13 @@
       "note": "Uncompressed image: the sum of its layers from `docker history` (amd64). A compiled Go binary against a Node runtime plus node_modules.",
       "values": {
         "lyeve": {
-          "value": 83,
-          "min": 83,
-          "max": 83,
+          "value": 84,
+          "min": 84,
+          "max": 84,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "strapi": {
           "value": 1884,
@@ -83,7 +83,7 @@
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "directus": {
           "value": 970,
@@ -92,7 +92,7 @@
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "payload": {
           "value": 1994,
@@ -101,10 +101,10 @@
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         }
       },
-      "lyeveLead": 11.7
+      "lyeveLead": 11.5
     },
     {
       "id": "M-mem-idle",
@@ -116,41 +116,41 @@
         "lyeve": {
           "value": 27.5,
           "min": 27,
-          "max": 29,
+          "max": 28,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "strapi": {
-          "value": 98,
-          "min": 98,
-          "max": 98,
+          "value": 97.5,
+          "min": 97,
+          "max": 99,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "directus": {
-          "value": 212.5,
-          "min": 212,
-          "max": 213,
+          "value": 212,
+          "min": 188,
+          "max": 247,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "payload": {
-          "value": 103,
-          "min": 102,
+          "value": 100.5,
+          "min": 98,
           "max": 103,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         }
       },
-      "lyeveLead": 3.6
+      "lyeveLead": 3.5
     },
     {
       "id": "S01-p99",
@@ -160,47 +160,47 @@
       "note": "One record by id at 500 req/s (scenario S01).",
       "values": {
         "lyeve": {
-          "value": 1.8,
+          "value": 2.2,
           "min": 1.8,
-          "max": 1.9,
+          "max": 3.2,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "strapi": {
-          "value": 719.2,
-          "min": 698.2,
-          "max": 755.7,
+          "value": 827,
+          "min": 817.5,
+          "max": 913.4,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20",
+          "asOf": "2026-10-26",
           "served": {
-            "rps": 306,
+            "rps": 282.5,
             "offered": 500
           }
         },
         "directus": {
-          "value": 67.6,
-          "min": 33.1,
-          "max": 88.2,
+          "value": 147,
+          "min": 58.4,
+          "max": 454.3,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "payload": {
-          "value": 8,
-          "min": 6.8,
-          "max": 10.9,
+          "value": 17.5,
+          "min": 8.3,
+          "max": 25.1,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         }
       },
-      "lyeveLead": 4.4
+      "lyeveLead": 8
     },
     {
       "id": "S02-p99",
@@ -210,47 +210,47 @@
       "note": "First page of 50 at 300 req/s (scenario S02).",
       "values": {
         "lyeve": {
-          "value": 2.8,
-          "min": 2.8,
-          "max": 2.9,
+          "value": 2.7,
+          "min": 2.6,
+          "max": 3.7,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "strapi": {
-          "value": 1615.8,
-          "min": 1546.6,
-          "max": 1769.6,
+          "value": 1884.6,
+          "min": 1748,
+          "max": 1969.7,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20",
+          "asOf": "2026-10-26",
           "served": {
-            "rps": 131,
+            "rps": 117.5,
             "offered": 300
           }
         },
         "directus": {
-          "value": 12.5,
-          "min": 11.4,
-          "max": 17.7,
+          "value": 35.1,
+          "min": 15.5,
+          "max": 191,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "payload": {
-          "value": 9.4,
-          "min": 8.1,
-          "max": 16.2,
+          "value": 15.8,
+          "min": 8.6,
+          "max": 78.1,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         }
       },
-      "lyeveLead": 3.4
+      "lyeveLead": 5.9
     },
     {
       "id": "S03-p99",
@@ -260,43 +260,43 @@
       "note": "Create one record at 100 req/s (scenario S03).",
       "values": {
         "lyeve": {
-          "value": 7.6,
-          "min": 6.2,
-          "max": 8.4,
+          "value": 5,
+          "min": 4.6,
+          "max": 5.3,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "strapi": {
-          "value": 18.4,
-          "min": 17.9,
-          "max": 29.1,
+          "value": 22.1,
+          "min": 19.3,
+          "max": 28.1,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "directus": {
-          "value": 11,
-          "min": 9.5,
-          "max": 12.9,
+          "value": 9.4,
+          "min": 9.1,
+          "max": 10.2,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "payload": {
-          "value": 7.8,
-          "min": 7.6,
-          "max": 8.6,
+          "value": 7.5,
+          "min": 7.3,
+          "max": 8.1,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         }
       },
-      "lyeveLead": 1
+      "lyeveLead": 1.5
     },
     {
       "id": "S04-p99",
@@ -306,47 +306,47 @@
       "note": "Filter by an indexed field, 25 rows, at 200 req/s (scenario S04). Each run first proves the filter applies: a value no record holds must return no rows, and a real value must return only matching rows.",
       "values": {
         "lyeve": {
-          "value": 2.5,
-          "min": 2.5,
-          "max": 2.5,
+          "value": 2.7,
+          "min": 2.6,
+          "max": 2.7,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "strapi": {
-          "value": 1479.9,
-          "min": 1363.7,
-          "max": 2412,
+          "value": 1738.6,
+          "min": 1580.5,
+          "max": 2127.3,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20",
+          "asOf": "2026-10-26",
           "served": {
-            "rps": 149,
+            "rps": 133,
             "offered": 200
           }
         },
         "directus": {
-          "value": 5.9,
+          "value": 6.5,
           "min": 5.7,
-          "max": 6.3,
+          "max": 440.1,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "payload": {
-          "value": 6,
-          "min": 5.9,
-          "max": 6,
+          "value": 5.6,
+          "min": 5.5,
+          "max": 5.8,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         }
       },
-      "lyeveLead": 2.4
+      "lyeveLead": 2.1
     },
     {
       "id": "S05-p99",
@@ -358,30 +358,30 @@
         "lyeve": {
           "provenance": "pending",
           "reason": "over the error budget in 4 of 4 runs: the free tier allows five logins per fifteen minutes per address and refuses the rest with 429. Changing the limit needs a license",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "strapi": {
           "provenance": "pending",
           "reason": "over the error budget in 4 of 4 runs: the stock users-permissions plugin rate-limits /api/auth/local and refuses the burst with 429",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "directus": {
-          "value": 505.6,
-          "min": 505.5,
-          "max": 505.8,
+          "value": 506.1,
+          "min": 505.7,
+          "max": 512.3,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "payload": {
-          "value": 63,
-          "min": 61.8,
-          "max": 65,
+          "value": 65.2,
+          "min": 64.4,
+          "max": 76.7,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         }
       },
       "lyeveLead": null
@@ -395,118 +395,118 @@
       "values": {
         "lyeve": {
           "value": 335,
-          "min": 323,
-          "max": 345,
+          "min": 324,
+          "max": 342,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "strapi": {
-          "value": 2377.5,
-          "min": 1699,
-          "max": 2795,
+          "value": 2201,
+          "min": 1802,
+          "max": 2374,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "directus": {
-          "value": 5027.5,
-          "min": 4987,
-          "max": 5135,
+          "value": 6157.5,
+          "min": 5489,
+          "max": 6805,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         },
         "payload": {
-          "value": 2721,
-          "min": 2636,
-          "max": 2843,
+          "value": 2711,
+          "min": 2639,
+          "max": 2929,
           "runs": 4,
           "provenance": "measured",
           "detail": "median of 4 runs, each on a fresh stack",
-          "asOf": "2026-10-20"
+          "asOf": "2026-10-26"
         }
       },
-      "lyeveLead": 7.1
+      "lyeveLead": 6.6
     }
   ],
   "internals": {
     "machine": "Intel Core Ultra 5 125H (18 threads)",
     "os": "Linux 7.0, Ubuntu 26.04",
-    "goVersion": "1.27.2",
-    "measuredOn": "2026-10-20",
-    "source": "core bench suite (go test -bench -benchmem -count=5, median), commit 27d8c49 (v0.55.0)",
+    "goVersion": "1.27.3",
+    "measuredOn": "2026-10-26",
+    "source": "core bench suite (go test -bench -benchmem -count=5, median), commit 41a533b (v0.56.0)",
     "groups": [
       {
         "title": "Auth / crypto",
         "rows": [
           {
             "name": "JWT sign (HMAC)",
-            "display": "5.5 µs",
-            "raw": 5457,
+            "display": "5.2 µs",
+            "raw": 5207,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              5185,
-              5648
+              4964,
+              5315
             ]
           },
           {
             "name": "JWT verify (parse)",
             "display": "6.1 µs",
-            "raw": 6109,
+            "raw": 6073,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              5866,
-              6650
+              5891,
+              6166
             ]
           },
           {
             "name": "Ed25519 sign",
-            "display": "15.9 µs",
-            "raw": 15888,
+            "display": "16.5 µs",
+            "raw": 16498,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              15839,
-              16149
+              16040,
+              16799
             ]
           },
           {
             "name": "Ed25519 verify",
-            "display": "36.4 µs",
-            "raw": 36357,
+            "display": "37.4 µs",
+            "raw": 37361,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              36290,
-              36891
+              36508,
+              38066
             ]
           },
           {
             "name": "Password hash (bcrypt, cost 10)",
-            "display": "48 ms",
-            "raw": 47968014,
+            "display": "49 ms",
+            "raw": 49385366,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              47895478,
-              48671441
+              48879774,
+              49859666
             ]
           },
           {
             "name": "Password hash (argon2id)",
             "display": "17 ms",
-            "raw": 17300579,
+            "raw": 17336002,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              16652489,
-              17808043
+              17093894,
+              17819657
             ]
           }
         ]
@@ -516,35 +516,35 @@
         "rows": [
           {
             "name": "PostgreSQL passthrough",
-            "display": "2.1 ns",
-            "raw": 2.113,
+            "display": "2.2 ns",
+            "raw": 2.189,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              2.085,
-              2.142
+              2.123,
+              2.217
             ]
           },
           {
             "name": "MySQL rewrite ($N → ?)",
-            "display": "258 ns",
-            "raw": 258.2,
+            "display": "267 ns",
+            "raw": 266.8,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              255.8,
-              269.8
+              255.1,
+              282.3
             ]
           },
           {
             "name": "MSSQL rewrite ($N → @pN)",
-            "display": "236 ns",
-            "raw": 236.1,
+            "display": "249 ns",
+            "raw": 248.5,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              228.7,
-              247.3
+              246.6,
+              250.8
             ]
           }
         ]
@@ -554,35 +554,35 @@
         "rows": [
           {
             "name": "Full stack (4 middlewares)",
-            "display": "4.9 µs",
-            "raw": 4898,
+            "display": "6.9 µs",
+            "raw": 6910,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              4657,
-              5527
+              5565,
+              7122
             ]
           },
           {
             "name": "Tenant header (no-op)",
-            "display": "508 ns",
-            "raw": 508.4,
+            "display": "518 ns",
+            "raw": 518.2,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              495.9,
-              516.5
+              511.2,
+              521.9
             ]
           },
           {
             "name": "Rate limiter (allow)",
             "display": "2.2 µs",
-            "raw": 2167,
+            "raw": 2177,
             "unit": "ns/op",
             "runs": 5,
             "range": [
-              2138,
-              2200
+              2102,
+              2360
             ]
           }
         ]
@@ -770,10 +770,10 @@
         ],
         "p99_ms_range": [
           2.5,
-          2.6
+          2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -834,18 +834,18 @@
         "runs": 3,
         "throughput_rps": 200,
         "p50_ms": 1.4,
-        "p95_ms": 2,
-        "p99_ms": 2.5,
+        "p95_ms": 1.9,
+        "p99_ms": 2.4,
         "p95_ms_range": [
           1.9,
-          2
+          2.1
         ],
         "p99_ms_range": [
           2.4,
-          2.5
+          2.4
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -918,18 +918,18 @@
         "runs": 3,
         "throughput_rps": 150,
         "p50_ms": 1.5,
-        "p95_ms": 2.2,
-        "p99_ms": 2.8,
+        "p95_ms": 2.1,
+        "p99_ms": 2.6,
         "p95_ms_range": [
           2.1,
-          2.2
+          2.1
         ],
         "p99_ms_range": [
-          2.7,
-          2.9
+          2.4,
+          2.7
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -990,18 +990,18 @@
         "runs": 3,
         "throughput_rps": 200,
         "p50_ms": 1.4,
-        "p95_ms": 3.5,
+        "p95_ms": 3.6,
         "p99_ms": 4.4,
         "p95_ms_range": [
-          3.5,
-          3.5
+          3.6,
+          3.6
         ],
         "p99_ms_range": [
-          4.4,
-          4.5
+          4.3,
+          4.4
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1062,18 +1062,18 @@
         "runs": 3,
         "throughput_rps": 200,
         "p50_ms": 1.5,
-        "p95_ms": 2.1,
+        "p95_ms": 2,
         "p99_ms": 2.5,
         "p95_ms_range": [
           2,
-          2.1
+          2
         ],
         "p99_ms_range": [
           2.5,
-          2.5
+          2.6
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1149,14 +1149,14 @@
         "p99_ms": 2.6,
         "p95_ms_range": [
           2,
-          2.2
+          2.1
         ],
         "p99_ms_range": [
-          2.4,
-          2.7
+          2.5,
+          2.6
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1233,7 +1233,7 @@
         "runs": 3,
         "throughput_rps": 180,
         "p50_ms": 1.4,
-        "p95_ms": 2,
+        "p95_ms": 1.9,
         "p99_ms": 2.4,
         "p95_ms_range": [
           1.9,
@@ -1244,7 +1244,7 @@
           2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1330,17 +1330,17 @@
         "throughput_rps": 250,
         "p50_ms": 1.4,
         "p95_ms": 1.9,
-        "p99_ms": 2.3,
+        "p99_ms": 2.4,
         "p95_ms_range": [
           1.9,
-          2
+          1.9
         ],
         "p99_ms_range": [
           2.3,
-          2.5
+          2.4
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1400,19 +1400,19 @@
         "provenance": "measured",
         "runs": 3,
         "throughput_rps": 180,
-        "p50_ms": 1.5,
+        "p50_ms": 1.4,
         "p95_ms": 2,
-        "p99_ms": 2.5,
+        "p99_ms": 2.4,
         "p95_ms_range": [
           2,
-          2.1
+          2
         ],
         "p99_ms_range": [
           2.4,
           2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1486,17 +1486,17 @@
         "throughput_rps": 180,
         "p50_ms": 1.6,
         "p95_ms": 2.2,
-        "p99_ms": 2.6,
+        "p99_ms": 2.8,
         "p95_ms_range": [
-          2.1,
-          2.2
+          2.2,
+          2.3
         ],
         "p99_ms_range": [
-          2.5,
+          2.7,
           2.8
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1611,18 +1611,18 @@
         "runs": 3,
         "throughput_rps": 180,
         "p50_ms": 1.5,
-        "p95_ms": 2.5,
+        "p95_ms": 2.6,
         "p99_ms": 3.3,
         "p95_ms_range": [
-          2.4,
-          2.5
+          2.5,
+          2.6
         ],
         "p99_ms_range": [
-          3.1,
+          3.3,
           3.3
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1718,18 +1718,18 @@
         "runs": 3,
         "throughput_rps": 120,
         "p50_ms": 1.6,
-        "p95_ms": 2.5,
-        "p99_ms": 3.2,
+        "p95_ms": 2.3,
+        "p99_ms": 3,
         "p95_ms_range": [
           2.3,
-          2.6
+          2.4
         ],
         "p99_ms_range": [
           2.9,
-          3.3
+          3.1
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1816,18 +1816,18 @@
         "runs": 3,
         "throughput_rps": 200,
         "p50_ms": 1.5,
-        "p95_ms": 2.9,
+        "p95_ms": 3,
         "p99_ms": 3.8,
         "p95_ms_range": [
-          2.9,
+          3,
           3
         ],
         "p99_ms_range": [
-          3.7,
+          3.8,
           3.8
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1901,19 +1901,19 @@
         "provenance": "measured",
         "runs": 3,
         "throughput_rps": 150,
-        "p50_ms": 2.8,
-        "p95_ms": 3.7,
+        "p50_ms": 2.9,
+        "p95_ms": 3.9,
         "p99_ms": 4.8,
         "p95_ms_range": [
-          3.6,
-          3.8
+          3.8,
+          3.9
         ],
         "p99_ms_range": [
-          4.6,
-          4.9
+          4.7,
+          4.8
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -1982,17 +1982,17 @@
         "throughput_rps": 200,
         "p50_ms": 1.4,
         "p95_ms": 1.9,
-        "p99_ms": 2.3,
+        "p99_ms": 2.4,
         "p95_ms_range": [
-          1.9,
-          1.9
+          1.8,
+          2
         ],
         "p99_ms_range": [
-          2.3,
-          2.4
+          2.2,
+          2.5
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     },
     {
@@ -2181,24 +2181,24 @@
         "runs": 3,
         "throughput_rps": 120,
         "p50_ms": 1.7,
-        "p95_ms": 3.4,
-        "p99_ms": 4.5,
+        "p95_ms": 3.3,
+        "p99_ms": 4,
         "p95_ms_range": [
           3.3,
-          3.5
+          3.4
         ],
         "p99_ms_range": [
-          4.2,
-          4.6
+          4,
+          4.2
         ],
         "error_rate": 0,
-        "asOf": "2026-10-20"
+        "asOf": "2026-10-26"
       }
     }
   ],
   "rig": {
     "note": "What the latest sweep ran on and how. tools/generate-report.mjs prints it at the top of RESULTS.md and copies it into results.json.",
-    "date": "2026-10-20 (every target, the application profiles and the micro-benchmarks)",
+    "date": "2026-10-26 (every target, the application profiles and the micro-benchmarks)",
     "machine": {
       "cpu": "Intel Core Ultra 5 125H (18 threads)",
       "memory": "32 GB RAM",
@@ -2208,20 +2208,20 @@
     },
     "loadGenerator": "k6 2.3.0 on the same machine, constant arrival rate",
     "engine": {
-      "version": "v0.55.0",
-      "commit": "27d8c49",
-      "image": "ghcr.io/lyeve-labs/lyeve-core:0.55.0",
-      "description": "the published v0.55.0 image as it ships, with all 51 plugins compiled in, pulled rather than built. No license: the free baseline starts. Micro-benchmarks from the engine source at the same tag",
-      "binaryBytes": 77205628,
-      "imageLayersBytes": 82964480,
-      "imageCompressedMB": 30.2,
+      "version": "v0.56.0",
+      "commit": "41a533b",
+      "image": "ghcr.io/lyeve-labs/lyeve-core:0.56.0",
+      "description": "the published v0.56.0 image as it ships, with all 51 plugins compiled in, pulled rather than built. No license: the free baseline starts. Micro-benchmarks from the engine source at the same tag",
+      "binaryBytes": 77807740,
+      "imageLayersBytes": 83566592,
+      "imageCompressedMB": 30.4,
       "previous": {
-        "version": "v0.51.2",
-        "commit": "da80fdd",
-        "date": "2026-10-05",
-        "binaryBytes": 72589472,
-        "imageLayersBytes": 78323712,
-        "imageCompressedMB": 27.6
+        "version": "v0.55.0",
+        "commit": "27d8c49",
+        "date": "2026-10-20",
+        "binaryBytes": 77205628,
+        "imageLayersBytes": 82964480,
+        "imageCompressedMB": 30.2
       }
     },
     "competitors": [
@@ -2238,7 +2238,7 @@
         "version": "3.11.0 on Next.js 15.1.0, built from the committed app on node:24-alpine"
       }
     ],
-    "repetitions": "Every target on 2026-10-20: four repetitions, interleaved (lyeve, strapi, directus, payload, then again), each on a fresh stack. Every kept run started and ended below load 4. Each application profile ran three times.",
+    "repetitions": "Every target on 2026-10-26: four repetitions, interleaved (lyeve, strapi, directus, payload, then again), each on a fresh stack. Every kept run started and ended below load 4. One run is set aside under results/raw/excluded: payload 20261026-080758-payload-all, because the load was at or above 4 at its start or end. Each application profile ran three times.",
     "method": [
       "Every run brings the target's stack up from nothing, seeds the same 2,020 records from a fixed seed, and tears it down with its volumes afterwards.",
       "Each scenario gets a 10 s discarded warm-up, then a 60 s measured window. The published figure is the median of the runs. The range beneath it is the lowest and highest run.",

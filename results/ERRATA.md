@@ -459,3 +459,23 @@ profile's mix a free run leaves out, and each free result now names that
 share. It is 80 percent for the search-heavy knowledge base, all of its search
 traffic, and 50 percent for the operations dashboard, so neither figure
 describes the traffic that gives its profile its name.
+
+## 15. Every target re-measured on 2026-10-26, on the published v0.56.0 image
+
+This sweep pulled `ghcr.io/lyeve-labs/lyeve-core:0.56.0` (revision `41a533b`) and ran it as shipped. `targets.json` and the compose file now name that tag. Every target on 2026-10-26: four repetitions, interleaved (lyeve, strapi, directus, payload, then again), each on a fresh stack. Every kept run started and ended below load 4. One run is set aside under results/raw/excluded: payload 20261026-080758-payload-all, because the load was at or above 4 at its start or end. Each application profile ran three times.
+
+| Metric | LyEve, 2026-10-20 (v0.55.0) | LyEve, 2026-10-26 (v0.56.0) | Strongest competitor, 2026-10-26 |
+|---:|---:|---:|---:|
+| Image size | 83 MB | 84 MB | 970 MB (Directus) |
+| Idle memory | 27.5 MB | 27.5 MB | 97.5 MB (Strapi) |
+| P99 read-by-id | 1.8 ms | 2.2 ms | 17.5 ms (Payload) |
+| P99 list-50 | 2.8 ms | 2.7 ms | 15.8 ms (Payload) |
+| P99 create | 7.6 ms | 5 ms | 7.5 ms (Payload) |
+| P99 filter | 2.5 ms | 2.7 ms | 5.6 ms (Payload) |
+| Cold start | 335 ms | 335 ms | 2,201 ms (Strapi) |
+
+The binary is 77,807,740 bytes, the image unpacks to 83,566,592 bytes and its compressed amd64 layers are 30.4 MB, against 77,205,628, 82,964,480 and 30.2 MB for v0.55.0.
+
+| Run | Set aside because | Load at start | Load at end |
+|---|---|---:|---:|
+| 20261026-080758-payload-all | busy | 2.61 | 5.27 |
