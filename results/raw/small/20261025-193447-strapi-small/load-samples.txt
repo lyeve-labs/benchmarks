@@ -1,0 +1,122 @@
+sample 1792957019
+vm 951 546 404
+ctr bench-strapi-app-1 168.8MiB / 951.9MiB 23.09%
+ctr bench-strapi-db-1 45.73MiB / 951.9MiB 4.97%
+sample 1792957026
+vm 951 561 390
+ctr bench-strapi-app-1 168.5MiB / 951.9MiB 19.90%
+ctr bench-strapi-db-1 47.36MiB / 951.9MiB 8.60%
+sample 1792957033
+vm 951 562 389
+ctr bench-strapi-app-1 168.6MiB / 951.9MiB 27.90%
+ctr bench-strapi-db-1 47.27MiB / 951.9MiB 10.40%
+sample 1792957040
+vm 951 564 387
+ctr bench-strapi-app-1 168.8MiB / 951.9MiB 21.54%
+ctr bench-strapi-db-1 49.36MiB / 951.9MiB 14.82%
+sample 1792957047
+vm 951 564 386
+ctr bench-strapi-app-1 168.9MiB / 951.9MiB 20.63%
+ctr bench-strapi-db-1 49.38MiB / 951.9MiB 5.72%
+sample 1792957054
+vm 951 565 385
+ctr bench-strapi-app-1 168.8MiB / 951.9MiB 19.02%
+ctr bench-strapi-db-1 49.43MiB / 951.9MiB 5.73%
+sample 1792957061
+vm 951 566 385
+ctr bench-strapi-app-1 169.3MiB / 951.9MiB 19.26%
+ctr bench-strapi-db-1 50.13MiB / 951.9MiB 12.79%
+sample 1792957068
+vm 951 554 397
+ctr bench-strapi-app-1 169.5MiB / 951.9MiB 23.50%
+ctr bench-strapi-db-1 50.09MiB / 951.9MiB 10.17%
+sample 1792957075
+vm 951 553 398
+ctr bench-strapi-app-1 169.5MiB / 951.9MiB 19.14%
+ctr bench-strapi-db-1 50.21MiB / 951.9MiB 5.87%
+sample 1792957082
+vm 951 556 395
+ctr bench-strapi-app-1 170.3MiB / 951.9MiB 19.60%
+ctr bench-strapi-db-1 50.25MiB / 951.9MiB 10.41%
+sample 1792957090
+vm 951 558 393
+ctr bench-strapi-app-1 170.3MiB / 951.9MiB 36.08%
+ctr bench-strapi-db-1 50.11MiB / 951.9MiB 6.23%
+sample 1792957097
+vm 951 566 385
+ctr bench-strapi-app-1 170MiB / 951.9MiB 37.73%
+ctr bench-strapi-db-1 59.36MiB / 951.9MiB 11.92%
+sample 1792957104
+vm 951 568 383
+ctr bench-strapi-app-1 170.1MiB / 951.9MiB 36.52%
+ctr bench-strapi-db-1 59.64MiB / 951.9MiB 11.09%
+sample 1792957111
+vm 951 563 387
+ctr bench-strapi-app-1 170.6MiB / 951.9MiB 36.41%
+ctr bench-strapi-db-1 60.29MiB / 951.9MiB 12.89%
+sample 1792957118
+vm 951 566 384
+ctr bench-strapi-app-1 171.6MiB / 951.9MiB 37.25%
+ctr bench-strapi-db-1 60.26MiB / 951.9MiB 12.07%
+sample 1792957125
+vm 951 567 383
+ctr bench-strapi-app-1 171.6MiB / 951.9MiB 50.00%
+ctr bench-strapi-db-1 60.3MiB / 951.9MiB 14.96%
+sample 1792957132
+vm 951 557 394
+ctr bench-strapi-app-1 171.7MiB / 951.9MiB 35.08%
+ctr bench-strapi-db-1 60.31MiB / 951.9MiB 11.36%
+sample 1792957139
+vm 951 565 386
+ctr bench-strapi-app-1 171.1MiB / 951.9MiB 37.58%
+ctr bench-strapi-db-1 55.54MiB / 951.9MiB 13.29%
+sample 1792957146
+vm 951 566 385
+ctr bench-strapi-app-1 167.3MiB / 951.9MiB 35.99%
+ctr bench-strapi-db-1 57.22MiB / 951.9MiB 11.60%
+sample 1792957154
+vm 951 568 383
+ctr bench-strapi-app-1 167.5MiB / 951.9MiB 37.40%
+ctr bench-strapi-db-1 61.14MiB / 951.9MiB 16.42%
+sample 1792957161
+vm 951 569 382
+ctr bench-strapi-app-1 168.5MiB / 951.9MiB 45.43%
+ctr bench-strapi-db-1 62.27MiB / 951.9MiB 21.46%
+sample 1792957168
+vm 951 566 385
+ctr bench-strapi-app-1 175.7MiB / 951.9MiB 68.69%
+ctr bench-strapi-db-1 62.2MiB / 951.9MiB 22.76%
+sample 1792957175
+vm 951 572 379
+ctr bench-strapi-app-1 173.6MiB / 951.9MiB 73.71%
+ctr bench-strapi-db-1 65.25MiB / 951.9MiB 26.66%
+sample 1792957182
+vm 951 575 376
+ctr bench-strapi-app-1 177.2MiB / 951.9MiB 75.26%
+ctr bench-strapi-db-1 62.27MiB / 951.9MiB 26.72%
+sample 1792957189
+vm 951 572 379
+ctr bench-strapi-app-1 180.5MiB / 951.9MiB 76.12%
+ctr bench-strapi-db-1 62.32MiB / 951.9MiB 25.93%
+sample 1792957196
+vm 951 577 374
+ctr bench-strapi-app-1 183.8MiB / 951.9MiB 68.00%
+ctr bench-strapi-db-1 62.64MiB / 951.9MiB 21.36%
+sample 1792957204
+vm 951 582 369
+ctr bench-strapi-app-1 186MiB / 951.9MiB 77.76%
+ctr bench-strapi-db-1 62.66MiB / 951.9MiB 27.09%
+sample 1792957211
+vm 951 575 376
+ctr bench-strapi-app-1 187.2MiB / 951.9MiB 76.88%
+ctr bench-strapi-db-1 62.76MiB / 951.9MiB 27.98%
+sample 1792957218
+vm 951 586 365
+ctr bench-strapi-app-1 187.6MiB / 951.9MiB 71.60%
+ctr bench-strapi-db-1 62.76MiB / 951.9MiB 23.95%
+sample 1792957225
+vm 951 574 376
+ctr bench-strapi-app-1 187.9MiB / 951.9MiB 71.74%
+ctr bench-strapi-db-1 62.88MiB / 951.9MiB 25.34%
+sample 1792957232
+vm 951 585 366
