@@ -1,0 +1,6 @@
+step=25
+step=50
+step=100
+step=200
+step=300
+stopped=served 64.2% of 300 req/s, 0.01% errors, p99 1154.4 ms, CPU busy 100% on the server and 8% here
