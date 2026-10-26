@@ -42,6 +42,12 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   targets, scenarios and rounds on two new t2.micro instances with the same
   processor, with LyEve on its 0.56.0-rc.6 release candidate and every other
   image unchanged.
+- The third small-server campaign, `2026-10-26-aws-t2-micro`: the same
+  targets, scenarios and rounds on a new t2.micro with the same processor,
+  with LyEve on its stable 0.56.0 release and PostgreSQL on the current
+  `postgres:16-alpine`. The other targets run the same images. The load
+  generator is a t3.micro in another zone of the same region, 0.985 ms away by
+  TCP connect time, against 0.405 ms in the second campaign.
 
 ### Changed
 
