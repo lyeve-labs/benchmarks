@@ -7,17 +7,30 @@
 # generator never takes the server's CPU. One run:
 #
 #   rig     read the server's CPU model, core count, memory, kernel and Docker
-#   images  the server pulls each public image by the digest this machine holds,
-#           and every image it cannot pull is streamed to it over SSH
+#   clear   remove a stack an earlier run could not tear down
+#   images  for each image the server lacks, or holds with other bytes than
+#           this machine's, it pulls a public one by the digest this machine
+#           holds, and every one it cannot pull is streamed to it over SSH.
+#           The record names the image ID the server runs
 #   boot    compose up, then time the first answer on the target's ready path
 #   idle    settle 45 s, then five samples of free and docker stats
 #   seed    the shared dataset, sent over the network
-#   steps   the scenario at each offered rate: 10 s warm-up, then the measured window
+#   steps   the scenario at each offered rate: 10 s warm-up, then the measured
+#           window, with the CPU time of the server and of this machine read
+#           around it, so a step that falls short shows which one ran out
 #   down    remove the stack, its volumes, the images the run brought, the
 #           firewall rules and the work directory
 #
+# A run during which this machine's address changed is marked void, because the
+# firewall rule then dropped its requests and the target would read as failing.
+# So is a run that lost its SSH connection to the server.
+#
 # Usage:
 #   HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm ./small.sh --target lyeve
+#   HOST=root@203.0.113.10 KEY=~/.ssh/bench-vm ./small.sh --target lyeve --prepare
+#
+# --prepare installs Docker when the server has none, puts the target's images
+# on the server and stops there. It measures nothing and keeps the images.
 #
 # Environment:
 #   HOST          ssh destination, user@address (required)
@@ -26,9 +39,11 @@
 #   SSH_OPTS      extra ssh options, split on spaces
 #   PROVIDER      hosting provider, recorded with the rig
 #   PLAN          plan name, recorded with the rig
+#   CAMPAIGN      the sweep this run belongs to, recorded with the rig
 #   RATES         offered rates in req/s, in the order they run (default "25 50 100 200 300 500")
 #   BOOT_TIMEOUT  seconds the target has to answer after compose up (default 300)
 #   BENCH_PORT    application port on the server (default 8080)
+#   KEEP_IMAGES   1 leaves the images this run brought on the server (default 0)
 set -euo pipefail
 
 HARNESS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -38,6 +53,7 @@ SCENARIOS_JSON="$REPO_DIR/scenarios/scenarios.json"
 
 TARGET=""
 SCENARIO="S01"
+PREPARE=0
 SSH_PORT="${SSH_PORT:-22}"
 RATES="${RATES:-25 50 100 200 300 500}"
 BOOT_TIMEOUT="${BOOT_TIMEOUT:-300}"
@@ -56,6 +72,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --target)   TARGET="$2"; shift 2 ;;
     --scenario) SCENARIO="$2"; shift 2 ;;
+    --prepare)  PREPARE=1; shift ;;
     -h|--help)  grep -E '^#' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) die "unknown arg: $1" ;;
   esac
@@ -119,12 +136,16 @@ rsh() {
 
 run_id="$(_now)-$TARGET-small"
 out_dir="$REPO_DIR/results/raw/small/$run_id"
+# A prepare run measures nothing, so it leaves no run directory behind.
+(( PREPARE )) && out_dir="$LOCAL_TMP/prepare"
 mkdir -p "$out_dir"
-brought=()      # images this run put on the server, removed at teardown
+brought=()      # images this run put on the server, removed at teardown unless kept
 fw_client=""    # the address the firewall rules allow, set once they exist
 
 teardown() {
   set +e
+  local remove=("${brought[@]}")
+  [[ "${KEEP_IMAGES:-0}" == 1 || "$PREPARE" == 1 ]] && remove=()
   if "${SSH[@]}" "$HOST" true >/dev/null 2>&1; then
     log "tearing down on the server"
     rsh '
@@ -138,7 +159,7 @@ teardown() {
       fi
       $S rm -rf "$W"
       true
-    ' "$W" "$compose_name" "$BENCH_PORT" "$fw_client" "${brought[@]}"
+    ' "$W" "$compose_name" "$BENCH_PORT" "$fw_client" "${remove[@]}"
     "${SSH[@]}" -O exit "$HOST" >/dev/null 2>&1
   else
     warn "cannot reach $HOST to tear down: remove the stack and $W by hand"
@@ -166,30 +187,65 @@ rig_remote="$(rsh '
   echo "server_arch=$(uname -m)"
   echo "server_os=$(. /etc/os-release 2>/dev/null; echo "${PRETTY_NAME:-unknown}")"
   echo "server_docker=$($D version --format "{{.Server.Version}}")"
+  echo "server_load=$(cut -d " " -f1-3 /proc/loadavg)"
+  echo "server_uptime_s=$(cut -d. -f1 /proc/uptime)"
   echo "client=${SSH_CLIENT%% *}"
 ')" || die "server preparation failed: $rig_remote"
+loadgen_load="$(cut -d ' ' -f1-3 /proc/loadavg)"
 client="$(sed -n 's/^client=//p' <<<"$rig_remote")"
 [[ "$client" == *:* ]] && die "ssh reached the server over IPv6 ($client). Name its IPv4 address in HOST, so the firewall rule can allow only this machine"
 [[ "$(sed -n 's/^server_arch=//p' <<<"$rig_remote")" == "$(uname -m)" ]] \
   || die "the server is $(sed -n 's/^server_arch=//p' <<<"$rig_remote") and this machine is $(uname -m): the images would not be the ones the local rig measured"
 
+# A stack whose run could not tear it down would hold the port, or answer this
+# run in its place with the data that run seeded, and its firewall rule would
+# drop this machine if its address changed since. Its containers, their
+# volumes, its sampler and its rules go before anything else.
+left="$(rsh '
+  [ -f "$1/sampler.pid" ] && kill "$(cat "$1/sampler.pid")" 2>/dev/null
+  c=$($D ps -aq --filter name=^bench-); v=$($D volume ls -q | grep "^bench-")
+  [ -z "$c" ] || $D rm -f -v $c >/dev/null || exit 1
+  [ -z "$v" ] || $D volume rm $v >/dev/null || exit 1
+  f=$($S iptables -S DOCKER-USER 2>/dev/null | grep -e "--ctorigdstport $2 ")
+  printf "%s\n" "$f" | sed -n "s/^-A /-D /p" | while read -r r; do $S iptables $r; done
+  while $S ip6tables -D INPUT -p tcp --dport "$2" -j DROP 2>/dev/null; do :; done
+  echo $c $v ${f:+firewall rules}' "$W" "$BENCH_PORT")" || die "cannot remove what an earlier run left on the server"
+[[ -n "$left" ]] && warn "[$TARGET] removed what an earlier run left on the server: $left"
+
 # ── images ───────────────────────────────────────────────────────────────────
+# An image the server already holds stays when it holds the same bytes as this
+# machine's, or when this machine has none, so a load generator needs no images
+# to drive a server prepared by the machine that has them. The ID for one
+# platform names the same bytes on every machine. The plain ID does not,
+# because docker save gives the copy an index of its own.
 mapfile -t images < <(docker compose -f "$compose_file" config --images)
-for img in "${images[@]}"; do
-  if ! docker image inspect "$img" >/dev/null 2>&1; then
-    log "[$TARGET] $img is not on this machine, building or pulling it"
-    docker compose -f "$compose_file" build >/dev/null 2>&1 || true
-    docker image inspect "$img" >/dev/null 2>&1 || docker pull "$img" >/dev/null || die "cannot get $img on this machine"
-  fi
-done
 image_lines=()
 for img in "${images[@]}"; do
   repo="${img%:*}"
-  digest="$(docker image inspect -f '{{range .RepoDigests}}{{println .}}{{end}}' "$img" | grep -m1 "^$repo@" || true)"
-  if rsh '$D image inspect "$1" >/dev/null 2>&1' "$img"; then
+  mine=""
+  if docker image inspect "$img" >/dev/null 2>&1; then
+    platform="linux/$(docker image inspect -f '{{.Architecture}}' "$img")"
+    mine="$(docker image inspect --platform "$platform" -f '{{.Id}}' "$img")"
+    theirs="$(rsh '$D image inspect --platform "$2" -f "{{.Id}}" "$1" 2>/dev/null' "$img" "$platform" || true)"
+  else
+    theirs="$(rsh '$D image inspect -f "{{.Id}}" "$1" 2>/dev/null' "$img" || true)"
+  fi
+  if [[ -n "$theirs" && ( -z "$mine" || "$theirs" == "$mine" ) ]]; then
     log "[$TARGET] $img is already on the server"
   else
-    brought+=("$img")
+    if [[ -n "$theirs" ]]; then
+      log "[$TARGET] the server's $img holds other bytes than this machine's, replacing it"
+      rsh '$D image rm "$1" >/dev/null' "$img" || die "cannot remove the server's $img"
+    fi
+    if [[ -z "$mine" ]]; then
+      log "[$TARGET] $img is not on this machine, building or pulling it"
+      docker compose -f "$compose_file" build >/dev/null 2>&1 || true
+      docker image inspect "$img" >/dev/null 2>&1 || docker pull "$img" >/dev/null || die "cannot get $img on this machine"
+    fi
+    digest="$(docker image inspect -f '{{range .RepoDigests}}{{println .}}{{end}}' "$img" | grep -m1 "^$repo@" || true)"
+    # An image the server lacked leaves with the run unless kept. One that
+    # replaced the server's copy stays, so the server keeps this machine's bytes.
+    [[ -n "$theirs" ]] || brought+=("$img")
     if [[ -n "$digest" ]] && rsh '$D pull -q "$1" >/dev/null 2>&1 && $D tag "$1" "$2"' "$digest" "$img"; then
       log "[$TARGET] $img pulled on the server by digest"
     else
@@ -198,8 +254,17 @@ for img in "${images[@]}"; do
         | rsh 'gunzip | $D load -q >/dev/null' || die "cannot copy $img to the server"
     fi
   fi
-  image_lines+=("image=$img ${digest#*@}")
+  # The record names the bytes the server runs: the repository digest it was
+  # pulled by (a dash for an image built here) and the image ID on the server.
+  read -r -a held < <(rsh '$D image inspect -f "{{.Id}}{{range .RepoDigests}} {{.}}{{end}}" "$1"' "$img")
+  digest="-"
+  for d in "${held[@]:1}"; do [[ "$d" == "$repo@"* ]] && { digest="${d#*@}"; break; }; done
+  image_lines+=("image=$img $digest ${held[0]:-unknown}")
 done
+if (( PREPARE )); then
+  log "[$TARGET] images ready on the server"
+  exit 0
+fi
 
 # Only what the target needs: its compose file and the files it mounts.
 mapfile -t mounts < <(sed -nE 's/^[[:space:]]*-[[:space:]]+\.\/([^:]+):.*/\1/p' "$compose_file")
@@ -236,17 +301,39 @@ restarts={{.RestartCount}}" "$app"
 
 app_running() { rsh 'cd "$1"; app=$($D compose -f "$2" ps -q app | head -1); [ -n "$app" ] && [ "$($D inspect -f "{{.State.Running}}" "$app")" = true ]' "$W" "$compose_name"; }
 
+# void <reason> <what happened>: the run measured the rig rather than the
+# target, so it is kept for the record and no figure reads it.
+void() {
+  echo "reason=$1" > "$out_dir/void.txt"
+  warn "[$TARGET] $2, so the run is void"
+}
+
+# The firewall rule admits only the address the run started from. When this
+# machine's address changes during a run, the server drops every request after
+# the change, so the run is void rather than a result.
+check_client() {
+  local now
+  now="$(rsh 'echo "${SSH_CLIENT%% *}"' 2>/dev/null || true)"
+  if [[ -n "$now" && "$now" != "$client" ]]; then
+    void client-address-changed "this machine's address changed during the run"
+  fi
+}
+
 # ── boot ─────────────────────────────────────────────────────────────────────
 log "[$TARGET] starting the stack on the server (limit ${BOOT_TIMEOUT}s)"
 boot_start="$(_ms)"
 boot_status="ok"; boot_reason=""
 # The setup token travels on stdin, so it is never in a file or an argument on
-# the server, and it leaves with the containers.
+# the server, and it leaves with the containers. ssh exits 255 when the
+# connection failed, which says nothing about the stack.
+rc=0
 printf '%s\n' "$LYEVE_SETUP_TOKEN" | rsh '
   cd "$1"; IFS= read -r LYEVE_SETUP_TOKEN; export LYEVE_SETUP_TOKEN BENCH_PORT="$3"
   [ -n "$4" ] && export LYEVE_IMAGE="$4"
   $S ${S:+--preserve-env=LYEVE_SETUP_TOKEN,BENCH_PORT,LYEVE_IMAGE} docker compose -f "$2" up -d --no-build --pull never >/dev/null 2>&1
-' "$W" "$compose_name" "$BENCH_PORT" "${LYEVE_IMAGE:-}" || { boot_status="failed"; boot_reason="compose-up-failed"; }
+' "$W" "$compose_name" "$BENCH_PORT" "${LYEVE_IMAGE:-}" || rc=$?
+(( rc == 255 )) && void ssh-lost "lost the connection to the server at compose up"
+(( rc )) && { boot_status="failed"; boot_reason="compose-up-failed"; }
 if [[ "$boot_status" == "ok" ]]; then
   deadline=$(( boot_start + BOOT_TIMEOUT * 1000 ))
   boot_status="failed"; boot_reason="not-ready-within-limit"
@@ -269,6 +356,9 @@ fi
 { echo "status=$boot_status"; echo "reason=$boot_reason"; echo "boot_ms=$boot_ms"; echo "timeout_s=$BOOT_TIMEOUT"; echo "ready_path=$ready"; } > "$out_dir/boot-result.txt"
 
 # ── rig record ───────────────────────────────────────────────────────────────
+# The harness commit, marked dirty when the files that decide a run differ from it.
+harness="$(git -C "$REPO_DIR" rev-parse --short=12 HEAD 2>/dev/null || true)"
+[[ -n "$harness" ]] && ! git -C "$REPO_DIR" diff --quiet HEAD -- harness tools scenarios targets 2>/dev/null && harness+="-dirty"
 rtt_ms=""
 if [[ "$boot_status" == "ok" ]]; then
   rtt_ms="$(for _ in 1 2 3 4 5 6 7 8 9 10 11; do curl -s -o /dev/null -w '%{time_connect}\n' "$BASE_URL$health"; done \
@@ -276,19 +366,25 @@ if [[ "$boot_status" == "ok" ]]; then
 fi
 {
   echo "date=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "harness=$harness"
   echo "provider=${PROVIDER:-}"
   echo "plan=${PLAN:-}"
+  echo "campaign=${CAMPAIGN:-}"
   echo "target=$TARGET"
   echo "scenario=$SCENARIO"
   echo "rates=$RATES"
   grep -v '^client=' <<<"$rig_remote"
   echo "loadgen_cpu=$(LC_ALL=C lscpu 2>/dev/null | sed -n 's/^Model name:[[:space:]]*//p' | head -1)"
+  echo "loadgen_nproc=$(nproc)"
+  echo "loadgen_mem_total_mb=$(free -m | awk '/^Mem:/{print $2}')"
+  echo "loadgen_load=$loadgen_load"
   echo "loadgen_k6=$(k6 version 2>/dev/null | head -1 | awk '{print $2}')"
   echo "rtt_ms=$rtt_ms"
   printf '%s\n' "${image_lines[@]}"
 } > "$out_dir/rig.txt"
 
 if [[ "$boot_status" != "ok" ]]; then
+  check_client
   node "$REPO_DIR/tools/small-summary.mjs" "$out_dir"
   log "[$TARGET] done, boot failed → $out_dir"
   exit 0
@@ -319,7 +415,21 @@ if [[ "$seeded" == "0" ]]; then
 else
   BENCH_TOKEN="$(cat "$token_file" 2>/dev/null || true)"
   for rate in $RATES; do
-    if ! app_running; then
+    # ssh exits 255 when it cannot reach the server. A target that stalls the
+    # server is as likely a cause as the network, so the check asks again for
+    # a minute and acts on the first answer.
+    up=0
+    app_running || up=$?
+    for _ in 1 2 3; do
+      (( up == 255 )) || break
+      sleep 20
+      up=0
+      app_running || up=$?
+    done
+    if (( up == 255 )); then
+      void ssh-lost "lost the connection to the server before ${rate} req/s"
+      break
+    elif (( up )); then
       echo "stopped=app-not-running before ${rate}" >> "$out_dir/load.txt"
       warn "[$TARGET] the application is no longer running, stopping before ${rate} req/s"
       break
@@ -330,9 +440,19 @@ else
       -e TOKEN="$BENCH_TOKEN" "$HARNESS_DIR/k6/scenario.js" >/dev/null 2>&1 || true
     log "[$TARGET/$SCENARIO] ${rate} req/s: measuring $duration"
     summary="$out_dir/$SCENARIO-r$rate.summary.json"
+    # The first line of /proc/stat on both machines, read just outside the
+    # window, gives each one's busy and stolen share of it.
+    cpu_server="$(rsh 'head -1 /proc/stat' || true)"
+    cpu_here="$(head -1 /proc/stat)"
     k6 run --quiet -e TARGET="$TARGET" -e SCENARIO="$SCENARIO" -e BASE_URL="$BASE_URL" \
       -e DURATION="$duration" -e BENCH_RATE="$rate" -e TOKEN="$BENCH_TOKEN" \
       --summary-export "$summary" "$HARNESS_DIR/k6/scenario.js" >/dev/null 2>&1 || true
+    {
+      echo "loadgen_before=$cpu_here"
+      echo "loadgen_after=$(head -1 /proc/stat)"
+      echo "server_before=$cpu_server"
+      echo "server_after=$(rsh 'head -1 /proc/stat' || true)"
+    } > "$out_dir/$SCENARIO-r$rate.cpu.txt"
     echo "step=$rate" >> "$out_dir/load.txt"
     if ! verdict="$(node "$REPO_DIR/tools/small-summary.mjs" --check "$summary" "$rate" "$budget")"; then
       echo "stopped=$verdict" >> "$out_dir/load.txt"
@@ -347,6 +467,7 @@ fi
 
 rsh 'kill "$(cat "$1/sampler.pid")" 2>/dev/null; cat "$1/samples.txt"' "$W" > "$out_dir/load-samples.txt" || true
 capture_state end
+check_client
 
 node "$REPO_DIR/tools/small-summary.mjs" "$out_dir"
 log "[$TARGET] done → $out_dir"

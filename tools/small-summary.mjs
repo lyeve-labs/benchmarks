@@ -1,8 +1,9 @@
 // small-summary.mjs: fold one small-server run directory into small.json.
 //
 // harness/small.sh writes raw text from the server (rig.txt, boot*.txt,
-// idle.txt, load-samples.txt, end*.txt) and one k6 summary per offered rate.
-// This turns them into one document and the M-*.json files every run carries.
+// idle.txt, load-samples.txt, end*.txt), and per offered rate one k6 summary
+// and the CPU counters of both machines around it. This turns them into one
+// document and the M-*.json files every run carries.
 //
 //   node tools/small-summary.mjs results/raw/small/<run-id>
 //   node tools/small-summary.mjs --check <step.summary.json> <offered rate> <error budget>
@@ -10,7 +11,7 @@
 // --check exits 0 when the step stayed within the error budget and served at
 // least 90% of the offered rate, and 1 otherwise, so the harness stops stepping.
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { collectSummary } from './collect.mjs';
 
 // The share of the offered rate a step must serve to count as keeping up. The
@@ -58,24 +59,57 @@ function parseSamples(s) {
   return { vm, ctr };
 }
 
+// The app container's state as the harness read it from the server. The
+// server always prints a status, so a file the harness wrote with none in it
+// means the server did not answer.
 function state(dir, name) {
+  if (!existsSync(join(dir, `${name}.txt`))) return null;
   const kv = keyValues(text(dir, `${name}.txt`));
-  if (!kv.status) return null;
+  // The kernel's lines come from a second call, which can answer when the
+  // first did not.
+  const oomKernelLines = lines(text(dir, `${name}-dmesg.txt`));
+  if (!kv.status) return { status: 'unanswered', exitCode: null, oomKilled: null, restarts: null, oomKernelLines };
   return {
     status: kv.status,
     exitCode: kv.exit_code != null ? Number(kv.exit_code) : null,
     oomKilled: kv.oom_killed === 'true',
     restarts: kv.restarts != null ? Number(kv.restarts) : null,
-    oomKernelLines: lines(text(dir, `${name}-dmesg.txt`)),
+    oomKernelLines,
   };
+}
+
+// The busy, I/O wait and stolen shares of one machine's CPU between two reads
+// of the first line of /proc/stat: cpu user nice system idle iowait irq softirq
+// steal. I/O wait is idle time with a disk request outstanding.
+function cpuShare(before, after) {
+  const a = String(before || '').trim().split(/\s+/).slice(1, 9).map(Number);
+  const b = String(after || '').trim().split(/\s+/).slice(1, 9).map(Number);
+  if (a.length < 8 || b.length < 8 || [...a, ...b].some(Number.isNaN)) return null;
+  const d = b.map((v, i) => v - a[i]);
+  const total = d.reduce((sum, v) => sum + v, 0);
+  if (total <= 0) return null;
+  const pct = (x) => Math.round((x / total) * 1000) / 10;
+  return { busy: pct(total - d[3] - d[4] - d[7]), iowait: pct(d[4]), steal: pct(d[7]) };
 }
 
 function step(summaryPath, rate, budget) {
   const row = collectSummary(summaryPath);
   if (!row) return { rate, provenance: 'pending', reason: 'no k6 summary' };
-  const share = row.throughput_rps != null ? Math.round((row.throughput_rps / rate) * 1000) / 1000 : null;
+  const m = JSON.parse(readFileSync(summaryPath, 'utf8')).metrics || {};
+  // The share comes from k6's own request rate, not the whole number the row
+  // rounds it to, so a step that served 449.6 of 500 req/s misses the floor.
+  const ratio = typeof m.http_reqs?.rate === 'number' ? m.http_reqs.rate / rate : null;
+  // Stored rounded down, as the report prints it, so a step that missed the
+  // floor never stores 0.9.
+  const share = ratio != null ? Math.floor(ratio * 10000 + 1e-6) / 10000 : null;
   const withinBudget = row.error_rate != null && row.error_rate <= budget;
-  const keptUp = share != null && share >= SERVED_FLOOR;
+  const keptUp = ratio != null && ratio >= SERVED_FLOOR;
+  // What can hold a step under its offered rate besides the target: k6 out of
+  // virtual users (dropped iterations), the network (bytes received) and the
+  // CPU of either machine, read over the whole k6 process.
+  const cpu = keyValues(text(dirname(summaryPath), basename(summaryPath).replace(/\.summary\.json$/, '.cpu.txt')));
+  const server = cpuShare(cpu.server_before, cpu.server_after);
+  const loadgen = cpuShare(cpu.loadgen_before, cpu.loadgen_after);
   return {
     rate,
     provenance: withinBudget ? 'measured' : 'pending',
@@ -87,12 +121,25 @@ function step(summaryPath, rate, budget) {
     error_rate: row.error_rate,
     within_budget: withinBudget,
     kept_up: keptUp,
+    dropped_iterations: m.dropped_iterations?.count ?? 0,
+    vus_peak: m.vus?.max ?? null,
+    received_mb_s: m.data_received?.rate != null ? Math.round(m.data_received.rate / 10000) / 100 : null,
+    server_busy_pct: server?.busy ?? null,
+    server_iowait_pct: server?.iowait ?? null,
+    server_steal_pct: server?.steal ?? null,
+    loadgen_busy_pct: loadgen?.busy ?? null,
+    loadgen_steal_pct: loadgen?.steal ?? null,
   };
 }
 
 function describe(s) {
-  const pct = (x) => (x == null ? '?' : `${Math.round(x * 100)}%`);
-  return `served ${pct(s.served_share)} of ${s.rate} req/s, ${s.error_rate == null ? '?' : (s.error_rate * 100).toFixed(2)}% errors, p99 ${s.p99_ms ?? '?'} ms`;
+  // Rounded down, so a share under the floor never prints as the floor.
+  const pct = (x) => (x == null ? '?' : `${Math.floor(x * 1000 + 1e-6) / 10}%`);
+  const iowait = s.server_iowait_pct >= 5 ? ` (I/O wait ${Math.round(s.server_iowait_pct)}%)` : '';
+  const cpu = s.server_busy_pct != null && s.loadgen_busy_pct != null
+    ? `, CPU busy ${Math.round(s.server_busy_pct)}%${iowait} on the server and ${Math.round(s.loadgen_busy_pct)}% here`
+    : '';
+  return `served ${pct(s.served_share)} of ${s.rate} req/s, ${s.error_rate == null ? '?' : (s.error_rate * 100).toFixed(2)}% errors, p99 ${s.p99_ms ?? '?'} ms${cpu}`;
 }
 
 function check(path, rate, budget) {
@@ -104,9 +151,10 @@ function check(path, rate, budget) {
 
 function summarize(dir) {
   const rig = keyValues(text(dir, 'rig.txt'));
+  // image=<ref> <repository digest, or a dash for a built image> <image ID on the server>
   const images = lines(text(dir, 'rig.txt')).filter((l) => l.startsWith('image=')).map((l) => {
-    const [ref, digest] = l.slice(6).split(' ');
-    return { ref, digest: digest || null };
+    const [ref, digest, id] = l.slice(6).split(' ');
+    return { ref, digest: digest && digest !== '-' ? digest : null, id: id || null };
   });
   delete rig.image;
   const target = rig.target;
@@ -126,12 +174,16 @@ function summarize(dir) {
     container: state(dir, 'boot'),
   };
   if (bootKv.status !== 'ok') boot.logTail = lines(text(dir, 'boot-logs.txt'));
+  const voided = keyValues(text(dir, 'void.txt'));
 
   const out = {
     mode: 'small-server',
     target,
     date: (rig.date || '').slice(0, 10),
+    campaign: rig.campaign || null,
+    scenario: rig.scenario || null,
     rig: {
+      harness: rig.harness || null,
       provider: rig.provider || null,
       plan: rig.plan || null,
       cpu: rig.server_cpu || null,
@@ -144,12 +196,23 @@ function summarize(dir) {
       arch: rig.server_arch || null,
       docker: rig.server_docker || null,
       dockerInstalledByRun: rig.docker_installed_by_run === 'yes',
-      loadGenerator: { cpu: rig.loadgen_cpu || null, k6: rig.loadgen_k6 || null, where: 'a separate machine, over the network' },
+      loadAtStart: rig.server_load || null,
+      uptimeAtStartS: rig.server_uptime_s ? Number(rig.server_uptime_s) : null,
+      loadGenerator: {
+        cpu: rig.loadgen_cpu || null,
+        nproc: rig.loadgen_nproc ? Number(rig.loadgen_nproc) : null,
+        memoryTotalMB: rig.loadgen_mem_total_mb ? Number(rig.loadgen_mem_total_mb) : null,
+        loadAtStart: rig.loadgen_load || null,
+        k6: rig.loadgen_k6 || null,
+        where: 'a separate machine, over the network',
+      },
       networkRttMs: rig.rtt_ms ? Number(rig.rtt_ms) : null,
       images,
     },
     boot,
   };
+  // A void run is kept for the record and never enters a figure.
+  if (voided.reason) out.void = { reason: voided.reason };
 
   const idle = parseSamples(text(dir, 'idle.txt'));
   if (idle.vm.length) {
@@ -182,8 +245,11 @@ function summarize(dir) {
       stopped: load.stopped || null,
     };
     if (load.seed === 'failed') Object.assign(out.load, { provenance: 'pending', reason: 'seed-failed' });
-    const highest = steps.filter((s) => s.within_budget && s.kept_up).pop();
-    out.load.highestRateKeptUp = highest ? highest.rate : null;
+    // Stepping stops at the first step that misses, so only the steps before
+    // it count.
+    const miss = steps.findIndex((s) => !(s.within_budget && s.kept_up));
+    const kept = miss === -1 ? steps : steps.slice(0, miss);
+    out.load.highestRateKeptUp = kept.length ? kept.at(-1).rate : null;
 
     const peak = parseSamples(text(dir, 'load-samples.txt'));
     if (peak.vm.length) {
@@ -208,6 +274,7 @@ function summarize(dir) {
   if (app(out.peak?.containersMB) != null) put('M-mem-peak', { value_mb: app(out.peak.containersMB) });
 
   const steps = out.load?.steps || [];
+  if (out.void) console.log(`small: ${target} run is void (${out.void.reason}), so no figure reads it`);
   console.log(`small: ${target} boot ${boot.status}${boot.value_ms != null ? ` in ${boot.value_ms} ms` : ` (${boot.reason})`}` +
     (out.idle ? `, idle VM ${out.idle.vm.usedMB} MB used of ${out.idle.vm.totalMB}` : '') +
     (steps.length ? `, ${steps.length} steps, highest kept up: ${out.load.highestRateKeptUp ?? 'none'} req/s` : ''));

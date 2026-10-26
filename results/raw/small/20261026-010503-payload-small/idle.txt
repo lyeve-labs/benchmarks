@@ -1,0 +1,20 @@
+sample 1792976765
+vm 951 520 431
+ctr bench-payload-app-1 157.2MiB / 951.9MiB 0.00%
+ctr bench-payload-db-1 31.44MiB / 951.9MiB 2.33%
+sample 1792976771
+vm 951 515 435
+ctr bench-payload-app-1 157MiB / 951.9MiB 0.00%
+ctr bench-payload-db-1 31.29MiB / 951.9MiB 0.02%
+sample 1792976776
+vm 951 519 432
+ctr bench-payload-app-1 157.1MiB / 951.9MiB 0.01%
+ctr bench-payload-db-1 31.51MiB / 951.9MiB 4.26%
+sample 1792976781
+vm 951 502 449
+ctr bench-payload-app-1 158.5MiB / 951.9MiB 0.01%
+ctr bench-payload-db-1 31.88MiB / 951.9MiB 0.02%
+sample 1792976786
+vm 951 511 439
+ctr bench-payload-app-1 158.5MiB / 951.9MiB 0.00%
+ctr bench-payload-db-1 32.07MiB / 951.9MiB 4.15%

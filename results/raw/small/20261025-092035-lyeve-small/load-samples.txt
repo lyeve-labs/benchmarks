@@ -1,0 +1,277 @@
+sample 1792920135
+vm 951 480 471
+ctr bench-lyeve-proxy-1 25MiB / 951.9MiB 2.52%
+ctr bench-lyeve-app-1 55.78MiB / 951.9MiB 6.97%
+ctr bench-lyeve-db-1 95.11MiB / 951.9MiB 8.76%
+sample 1792920142
+vm 951 512 439
+ctr bench-lyeve-proxy-1 27.27MiB / 951.9MiB 2.68%
+ctr bench-lyeve-app-1 56.95MiB / 951.9MiB 5.52%
+ctr bench-lyeve-db-1 96.91MiB / 951.9MiB 2.18%
+sample 1792920149
+vm 951 499 452
+ctr bench-lyeve-proxy-1 27.69MiB / 951.9MiB 5.36%
+ctr bench-lyeve-app-1 57.21MiB / 951.9MiB 5.52%
+ctr bench-lyeve-db-1 98.06MiB / 951.9MiB 7.55%
+sample 1792920157
+vm 951 502 449
+ctr bench-lyeve-proxy-1 27.86MiB / 951.9MiB 2.07%
+ctr bench-lyeve-app-1 58.14MiB / 951.9MiB 5.37%
+ctr bench-lyeve-db-1 99.53MiB / 951.9MiB 6.47%
+sample 1792920164
+vm 951 513 438
+ctr bench-lyeve-proxy-1 27.87MiB / 951.9MiB 1.99%
+ctr bench-lyeve-app-1 58.77MiB / 951.9MiB 6.92%
+ctr bench-lyeve-db-1 96.31MiB / 951.9MiB 6.53%
+sample 1792920171
+vm 951 509 442
+ctr bench-lyeve-proxy-1 27.72MiB / 951.9MiB 5.62%
+ctr bench-lyeve-app-1 58.88MiB / 951.9MiB 5.87%
+ctr bench-lyeve-db-1 83.24MiB / 951.9MiB 2.39%
+sample 1792920178
+vm 951 511 440
+ctr bench-lyeve-proxy-1 27.83MiB / 951.9MiB 2.54%
+ctr bench-lyeve-app-1 59.04MiB / 951.9MiB 6.91%
+ctr bench-lyeve-db-1 84.25MiB / 951.9MiB 6.30%
+sample 1792920185
+vm 951 512 439
+ctr bench-lyeve-proxy-1 27.93MiB / 951.9MiB 2.19%
+ctr bench-lyeve-app-1 59.04MiB / 951.9MiB 12.57%
+ctr bench-lyeve-db-1 85.23MiB / 951.9MiB 2.15%
+sample 1792920192
+vm 951 512 439
+ctr bench-lyeve-proxy-1 27.82MiB / 951.9MiB 5.89%
+ctr bench-lyeve-app-1 59.14MiB / 951.9MiB 5.68%
+ctr bench-lyeve-db-1 86.75MiB / 951.9MiB 2.24%
+sample 1792920199
+vm 951 513 438
+ctr bench-lyeve-proxy-1 27.83MiB / 951.9MiB 2.21%
+ctr bench-lyeve-app-1 59.63MiB / 951.9MiB 6.71%
+ctr bench-lyeve-db-1 82.21MiB / 951.9MiB 6.39%
+sample 1792920206
+vm 951 506 445
+ctr bench-lyeve-proxy-1 27.84MiB / 951.9MiB 4.36%
+ctr bench-lyeve-app-1 60.32MiB / 951.9MiB 11.54%
+ctr bench-lyeve-db-1 83.24MiB / 951.9MiB 3.99%
+sample 1792920214
+vm 951 511 440
+ctr bench-lyeve-proxy-1 27.88MiB / 951.9MiB 7.34%
+ctr bench-lyeve-app-1 60.96MiB / 951.9MiB 11.14%
+ctr bench-lyeve-db-1 90.45MiB / 951.9MiB 8.56%
+sample 1792920221
+vm 951 508 443
+ctr bench-lyeve-proxy-1 28.1MiB / 951.9MiB 3.67%
+ctr bench-lyeve-app-1 61.97MiB / 951.9MiB 9.85%
+ctr bench-lyeve-db-1 93.66MiB / 951.9MiB 4.19%
+sample 1792920228
+vm 951 507 444
+ctr bench-lyeve-proxy-1 27.96MiB / 951.9MiB 4.04%
+ctr bench-lyeve-app-1 62.88MiB / 951.9MiB 11.75%
+ctr bench-lyeve-db-1 99.1MiB / 951.9MiB 10.48%
+sample 1792920235
+vm 951 528 423
+ctr bench-lyeve-proxy-1 28.12MiB / 951.9MiB 4.19%
+ctr bench-lyeve-app-1 64.09MiB / 951.9MiB 11.91%
+ctr bench-lyeve-db-1 102.5MiB / 951.9MiB 3.77%
+sample 1792920242
+vm 951 529 422
+ctr bench-lyeve-proxy-1 27.95MiB / 951.9MiB 7.86%
+ctr bench-lyeve-app-1 64.18MiB / 951.9MiB 11.69%
+ctr bench-lyeve-db-1 104.7MiB / 951.9MiB 7.99%
+sample 1792920249
+vm 951 514 437
+ctr bench-lyeve-proxy-1 28.55MiB / 951.9MiB 3.79%
+ctr bench-lyeve-app-1 64.96MiB / 951.9MiB 11.15%
+ctr bench-lyeve-db-1 106.6MiB / 951.9MiB 19.69%
+sample 1792920256
+vm 951 532 419
+ctr bench-lyeve-proxy-1 28.55MiB / 951.9MiB 3.52%
+ctr bench-lyeve-app-1 65.95MiB / 951.9MiB 11.38%
+ctr bench-lyeve-db-1 109MiB / 951.9MiB 8.04%
+sample 1792920264
+vm 951 513 437
+ctr bench-lyeve-proxy-1 28.43MiB / 951.9MiB 7.00%
+ctr bench-lyeve-app-1 66.2MiB / 951.9MiB 11.89%
+ctr bench-lyeve-db-1 102.3MiB / 951.9MiB 7.97%
+sample 1792920271
+vm 951 520 431
+ctr bench-lyeve-proxy-1 28.57MiB / 951.9MiB 4.23%
+ctr bench-lyeve-app-1 66.83MiB / 951.9MiB 12.36%
+ctr bench-lyeve-db-1 104.5MiB / 951.9MiB 7.97%
+sample 1792920278
+vm 951 534 417
+ctr bench-lyeve-proxy-1 21.71MiB / 951.9MiB 6.79%
+ctr bench-lyeve-app-1 65.57MiB / 951.9MiB 25.33%
+ctr bench-lyeve-db-1 125.9MiB / 951.9MiB 6.79%
+sample 1792920285
+vm 951 545 406
+ctr bench-lyeve-proxy-1 22.07MiB / 951.9MiB 10.68%
+ctr bench-lyeve-app-1 70.12MiB / 951.9MiB 19.92%
+ctr bench-lyeve-db-1 131.9MiB / 951.9MiB 6.93%
+sample 1792920292
+vm 951 556 395
+ctr bench-lyeve-proxy-1 21.94MiB / 951.9MiB 7.51%
+ctr bench-lyeve-app-1 71.91MiB / 951.9MiB 26.58%
+ctr bench-lyeve-db-1 137.1MiB / 951.9MiB 6.95%
+sample 1792920299
+vm 951 562 389
+ctr bench-lyeve-proxy-1 22.14MiB / 951.9MiB 8.16%
+ctr bench-lyeve-app-1 73.25MiB / 951.9MiB 23.32%
+ctr bench-lyeve-db-1 141.5MiB / 951.9MiB 11.43%
+sample 1792920306
+vm 951 570 381
+ctr bench-lyeve-proxy-1 22.12MiB / 951.9MiB 11.65%
+ctr bench-lyeve-app-1 73.39MiB / 951.9MiB 22.82%
+ctr bench-lyeve-db-1 144.1MiB / 951.9MiB 11.59%
+sample 1792920314
+vm 951 570 380
+ctr bench-lyeve-proxy-1 22.18MiB / 951.9MiB 7.68%
+ctr bench-lyeve-app-1 73.87MiB / 951.9MiB 22.43%
+ctr bench-lyeve-db-1 130.9MiB / 951.9MiB 11.56%
+sample 1792920321
+vm 951 570 381
+ctr bench-lyeve-proxy-1 22.22MiB / 951.9MiB 7.40%
+ctr bench-lyeve-app-1 73.88MiB / 951.9MiB 21.33%
+ctr bench-lyeve-db-1 135.5MiB / 951.9MiB 11.06%
+sample 1792920328
+vm 951 570 381
+ctr bench-lyeve-proxy-1 22.1MiB / 951.9MiB 10.77%
+ctr bench-lyeve-app-1 73.94MiB / 951.9MiB 21.58%
+ctr bench-lyeve-db-1 139MiB / 951.9MiB 10.02%
+sample 1792920335
+vm 951 565 386
+ctr bench-lyeve-proxy-1 22.26MiB / 951.9MiB 6.94%
+ctr bench-lyeve-app-1 73.96MiB / 951.9MiB 19.20%
+ctr bench-lyeve-db-1 147.9MiB / 951.9MiB 6.87%
+sample 1792920342
+vm 951 576 375
+ctr bench-lyeve-proxy-1 22.43MiB / 951.9MiB 7.16%
+ctr bench-lyeve-app-1 74MiB / 951.9MiB 21.11%
+ctr bench-lyeve-db-1 153MiB / 951.9MiB 11.39%
+sample 1792920349
+vm 951 593 358
+ctr bench-lyeve-proxy-1 23.42MiB / 951.9MiB 16.70%
+ctr bench-lyeve-app-1 87.32MiB / 951.9MiB 43.00%
+ctr bench-lyeve-db-1 193.8MiB / 951.9MiB 14.10%
+sample 1792920357
+vm 951 637 314
+ctr bench-lyeve-proxy-1 24.32MiB / 951.9MiB 12.82%
+ctr bench-lyeve-app-1 87.02MiB / 951.9MiB 38.93%
+ctr bench-lyeve-db-1 207.2MiB / 951.9MiB 17.47%
+sample 1792920364
+vm 951 650 301
+ctr bench-lyeve-proxy-1 24.54MiB / 951.9MiB 13.90%
+ctr bench-lyeve-app-1 85.63MiB / 951.9MiB 38.19%
+ctr bench-lyeve-db-1 217.4MiB / 951.9MiB 17.47%
+sample 1792920371
+vm 951 672 279
+ctr bench-lyeve-proxy-1 21.99MiB / 951.9MiB 13.45%
+ctr bench-lyeve-app-1 76.09MiB / 951.9MiB 37.78%
+ctr bench-lyeve-db-1 229.6MiB / 951.9MiB 40.73%
+sample 1792920378
+vm 951 672 279
+ctr bench-lyeve-proxy-1 22.34MiB / 951.9MiB 16.71%
+ctr bench-lyeve-app-1 75.81MiB / 951.9MiB 40.79%
+ctr bench-lyeve-db-1 241.9MiB / 951.9MiB 13.77%
+sample 1792920385
+vm 951 685 266
+ctr bench-lyeve-proxy-1 22.47MiB / 951.9MiB 14.34%
+ctr bench-lyeve-app-1 76.71MiB / 951.9MiB 39.80%
+ctr bench-lyeve-db-1 250.1MiB / 951.9MiB 17.38%
+sample 1792920393
+vm 951 695 256
+ctr bench-lyeve-proxy-1 22.63MiB / 951.9MiB 13.36%
+ctr bench-lyeve-app-1 76.29MiB / 951.9MiB 39.35%
+ctr bench-lyeve-db-1 251.4MiB / 951.9MiB 18.46%
+sample 1792920400
+vm 951 697 254
+ctr bench-lyeve-proxy-1 22.86MiB / 951.9MiB 13.00%
+ctr bench-lyeve-app-1 76.69MiB / 951.9MiB 37.38%
+ctr bench-lyeve-db-1 247.4MiB / 951.9MiB 16.21%
+sample 1792920407
+vm 951 691 260
+ctr bench-lyeve-proxy-1 22.33MiB / 951.9MiB 17.60%
+ctr bench-lyeve-app-1 78.5MiB / 951.9MiB 37.26%
+ctr bench-lyeve-db-1 250MiB / 951.9MiB 13.96%
+sample 1792920414
+vm 951 693 258
+ctr bench-lyeve-proxy-1 22.14MiB / 951.9MiB 13.47%
+ctr bench-lyeve-app-1 77.33MiB / 951.9MiB 35.22%
+ctr bench-lyeve-db-1 252.4MiB / 951.9MiB 19.64%
+sample 1792920421
+vm 951 698 253
+ctr bench-lyeve-proxy-1 24.54MiB / 951.9MiB 20.53%
+ctr bench-lyeve-app-1 81.18MiB / 951.9MiB 48.46%
+ctr bench-lyeve-db-1 262.5MiB / 951.9MiB 22.08%
+sample 1792920429
+vm 951 711 239
+ctr bench-lyeve-proxy-1 23.79MiB / 951.9MiB 11.38%
+ctr bench-lyeve-app-1 82.36MiB / 951.9MiB 31.13%
+ctr bench-lyeve-db-1 265MiB / 951.9MiB 17.85%
+sample 1792920436
+vm 951 745 206
+ctr bench-lyeve-proxy-1 23.67MiB / 951.9MiB 23.90%
+ctr bench-lyeve-app-1 90.18MiB / 951.9MiB 44.46%
+ctr bench-lyeve-db-1 265.1MiB / 951.9MiB 21.98%
+sample 1792920443
+vm 951 720 230
+ctr bench-lyeve-proxy-1 24.21MiB / 951.9MiB 22.00%
+ctr bench-lyeve-app-1 96.48MiB / 951.9MiB 53.01%
+ctr bench-lyeve-db-1 271.4MiB / 951.9MiB 21.56%
+sample 1792920451
+vm 951 723 228
+ctr bench-lyeve-proxy-1 23.6MiB / 951.9MiB 19.26%
+ctr bench-lyeve-app-1 97.8MiB / 951.9MiB 54.06%
+ctr bench-lyeve-db-1 273.8MiB / 951.9MiB 21.67%
+sample 1792920458
+vm 951 726 225
+ctr bench-lyeve-proxy-1 24MiB / 951.9MiB 18.91%
+ctr bench-lyeve-app-1 93.23MiB / 951.9MiB 54.39%
+ctr bench-lyeve-db-1 275.4MiB / 951.9MiB 23.75%
+sample 1792920465
+vm 951 730 221
+ctr bench-lyeve-proxy-1 23.8MiB / 951.9MiB 20.49%
+ctr bench-lyeve-app-1 102.3MiB / 951.9MiB 52.20%
+ctr bench-lyeve-db-1 277.1MiB / 951.9MiB 22.99%
+sample 1792920472
+vm 951 728 223
+ctr bench-lyeve-proxy-1 25.21MiB / 951.9MiB 23.09%
+ctr bench-lyeve-app-1 102.4MiB / 951.9MiB 51.74%
+ctr bench-lyeve-db-1 279MiB / 951.9MiB 23.14%
+sample 1792920479
+vm 951 734 217
+ctr bench-lyeve-proxy-1 24.95MiB / 951.9MiB 23.14%
+ctr bench-lyeve-app-1 104.9MiB / 951.9MiB 49.46%
+ctr bench-lyeve-db-1 280.6MiB / 951.9MiB 19.68%
+sample 1792920487
+vm 951 733 218
+ctr bench-lyeve-proxy-1 25.05MiB / 951.9MiB 20.12%
+ctr bench-lyeve-app-1 102.2MiB / 951.9MiB 51.06%
+ctr bench-lyeve-db-1 281.4MiB / 951.9MiB 20.12%
+sample 1792920494
+vm 951 825 126
+ctr bench-lyeve-proxy-1 43.83MiB / 951.9MiB 24.39%
+ctr bench-lyeve-app-1 136MiB / 951.9MiB 46.17%
+ctr bench-lyeve-db-1 280.5MiB / 951.9MiB 16.76%
+sample 1792920502
+vm 951 858 93
+ctr bench-lyeve-proxy-1 36.62MiB / 951.9MiB 19.82%
+ctr bench-lyeve-app-1 205.7MiB / 951.9MiB 46.11%
+ctr bench-lyeve-db-1 280.6MiB / 951.9MiB 14.84%
+sample 1792920510
+vm 951 889 62
+ctr bench-lyeve-proxy-1 46.39MiB / 951.9MiB 2.36%
+ctr bench-lyeve-app-1 240.5MiB / 951.9MiB 3.98%
+ctr bench-lyeve-db-1 252MiB / 951.9MiB 2.10%
+sample 1792920541
+vm 951 887 64
+ctr bench-lyeve-proxy-1 48.15MiB / 951.9MiB 7.03%
+ctr bench-lyeve-app-1 268.2MiB / 951.9MiB 16.94%
+ctr bench-lyeve-db-1 250.7MiB / 951.9MiB 13.28%
+sample 1792920563
+vm 951 909 42
+ctr bench-lyeve-proxy-1 48.01MiB / 951.9MiB 2.00%
+ctr bench-lyeve-app-1 270.2MiB / 951.9MiB 5.14%
+ctr bench-lyeve-db-1 241.2MiB / 951.9MiB 8.29%
+sample 1792920584
+vm 951 888 63

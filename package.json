@@ -1,6 +1,6 @@
 {
   "name": "@lyeve-labs/benchmarks",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "private": true,
   "type": "module",
   "description": "Reproducible performance benchmarks for LyEve Core and competitor comparison.",

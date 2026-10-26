@@ -1,0 +1,170 @@
+{
+  "mode": "small-server",
+  "target": "strapi",
+  "date": "2026-10-26",
+  "campaign": "2026-10-26-aws-t2-micro",
+  "scenario": "S04",
+  "rig": {
+    "harness": "2bd6b99acafd",
+    "provider": "AWS",
+    "plan": "t2.micro, T2 Unlimited, 15 GB gp3, ap-southeast-1a",
+    "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+    "nproc": 1,
+    "memoryTotalMB": 951,
+    "swapTotalMB": 0,
+    "cgroupMemoryMax": "none",
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-1014-aws",
+    "arch": "x86_64",
+    "docker": "29.9.2",
+    "dockerInstalledByRun": false,
+    "loadAtStart": "0.20 0.17 0.07",
+    "uptimeAtStartS": 124,
+    "loadGenerator": {
+      "cpu": "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+      "nproc": 2,
+      "memoryTotalMB": 908,
+      "loadAtStart": "0.04 0.16 0.09",
+      "k6": "v2.3.0",
+      "where": "a separate machine, over the network"
+    },
+    "networkRttMs": 0.97,
+    "images": [
+      {
+        "ref": "bench-strapi:local",
+        "digest": "sha256:42edb66111ca6f426d0f7e0d0ee36ac0e1f63abdb5e0bd0370b468a316985602",
+        "id": "sha256:42edb66111ca6f426d0f7e0d0ee36ac0e1f63abdb5e0bd0370b468a316985602"
+      },
+      {
+        "ref": "postgres:16-alpine",
+        "digest": "sha256:0cefaabd882e42bcb2a2f3dc56d3ce4770560ba62fd7f197f1a2e008fd5731ab",
+        "id": "sha256:0cefaabd882e42bcb2a2f3dc56d3ce4770560ba62fd7f197f1a2e008fd5731ab"
+      }
+    ]
+  },
+  "boot": {
+    "status": "ok",
+    "provenance": "measured",
+    "value_ms": 16084,
+    "elapsed_ms": 16084,
+    "timeout_s": 300,
+    "readyPath": "/_health",
+    "reason": null,
+    "container": {
+      "status": "running",
+      "exitCode": 0,
+      "oomKilled": false,
+      "restarts": 0,
+      "oomKernelLines": []
+    }
+  },
+  "idle": {
+    "provenance": "measured",
+    "samples": 5,
+    "vm": {
+      "totalMB": 951,
+      "usedMB": 512,
+      "availableMB": 439
+    },
+    "containersMB": {
+      "bench-strapi-app-1": 138.1,
+      "bench-strapi-db-1": 36.4
+    }
+  },
+  "load": {
+    "scenario": "S04",
+    "offeredRates": [
+      25,
+      50,
+      100,
+      200,
+      300,
+      500
+    ],
+    "warmup": "10s, discarded",
+    "window": "60s",
+    "errorBudget": 0.01,
+    "servedFloor": 0.9,
+    "steps": [
+      {
+        "rate": 25,
+        "provenance": "measured",
+        "served_rps": 25,
+        "served_share": 0.9971,
+        "p50_ms": 19.6,
+        "p95_ms": 42.3,
+        "p99_ms": 118,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 4,
+        "received_mb_s": 0.34,
+        "server_busy_pct": 54.7,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 1.5,
+        "loadgen_steal_pct": 0.2
+      },
+      {
+        "rate": 50,
+        "provenance": "measured",
+        "served_rps": 48,
+        "served_share": 0.9551,
+        "p50_ms": 1202.8,
+        "p95_ms": 1986.8,
+        "p99_ms": 2040.1,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 62,
+        "vus_peak": 99,
+        "received_mb_s": 0.66,
+        "server_busy_pct": 99.2,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 2.5,
+        "loadgen_steal_pct": 0.6
+      },
+      {
+        "rate": 100,
+        "provenance": "measured",
+        "served_rps": 47,
+        "served_share": 0.4712,
+        "p50_ms": 4232.9,
+        "p95_ms": 4370.5,
+        "p99_ms": 4435.3,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": false,
+        "dropped_iterations": 3044,
+        "vus_peak": 200,
+        "received_mb_s": 0.65,
+        "server_busy_pct": 99.5,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 3.4,
+        "loadgen_steal_pct": 0.2
+      }
+    ],
+    "stopped": "served 47.1% of 100 req/s, 0.00% errors, p99 4435.3 ms, CPU busy 100% on the server and 3% here",
+    "highestRateKeptUp": 50
+  },
+  "peak": {
+    "provenance": "measured",
+    "samples": 32,
+    "vmUsedMB": 595,
+    "vmMinAvailableMB": 356,
+    "containersMB": {
+      "bench-strapi-app-1": 201.9,
+      "bench-strapi-db-1": 61.5
+    }
+  },
+  "end": {
+    "status": "running",
+    "exitCode": 0,
+    "oomKilled": false,
+    "restarts": 0,
+    "oomKernelLines": []
+  }
+}
