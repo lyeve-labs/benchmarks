@@ -38,6 +38,10 @@ value and its provenance badge lives in [`results/RESULTS.md`](./results/RESULTS
   Directus and Payload on S01, S02 and S04, three rounds each, on an AWS
   t2.micro in Singapore driven by a second t2.micro on its private network.
   `results/SMALL.md` holds the figures and `results/raw/small/` every run.
+- The second small-server campaign, `2026-10-25-aws-t2-micro-0.56`: the same
+  targets, scenarios and rounds on two new t2.micro instances with the same
+  processor, with LyEve on its 0.56.0-rc.6 release candidate and every other
+  image unchanged.
 
 ### Changed
 
