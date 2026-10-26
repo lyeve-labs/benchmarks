@@ -6,7 +6,131 @@ Each campaign runs every self-hosted target alone on one small server, with its 
 
 | Campaign | Provider | Plan | Runs | Dates |
 |---|---|---|---|---|
+| [2026-10-25-aws-t2-micro-0.56](#2026-10-25-aws-t2-micro-056) | AWS | t2.micro, T2 Unlimited, 15 GB gp3, ap-southeast-1a | 36 | 2026-10-25 to 2026-10-26 |
 | [2026-10-25-aws-t2-micro](#2026-10-25-aws-t2-micro) | AWS | t2.micro, T2 Unlimited, 15 GB gp3, ap-southeast-1a | 36 | 2026-10-25 |
+
+## 2026-10-25-aws-t2-micro-0.56
+
+| | |
+|---|---|
+| Provider and plan | AWS, t2.micro, T2 Unlimited, 15 GB gp3, ap-southeast-1a |
+| Server | Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz, 1 vCPU, 951 MB memory, no swap |
+| Server software | Ubuntu 26.04.1 LTS, Linux 7.0.0-1014-aws, Docker 29.9.2 |
+| Load generator | Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz, 1 vCPU, 951 MB memory, k6 v2.3.0 |
+| Network | TCP connect from the load generator to the server: 0.41 ms (0.34 to 0.64, n=36) |
+| Runs | 36, from 2026-10-25 to 2026-10-26. Each started 123 to 149 s after the server booted |
+| Load at the start of a run | one-minute load average 0.2 to 0.29 on the server and 0.05 to 0.35 on the load generator |
+| Offered rates | 25, 50, 100, 200, 300, 500 req/s |
+| Harness | `2bd6b99acafd` |
+| CPU steal | at most 0.2% on the server and 0.3% on the load generator in any measured step |
+| Load generator CPU | at most 22% busy in any measured step |
+
+### Boot and idle memory
+
+Boot is the time from `docker compose up`, with the images on the server and an empty database, to the first answer on the target's ready path. Idle memory is the median of five samples after a 45 s settle: the whole server from `free`, and each container from `docker stats`.
+
+| Target | Images | Boot | Server used | App | Database | Proxy | Failed boots | Killed for memory or restarted |
+|---|---|---|---|---|---|---|---|---|
+| LyEve | caddy:2-alpine `eb4d35b7452d`<br>ghcr.io/lyeve-labs/lyeve-core:0.56.0-rc.6 `0f2aeaecbd65`<br>postgres:16-alpine `f46107955874` | 12.3 s<br><sub>12 to 12.8, n=9</sub> | 466 MB<br><sub>454 to 471, n=9</sub> | 40 MB<br><sub>38 to 48, n=9</sub> | 59 MB<br><sub>55 to 68, n=9</sub> | 18 MB<br><sub>15 to 21, n=9</sub> | 0 of 9 | 0 |
+| Strapi | bench-strapi:local `42edb66111ca`<br>postgres:16-alpine `f46107955874` | 16.3 s<br><sub>16.2 to 16.5, n=9</sub> | 510 MB<br><sub>501 to 512, n=9</sub> | 135 MB<br><sub>123 to 139, n=9</sub> | 43 MB<br><sub>37 to 46, n=9</sub> | none | 0 of 9 | 0 |
+| Directus | directus/directus:11 `eb326f679ae8`<br>postgres:16-alpine `f46107955874` | 28.9 s<br><sub>28.6 to 29.1, n=9</sub> | 571 MB<br><sub>569 to 573, n=9</sub> | 249 MB<br><sub>247 to 258, n=9</sub> | 35 MB<br><sub>35 to 36, n=9</sub> | none | 0 of 9 | 0 |
+| Payload | bench-payload:local `34ae8ed30617`<br>postgres:16-alpine `f46107955874` | 14.4 s<br><sub>14.3 to 14.5, n=9</sub> | 514 MB<br><sub>509 to 518, n=9</sub> | 155 MB<br><sub>149 to 161, n=9</sub> | 31 MB<br><sub>30 to 32, n=9</sub> | none | 0 of 9 | 0 |
+
+### Highest rate kept up
+
+A step keeps up when it serves at least 90% of its offered rate within the scenario's error budget. A run stops at the first step that does not, so the rates above the highest one kept up never ran. With an even number of runs the figure is the lower of the two middle ones, so it is always a rate that was offered and at least half the runs reached it.
+
+| Target | S01: Read one content record by ID (req/s) | S02: List 50 records (page 1) (req/s) | S04: Filter by an indexed field (req/s) |
+|---|---|---|---|
+| LyEve | 500<br><sub>500 to 500, n=3</sub> | 200<br><sub>200 to 200, n=3</sub> | 300<br><sub>300 to 300, n=3</sub> |
+| Strapi | 50<br><sub>50 to 50, n=3</sub> | 25<br><sub>25 to 25, n=3</sub> | 50<br><sub>50 to 50, n=3</sub> |
+| Directus | 200<br><sub>200 to 200, n=3</sub> | 100<br><sub>100 to 100, n=3</sub> | 100<br><sub>100 to 100, n=3</sub> |
+| Payload | 300<br><sub>300 to 300, n=3</sub> | 100<br><sub>100 to 100, n=3</sub> | 200<br><sub>200 to 200, n=3</sub> |
+
+### Peak memory under load
+
+The highest of the samples the server took every 5 s while the steps ran: the whole server, and the application container.
+
+| Target | S01 server used | S01 app | S02 server used | S02 app | S04 server used | S04 app |
+|---|---|---|---|---|---|---|
+| LyEve | 844 MB<br><sub>843 to 846, n=3</sub> | 109 MB<br><sub>107 to 112, n=3</sub> | 904 MB<br><sub>897 to 904, n=3</sub> | 274 MB<br><sub>246 to 282, n=3</sub> | 896 MB<br><sub>893 to 909, n=3</sub> | 259 MB<br><sub>249 to 264, n=3</sub> |
+| Strapi | 587 MB<br><sub>586 to 590, n=3</sub> | 188 MB<br><sub>188 to 197, n=3</sub> | 591 MB<br><sub>588 to 591, n=3</sub> | 196 MB<br><sub>192 to 201, n=3</sub> | 593 MB<br><sub>591 to 597, n=3</sub> | 194 MB<br><sub>185 to 201, n=3</sub> |
+| Directus | 690 MB<br><sub>689 to 695, n=3</sub> | 310 MB<br><sub>309 to 330, n=3</sub> | 684 MB<br><sub>684 to 692, n=3</sub> | 323 MB<br><sub>308 to 326, n=3</sub> | 691 MB<br><sub>681 to 698, n=3</sub> | 322 MB<br><sub>309 to 324, n=3</sub> |
+| Payload | 613 MB<br><sub>613 to 615, n=3</sub> | 239 MB<br><sub>237 to 260, n=3</sub> | 609 MB<br><sub>606 to 615, n=3</sub> | 237 MB<br><sub>235 to 256, n=3</sub> | 613 MB<br><sub>612 to 614, n=3</sub> | 240 MB<br><sub>239 to 242, n=3</sub> |
+
+### S01: Read one content record by ID
+
+Latencies in ms. CPU is the busy share of each machine over the whole k6 process that ran the step. I/O wait is the share the server sat idle waiting on its disk. It rises with synchronous writes, and on a server with no swap it climbs far higher when memory runs out and the kernel reads back the program code it dropped from its cache. Steal is the share the hypervisor held back from the server.
+
+| Target | Offered (req/s) | Runs | Served | p50 | p95 | p99 | Errors | Server CPU | Server I/O wait | Server steal | Load generator CPU | Received (MB/s) |
+|---|---:|---:|---|---:|---:|---|---:|---:|---:|---:|---:|---:|
+| LyEve | 25 | 3 | 100%<br><sub>100 to 100.1, n=3</sub> | 2.4 | 4.2 | 6.7<br><sub>6.5 to 6.8, n=3</sub> | 0.00% | 14% | 0% | 0.1% | 2% | 0.05 |
+| LyEve | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 2.1 | 3.7 | 5.7<br><sub>5.5 to 5.9, n=3</sub> | 0.00% | 18% | 0% | 0.1% | 3% | 0.09 |
+| LyEve | 100 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 1.9 | 3.6 | 6.4<br><sub>6 to 6.6, n=3</sub> | 0.00% | 28% | 1% | 0.1% | 5% | 0.18 |
+| LyEve | 200 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 1.8 | 4.5 | 13.9<br><sub>10.3 to 15.1, n=3</sub> | 0.00% | 46% | 1% | 0.1% | 8% | 0.35 |
+| LyEve | 300 | 3 | 99.9%<br><sub>99.8 to 99.9, n=3</sub> | 1.9 | 10.8 | 48.2<br><sub>33.5 to 75.4, n=3</sub> | 0.00% | 65% | 0% | 0.1% | 12% | 0.52 |
+| LyEve | 500 | 3 | 98.5%<br><sub>98.2 to 98.6, n=3</sub> | 20.5 | 363.6 | 645.4<br><sub>643.3 to 662.1, n=3</sub> | 0.00% | 98% | 0% | 0.1% | 21% | 0.86 |
+| Strapi | 25 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 10.7 | 20.8 | 36.1<br><sub>28.1 to 36.2, n=3</sub> | 0.00% | 33% | 0% | 0.2% | 2% | 0.04 |
+| Strapi | 50 | 3 | 99.9%<br><sub>99.8 to 99.9, n=3</sub> | 10 | 26.4 | 117.8<br><sub>114.9 to 131, n=3</sub> | 0.00% | 55% | 0% | 0.1% | 3% | 0.07 |
+| Strapi | 100 | 3 | 89.4%<br><sub>88.1 to 89.8, n=3</sub> | 2,089 | 2,339.6 | 2,422.1<br><sub>2,400 to 2,508, n=3</sub> | 0.00% | 99% | 0% | 0.1% | 5% | 0.13 |
+| Directus | 25 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 5.2 | 10.9 | 22.3<br><sub>19.1 to 22.9, n=3</sub> | 0.00% | 23% | 0% | 0.1% | 2% | 0.03 |
+| Directus | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 4.5 | 9.2 | 19.9<br><sub>17.1 to 24.5, n=3</sub> | 0.00% | 33% | 0% | 0.1% | 3% | 0.06 |
+| Directus | 100 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 4.1 | 22.2 | 169.9<br><sub>163.5 to 175.7, n=3</sub> | 0.00% | 51% | 0% | 0.1% | 4% | 0.12 |
+| Directus | 200 | 3 | 91.1%<br><sub>91 to 92.2, n=3</sub> | 930.4 | 1,178.5 | 1,218.8<br><sub>1,208.6 to 1,288.3, n=3</sub> | 0.00% | 99% | 0% | 0.1% | 8% | 0.21 |
+| Directus | 300 | 3 | 60.8%<br><sub>60.7 to 61, n=3</sub> | 1,093.6 | 1,257.6 | 2,622.6<br><sub>2,416.8 to 3,246.5, n=3</sub> | 0.00% | 99% | 0% | 0.1% | 7% | 0.21 |
+| Payload | 25 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 4.3 | 8.6 | 13.2<br><sub>11.9 to 13.6, n=3</sub> | 0.00% | 16% | 0% | 0.1% | 2% | 0.03 |
+| Payload | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 3.5 | 7.4 | 12.7<br><sub>12.5 to 13.6, n=3</sub> | 0.00% | 23% | 0% | 0.1% | 3% | 0.05 |
+| Payload | 100 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 3 | 7.2 | 39.8<br><sub>36.3 to 47, n=3</sub> | 0.00% | 36% | 0% | 0.1% | 4% | 0.1 |
+| Payload | 200 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 2.8 | 30.8 | 112.7<br><sub>108.4 to 123.4, n=3</sub> | 0.00% | 59% | 0% | 0.1% | 8% | 0.21 |
+| Payload | 300 | 3 | 99.7%<br><sub>99.6 to 99.7, n=3</sub> | 3.5 | 165.9 | 246.8<br><sub>235.2 to 248.7, n=3</sub> | 0.00% | 85% | 0% | 0.1% | 12% | 0.31 |
+| Payload | 500 | 3 | 59.6%<br><sub>59.5 to 59.7, n=3</sub> | 674.9 | 802.7 | 830.7<br><sub>822.9 to 848.7, n=3</sub> | 0.00% | 100% | 0% | 0.1% | 13% | 0.31 |
+
+### S02: List 50 records (page 1)
+
+Latencies in ms. CPU is the busy share of each machine over the whole k6 process that ran the step. I/O wait is the share the server sat idle waiting on its disk. It rises with synchronous writes, and on a server with no swap it climbs far higher when memory runs out and the kernel reads back the program code it dropped from its cache. Steal is the share the hypervisor held back from the server.
+
+| Target | Offered (req/s) | Runs | Served | p50 | p95 | p99 | Errors | Server CPU | Server I/O wait | Server steal | Load generator CPU | Received (MB/s) |
+|---|---:|---:|---|---:|---:|---|---:|---:|---:|---:|---:|---:|
+| LyEve | 25 | 3 | 100.1%<br><sub>100.1 to 100.1, n=3</sub> | 3.6 | 6.3 | 9.5<br><sub>9 to 9.7, n=3</sub> | 0.00% | 20% | 0% | 0.1% | 2% | 0.73 |
+| LyEve | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 3.3 | 9.4 | 19.6<br><sub>14.2 to 23.7, n=3</sub> | 0.00% | 31% | 0% | 0.1% | 4% | 1.46 |
+| LyEve | 100 | 3 | 100%<br><sub>99.9 to 100, n=3</sub> | 3.1 | 19.2 | 38.4<br><sub>37.1 to 38.7, n=3</sub> | 0.00% | 51% | 0% | 0.1% | 7% | 2.91 |
+| LyEve | 200 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 13.9 | 69 | 124.9<br><sub>110 to 143.6, n=3</sub> | 0.00% | 91% | 0% | 0.1% | 14% | 5.82 |
+| LyEve | 300 | 3 | 21.5%<br><sub>17.5 to 22.1, n=3</sub> | 621.6 | 20,086.3 | 22,240.1<br><sub>21,424.6 to 60,001, n=3</sub> | 0.12% | 41% | 59% | 0.1% | 5% | 1.89 |
+| Strapi | 25 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 21.3 | 68.8 | 167.9<br><sub>138.2 to 190.3, n=3</sub> | 0.00% | 61% | 0% | 0.1% | 2% | 0.67 |
+| Strapi | 50 | 3 | 83.6%<br><sub>83.4 to 83.8, n=3</sub> | 3,953 | 4,886 | 4,954.6<br><sub>4,940.4 to 5,010.6, n=3</sub> | 0.00% | 99% | 0% | 0.1% | 4% | 1.12 |
+| Directus | 25 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 6.2 | 12.5 | 22.1<br><sub>21.2 to 22.7, n=3</sub> | 0.00% | 26% | 0% | 0.1% | 2% | 0.48 |
+| Directus | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 5.6 | 12.1 | 95.8<br><sub>46.3 to 97.7, n=3</sub> | 0.00% | 38% | 0% | 0.1% | 3% | 0.97 |
+| Directus | 100 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 5.3 | 38.4 | 209.6<br><sub>197.1 to 210.4, n=3</sub> | 0.00% | 62% | 0% | 0.1% | 5% | 1.93 |
+| Directus | 200 | 3 | 74.4%<br><sub>73 to 74.9, n=3</sub> | 1,329.6 | 1,455.7 | 3,430.9<br><sub>3,422 to 3,673, n=3</sub> | 0.00% | 99% | 0% | 0% | 8% | 2.87 |
+| Payload | 25 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 6.5 | 12.5 | 17.2<br><sub>16 to 17.4, n=3</sub> | 0.00% | 22% | 0% | 0.1% | 2% | 0.58 |
+| Payload | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 5.6 | 11.2 | 30.8<br><sub>17.4 to 38.2, n=3</sub> | 0.00% | 34% | 0% | 0.1% | 3% | 1.16 |
+| Payload | 100 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 5.1 | 22.8 | 96.5<br><sub>95.3 to 104.5, n=3</sub> | 0.00% | 57% | 0% | 0.1% | 6% | 2.31 |
+| Payload | 200 | 3 | 81%<br><sub>80.5 to 81.5, n=3</sub> | 1,194.6 | 1,370.1 | 1,439.7<br><sub>1,435.5 to 1,451.9, n=3</sub> | 0.00% | 99% | 0% | 0.1% | 10% | 3.74 |
+
+### S04: Filter by an indexed field
+
+Latencies in ms. CPU is the busy share of each machine over the whole k6 process that ran the step. I/O wait is the share the server sat idle waiting on its disk. It rises with synchronous writes, and on a server with no swap it climbs far higher when memory runs out and the kernel reads back the program code it dropped from its cache. Steal is the share the hypervisor held back from the server.
+
+| Target | Offered (req/s) | Runs | Served | p50 | p95 | p99 | Errors | Server CPU | Server I/O wait | Server steal | Load generator CPU | Received (MB/s) |
+|---|---:|---:|---|---:|---:|---|---:|---:|---:|---:|---:|---:|
+| LyEve | 25 | 3 | 100.2%<br><sub>100.2 to 100.2, n=3</sub> | 3.1 | 5.2 | 7.7<br><sub>7.2 to 8, n=3</sub> | 0.00% | 17% | 0% | 0.1% | 2% | 0.38 |
+| LyEve | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 2.7 | 5.9 | 9.8<br><sub>9.2 to 10.1, n=3</sub> | 0.00% | 25% | 0% | 0.1% | 4% | 0.76 |
+| LyEve | 100 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 2.4 | 7.9 | 17.8<br><sub>16.7 to 22.4, n=3</sub> | 0.00% | 40% | 0% | 0.1% | 7% | 1.52 |
+| LyEve | 200 | 3 | 99.9%<br><sub>99.9 to 99.9, n=3</sub> | 2.6 | 22.5 | 46.3<br><sub>40.4 to 56.4, n=3</sub> | 0.00% | 69% | 0% | 0.1% | 11% | 3.03 |
+| LyEve | 300 | 3 | 99.8%<br><sub>99.8 to 99.9, n=3</sub> | 16.3 | 87.9 | 139.6<br><sub>130.7 to 175.3, n=3</sub> | 0.00% | 96% | 0% | 0.1% | 16% | 4.54 |
+| LyEve | 500 | 3 | 12%<br><sub>10.4 to 24.9, n=3</sub> | 477.6 | 21,324.9 | 31,475.6<br><sub>15,515.3 to 43,980.3, n=3</sub> | 0.07% | 37% | 63% | 0% | 5% | 0.89 |
+| Strapi | 25 | 3 | 100%<br><sub>99.9 to 100, n=3</sub> | 18.9 | 42.9 | 114.6<br><sub>107.6 to 120.8, n=3</sub> | 0.00% | 55% | 0% | 0.1% | 2% | 0.35 |
+| Strapi | 50 | 3 | 95.9%<br><sub>95.4 to 96.1, n=3</sub> | 1,169.3 | 1,880.7 | 1,933.1<br><sub>1,926.7 to 2,204.2, n=3</sub> | 0.00% | 99% | 0% | 0.1% | 3% | 0.66 |
+| Strapi | 100 | 3 | 47.2%<br><sub>47.2 to 47.3, n=3</sub> | 4,211.5 | 4,366.5 | 4,422.1<br><sub>4,413.4 to 4,478.6, n=3</sub> | 0.00% | 100% | 0% | 0.1% | 3% | 0.65 |
+| Directus | 25 | 3 | 100.2%<br><sub>100.2 to 100.2, n=3</sub> | 6.1 | 12.5 | 23.6<br><sub>23.4 to 29.9, n=3</sub> | 0.07% | 25% | 0% | 0.1% | 2% | 0.25 |
+| Directus | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 5.2 | 11.6 | 62.6<br><sub>61.3 to 90.5, n=3</sub> | 0.03% | 37% | 0% | 0.1% | 3% | 0.5 |
+| Directus | 100 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 4.7 | 38.5 | 180.4<br><sub>158.6 to 225, n=3</sub> | 0.02% | 59% | 0% | 0.1% | 4% | 1 |
+| Directus | 200 | 3 | 77.9%<br><sub>77.4 to 79.2, n=3</sub> | 1,267.7 | 1,410.6 | 3,254.2<br><sub>2,508.1 to 3,718.4, n=3</sub> | 0.01% | 99% | 0% | 0.1% | 7% | 1.55 |
+| Payload | 25 | 3 | 100.1%<br><sub>100.1 to 100.1, n=3</sub> | 5.9 | 10.9 | 16.8<br><sub>16.3 to 17.8, n=3</sub> | 0.07% | 21% | 0% | 0.2% | 2% | 0.3 |
+| Payload | 50 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 5.1 | 9.9 | 27.4<br><sub>20.4 to 47.5, n=3</sub> | 0.03% | 32% | 0% | 0.1% | 3% | 0.6 |
+| Payload | 100 | 3 | 100%<br><sub>100 to 100, n=3</sub> | 4.4 | 18.3 | 91.5<br><sub>76.9 to 95, n=3</sub> | 0.02% | 52% | 0% | 0.1% | 5% | 1.19 |
+| Payload | 200 | 3 | 99.6%<br><sub>99.4 to 99.7, n=3</sub> | 5.8 | 158.6 | 247<br><sub>210.9 to 264.3, n=3</sub> | 0.01% | 88% | 0% | 0.1% | 9% | 2.37 |
+| Payload | 300 | 3 | 62.4%<br><sub>62.3 to 63, n=3</sub> | 1,068.2 | 1,164.4 | 1,209.5<br><sub>1,197.6 to 1,220.7, n=3</sub> | 0.01% | 99% | 0% | 0.1% | 10% | 2.23 |
 
 ## 2026-10-25-aws-t2-micro
 

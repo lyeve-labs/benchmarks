@@ -1,0 +1,237 @@
+{
+  "mode": "small-server",
+  "target": "lyeve",
+  "date": "2026-10-26",
+  "campaign": "2026-10-25-aws-t2-micro-0.56",
+  "scenario": "S04",
+  "rig": {
+    "harness": "2bd6b99acafd",
+    "provider": "AWS",
+    "plan": "t2.micro, T2 Unlimited, 15 GB gp3, ap-southeast-1a",
+    "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+    "nproc": 1,
+    "memoryTotalMB": 951,
+    "swapTotalMB": 0,
+    "cgroupMemoryMax": "none",
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-1014-aws",
+    "arch": "x86_64",
+    "docker": "29.9.2",
+    "dockerInstalledByRun": false,
+    "loadAtStart": "0.28 0.32 0.14",
+    "uptimeAtStartS": 149,
+    "loadGenerator": {
+      "cpu": "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+      "nproc": 1,
+      "memoryTotalMB": 951,
+      "loadAtStart": "0.12 0.15 0.17",
+      "k6": "v2.3.0",
+      "where": "a separate machine, over the network"
+    },
+    "networkRttMs": 0.46,
+    "images": [
+      {
+        "ref": "postgres:16-alpine",
+        "digest": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36",
+        "id": "sha256:f4610795587492cd4fb887c2dc3de301b813278bb6f616992061141b5f15ac36"
+      },
+      {
+        "ref": "ghcr.io/lyeve-labs/lyeve-core:0.56.0-rc.6",
+        "digest": "sha256:0f2aeaecbd650378a58a208757362d61bf6a819b15af47e0d180a80874ec0dc9",
+        "id": "sha256:0f2aeaecbd650378a58a208757362d61bf6a819b15af47e0d180a80874ec0dc9"
+      },
+      {
+        "ref": "caddy:2-alpine",
+        "digest": "sha256:eb4d35b7452d1ab6171fbdbe8d9275b2301dad6dad92115d91e19fb9b24d510f",
+        "id": "sha256:eb4d35b7452d1ab6171fbdbe8d9275b2301dad6dad92115d91e19fb9b24d510f"
+      }
+    ]
+  },
+  "boot": {
+    "status": "ok",
+    "provenance": "measured",
+    "value_ms": 12525,
+    "elapsed_ms": 12525,
+    "timeout_s": 300,
+    "readyPath": "/api/admin/setup",
+    "reason": null,
+    "container": {
+      "status": "running",
+      "exitCode": 0,
+      "oomKilled": false,
+      "restarts": 0,
+      "oomKernelLines": []
+    }
+  },
+  "idle": {
+    "provenance": "measured",
+    "samples": 5,
+    "vm": {
+      "totalMB": 951,
+      "usedMB": 460,
+      "availableMB": 491
+    },
+    "containersMB": {
+      "bench-lyeve-proxy-1": 21.1,
+      "bench-lyeve-app-1": 47.5,
+      "bench-lyeve-db-1": 57.2
+    }
+  },
+  "load": {
+    "scenario": "S04",
+    "offeredRates": [
+      25,
+      50,
+      100,
+      200,
+      300,
+      500
+    ],
+    "warmup": "10s, discarded",
+    "window": "60s",
+    "errorBudget": 0.01,
+    "servedFloor": 0.9,
+    "steps": [
+      {
+        "rate": 25,
+        "provenance": "measured",
+        "served_rps": 25,
+        "served_share": 1.0022,
+        "p50_ms": 3,
+        "p95_ms": 5.1,
+        "p99_ms": 7.2,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 1,
+        "received_mb_s": 0.38,
+        "server_busy_pct": 17,
+        "server_iowait_pct": 0.4,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 2.2,
+        "loadgen_steal_pct": 0.2
+      },
+      {
+        "rate": 50,
+        "provenance": "measured",
+        "served_rps": 50,
+        "served_share": 1.0009,
+        "p50_ms": 2.7,
+        "p95_ms": 5.9,
+        "p99_ms": 10.1,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 0,
+        "received_mb_s": 0.76,
+        "server_busy_pct": 25.1,
+        "server_iowait_pct": 0.4,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 3.7,
+        "loadgen_steal_pct": 0.1
+      },
+      {
+        "rate": 100,
+        "provenance": "measured",
+        "served_rps": 100,
+        "served_share": 1.0002,
+        "p50_ms": 2.4,
+        "p95_ms": 7.9,
+        "p99_ms": 17.8,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 3,
+        "received_mb_s": 1.52,
+        "server_busy_pct": 40,
+        "server_iowait_pct": 0.4,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 6.9,
+        "loadgen_steal_pct": 0.1
+      },
+      {
+        "rate": 200,
+        "provenance": "measured",
+        "served_rps": 200,
+        "served_share": 0.9998,
+        "p50_ms": 2.6,
+        "p95_ms": 21.4,
+        "p99_ms": 40.4,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 0,
+        "vus_peak": 14,
+        "received_mb_s": 3.03,
+        "server_busy_pct": 68.7,
+        "server_iowait_pct": 0.3,
+        "server_steal_pct": 0.1,
+        "loadgen_busy_pct": 11.2,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 300,
+        "provenance": "measured",
+        "served_rps": 300,
+        "served_share": 0.999,
+        "p50_ms": 15.7,
+        "p95_ms": 79.3,
+        "p99_ms": 130.7,
+        "error_rate": 0,
+        "within_budget": true,
+        "kept_up": true,
+        "dropped_iterations": 4,
+        "vus_peak": 42,
+        "received_mb_s": 4.54,
+        "server_busy_pct": 95.8,
+        "server_iowait_pct": 0,
+        "server_steal_pct": 0,
+        "loadgen_busy_pct": 15.9,
+        "loadgen_steal_pct": 0
+      },
+      {
+        "rate": 500,
+        "provenance": "pending",
+        "served_rps": 60,
+        "served_share": 0.1203,
+        "p50_ms": 443.7,
+        "p95_ms": 21324.9,
+        "p99_ms": 43980.3,
+        "error_rate": 0.023416965352449224,
+        "within_budget": false,
+        "kept_up": false,
+        "dropped_iterations": 25819,
+        "vus_peak": 200,
+        "received_mb_s": 0.89,
+        "server_busy_pct": 36.7,
+        "server_iowait_pct": 63.3,
+        "server_steal_pct": 0,
+        "loadgen_busy_pct": 4.6,
+        "loadgen_steal_pct": 0.1
+      }
+    ],
+    "stopped": "served 12% of 500 req/s, 2.34% errors, p99 43980.3 ms, CPU busy 37% (I/O wait 63%) on the server and 5% here",
+    "highestRateKeptUp": 300
+  },
+  "peak": {
+    "provenance": "measured",
+    "samples": 55,
+    "vmUsedMB": 909,
+    "vmMinAvailableMB": 42,
+    "containersMB": {
+      "bench-lyeve-proxy-1": 48.4,
+      "bench-lyeve-app-1": 264.2,
+      "bench-lyeve-db-1": 280.4
+    }
+  },
+  "end": {
+    "status": "running",
+    "exitCode": 0,
+    "oomKilled": false,
+    "restarts": 0,
+    "oomKernelLines": []
+  }
+}
