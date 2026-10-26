@@ -1,0 +1,162 @@
+sample 1793009157
+vm 951 621 330
+ctr bench-directus-app-1 301MiB / 951.9MiB 19.31%
+ctr bench-directus-db-1 46.23MiB / 951.9MiB 4.98%
+sample 1793009164
+vm 951 635 316
+ctr bench-directus-app-1 301.1MiB / 951.9MiB 19.09%
+ctr bench-directus-db-1 49.44MiB / 951.9MiB 1.04%
+sample 1793009171
+vm 951 636 315
+ctr bench-directus-app-1 301.1MiB / 951.9MiB 17.26%
+ctr bench-directus-db-1 49.47MiB / 951.9MiB 1.30%
+sample 1793009178
+vm 951 637 314
+ctr bench-directus-app-1 301.5MiB / 951.9MiB 22.77%
+ctr bench-directus-db-1 49.51MiB / 951.9MiB 5.09%
+sample 1793009185
+vm 951 638 313
+ctr bench-directus-app-1 302MiB / 951.9MiB 17.83%
+ctr bench-directus-db-1 49.75MiB / 951.9MiB 1.05%
+sample 1793009192
+vm 951 639 312
+ctr bench-directus-app-1 302.6MiB / 951.9MiB 18.21%
+ctr bench-directus-db-1 42.43MiB / 951.9MiB 1.84%
+sample 1793009199
+vm 951 640 311
+ctr bench-directus-app-1 303.3MiB / 951.9MiB 19.77%
+ctr bench-directus-db-1 42.42MiB / 951.9MiB 1.09%
+sample 1793009206
+vm 951 635 316
+ctr bench-directus-app-1 303.8MiB / 951.9MiB 16.39%
+ctr bench-directus-db-1 42.48MiB / 951.9MiB 5.06%
+sample 1793009214
+vm 951 634 317
+ctr bench-directus-app-1 302.4MiB / 951.9MiB 16.98%
+ctr bench-directus-db-1 42.44MiB / 951.9MiB 1.17%
+sample 1793009221
+vm 951 634 317
+ctr bench-directus-app-1 302.4MiB / 951.9MiB 20.77%
+ctr bench-directus-db-1 42.44MiB / 951.9MiB 0.96%
+sample 1793009228
+vm 951 627 324
+ctr bench-directus-app-1 302.4MiB / 951.9MiB 31.26%
+ctr bench-directus-db-1 42.46MiB / 951.9MiB 5.30%
+sample 1793009235
+vm 951 641 310
+ctr bench-directus-app-1 303.3MiB / 951.9MiB 28.72%
+ctr bench-directus-db-1 42.55MiB / 951.9MiB 1.86%
+sample 1793009242
+vm 951 641 310
+ctr bench-directus-app-1 303.7MiB / 951.9MiB 28.06%
+ctr bench-directus-db-1 44.22MiB / 951.9MiB 2.39%
+sample 1793009249
+vm 951 641 310
+ctr bench-directus-app-1 304.3MiB / 951.9MiB 28.01%
+ctr bench-directus-db-1 47.16MiB / 951.9MiB 6.59%
+sample 1793009256
+vm 951 633 318
+ctr bench-directus-app-1 304.8MiB / 951.9MiB 31.88%
+ctr bench-directus-db-1 50.55MiB / 951.9MiB 3.07%
+sample 1793009263
+vm 951 635 316
+ctr bench-directus-app-1 305.5MiB / 951.9MiB 31.00%
+ctr bench-directus-db-1 47.43MiB / 951.9MiB 6.01%
+sample 1793009270
+vm 951 637 314
+ctr bench-directus-app-1 305MiB / 951.9MiB 29.89%
+ctr bench-directus-db-1 47.52MiB / 951.9MiB 5.86%
+sample 1793009277
+vm 951 644 307
+ctr bench-directus-app-1 305.1MiB / 951.9MiB 33.80%
+ctr bench-directus-db-1 47.34MiB / 951.9MiB 1.89%
+sample 1793009285
+vm 951 641 310
+ctr bench-directus-app-1 306MiB / 951.9MiB 27.36%
+ctr bench-directus-db-1 47.5MiB / 951.9MiB 6.07%
+sample 1793009292
+vm 951 642 309
+ctr bench-directus-app-1 306.8MiB / 951.9MiB 31.37%
+ctr bench-directus-db-1 47.33MiB / 951.9MiB 2.36%
+sample 1793009299
+vm 951 642 309
+ctr bench-directus-app-1 249.3MiB / 951.9MiB 37.45%
+ctr bench-directus-db-1 45.83MiB / 951.9MiB 3.63%
+sample 1793009306
+vm 951 643 307
+ctr bench-directus-app-1 250.3MiB / 951.9MiB 54.63%
+ctr bench-directus-db-1 45.84MiB / 951.9MiB 7.16%
+sample 1793009313
+vm 951 645 306
+ctr bench-directus-app-1 250MiB / 951.9MiB 50.90%
+ctr bench-directus-db-1 55.86MiB / 951.9MiB 7.78%
+sample 1793009320
+vm 951 646 305
+ctr bench-directus-app-1 250.3MiB / 951.9MiB 54.70%
+ctr bench-directus-db-1 55.79MiB / 951.9MiB 3.13%
+sample 1793009327
+vm 951 646 304
+ctr bench-directus-app-1 250.2MiB / 951.9MiB 76.35%
+ctr bench-directus-db-1 55.78MiB / 951.9MiB 7.02%
+sample 1793009334
+vm 951 647 304
+ctr bench-directus-app-1 250.9MiB / 951.9MiB 50.13%
+ctr bench-directus-db-1 55.87MiB / 951.9MiB 3.19%
+sample 1793009342
+vm 951 647 304
+ctr bench-directus-app-1 250.6MiB / 951.9MiB 51.68%
+ctr bench-directus-db-1 55.99MiB / 951.9MiB 3.07%
+sample 1793009349
+vm 951 647 304
+ctr bench-directus-app-1 249.9MiB / 951.9MiB 52.17%
+ctr bench-directus-db-1 56.05MiB / 951.9MiB 5.46%
+sample 1793009356
+vm 951 647 304
+ctr bench-directus-app-1 251.4MiB / 951.9MiB 54.88%
+ctr bench-directus-db-1 56.1MiB / 951.9MiB 3.15%
+sample 1793009363
+vm 951 649 302
+ctr bench-directus-app-1 251MiB / 951.9MiB 53.19%
+ctr bench-directus-db-1 56.07MiB / 951.9MiB 6.91%
+sample 1793009370
+vm 951 654 297
+ctr bench-directus-app-1 252.1MiB / 951.9MiB 92.29%
+ctr bench-directus-db-1 55.93MiB / 951.9MiB 8.15%
+sample 1793009377
+vm 951 645 306
+ctr bench-directus-app-1 268.9MiB / 951.9MiB 90.37%
+ctr bench-directus-db-1 55.9MiB / 951.9MiB 3.85%
+sample 1793009384
+vm 951 661 289
+ctr bench-directus-app-1 275.5MiB / 951.9MiB 93.84%
+ctr bench-directus-db-1 55.88MiB / 951.9MiB 7.82%
+sample 1793009392
+vm 951 660 291
+ctr bench-directus-app-1 275.2MiB / 951.9MiB 93.87%
+ctr bench-directus-db-1 55.18MiB / 951.9MiB 8.08%
+sample 1793009399
+vm 951 671 280
+ctr bench-directus-app-1 284.7MiB / 951.9MiB 94.47%
+ctr bench-directus-db-1 55.89MiB / 951.9MiB 8.18%
+sample 1793009406
+vm 951 693 258
+ctr bench-directus-app-1 285.7MiB / 951.9MiB 90.51%
+ctr bench-directus-db-1 56.66MiB / 951.9MiB 4.73%
+sample 1793009413
+vm 951 690 261
+ctr bench-directus-app-1 288.2MiB / 951.9MiB 86.51%
+ctr bench-directus-db-1 56.54MiB / 951.9MiB 3.78%
+sample 1793009420
+vm 951 692 259
+ctr bench-directus-app-1 285.4MiB / 951.9MiB 89.50%
+ctr bench-directus-db-1 56.55MiB / 951.9MiB 4.91%
+sample 1793009427
+vm 951 692 259
+ctr bench-directus-app-1 285.8MiB / 951.9MiB 93.34%
+ctr bench-directus-db-1 56.55MiB / 951.9MiB 8.73%
+sample 1793009434
+vm 951 693 258
+ctr bench-directus-app-1 285.6MiB / 951.9MiB 93.55%
+ctr bench-directus-db-1 56.51MiB / 951.9MiB 8.36%
+sample 1793009442
+vm 951 694 257

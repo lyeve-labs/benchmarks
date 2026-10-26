@@ -202,12 +202,16 @@ without tagging both, so the provenance can never be laundered away.
 
 This repo is the source of truth. The website is a consumer.
 
-- [`results/results.json`](./results/results.json) is the only input. The page
-  at [lyeve.com/benchmarks](https://lyeve.com/benchmarks) renders a copy of it
-  taken from a published release of this repo, and adds no number of its own.
-- The site carries its own snapshot of that file, so a site build never depends
+- Two files are its only inputs. [`results/small.json`](./results/small.json)
+  holds the small-server campaigns (§13), and the page at
+  [lyeve.com/benchmarks](https://lyeve.com/benchmarks) leads with one of them,
+  which it names. [`results/results.json`](./results/results.json) holds the
+  head-to-head on one capable machine, which the page shows after it. The page
+  renders copies of both taken from a published release of this repo, and adds
+  no number of its own.
+- The site carries its own snapshot of each file, so a site build never depends
   on this repo being reachable. The cost is lag: the page is only as current as
-  the release its snapshot came from.
+  the release its snapshots came from.
 - A correction lands here first, in a release with a CHANGELOG entry, and only
   then on the page. If the two disagree, this repo is right.
 
