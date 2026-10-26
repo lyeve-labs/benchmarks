@@ -1,0 +1,309 @@
+{
+  "root_group": {
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": {},
+    "checks": {
+      "company:page-read": {
+        "name": "company:page-read",
+        "path": "::company:page-read",
+        "id": "c034b71c115ad61f3c2b0c0ecbe5a894",
+        "passes": 3631,
+        "fails": 0
+      },
+      "company:team-list": {
+        "fails": 0,
+        "name": "company:team-list",
+        "path": "::company:team-list",
+        "id": "8a03648be2d6af5c2257bd7558885bcd",
+        "passes": 1390
+      },
+      "company:page-by-slug": {
+        "path": "::company:page-by-slug",
+        "id": "3e582d0260408272ea089fd482b5dedd",
+        "passes": 1808,
+        "fails": 0,
+        "name": "company:page-by-slug"
+      },
+      "company:openings-list": {
+        "name": "company:openings-list",
+        "path": "::company:openings-list",
+        "id": "4996bc483813c16eefe5efba7c0021de",
+        "passes": 1544,
+        "fails": 0
+      },
+      "company:page-list": {
+        "name": "company:page-list",
+        "path": "::company:page-list",
+        "id": "f6d6a61c768a4807affc8b6b372a03be",
+        "passes": 628,
+        "fails": 0
+      }
+    },
+    "name": ""
+  },
+  "metrics": {
+    "iterations": {
+      "rate": 149.8358969689654,
+      "count": 9001
+    },
+    "http_req_blocked": {
+      "min": 0.002101,
+      "med": 0.004679,
+      "p(95)": 0.008716399999999994,
+      "p(99)": 0.011868719999999972,
+      "max": 0.419917,
+      "avg": 0.005949980788450861
+    },
+    "profile_ok": {
+      "passes": 9001,
+      "fails": 0,
+      "thresholds": {
+        "rate>0.99": false
+      },
+      "value": 1
+    },
+    "http_req_connecting": {
+      "avg": 0.00047830871737923375,
+      "min": 0,
+      "med": 0,
+      "p(95)": 0,
+      "p(99)": 0,
+      "max": 0.163342
+    },
+    "profile_latency": {
+      "med": 1.487997,
+      "p(95)": 2.106247,
+      "p(99)": 2.666569,
+      "max": 4.045514,
+      "avg": 1.5426078519053434,
+      "min": 0.69631,
+      "thresholds": {
+        "p(95)<100": false
+      }
+    },
+    "http_req_duration": {
+      "med": 1.488009,
+      "p(95)": 2.1064116,
+      "p(99)": 2.6692874799999986,
+      "max": 56.782618,
+      "avg": 1.5490440569683508,
+      "min": 0.69631
+    },
+    "http_req_duration{expected_response:true}": {
+      "avg": 1.5490440569683508,
+      "min": 0.69631,
+      "med": 1.488009,
+      "p(95)": 2.1064116,
+      "p(99)": 2.6692874799999986,
+      "max": 56.782618
+    },
+    "http_req_sending": {
+      "p(99)": 0.03538767999999989,
+      "max": 0.154522,
+      "avg": 0.016504633425874535,
+      "min": 0.006741,
+      "med": 0.014509,
+      "p(95)": 0.028665599999999996
+    },
+    "vus": {
+      "value": 0,
+      "min": 0,
+      "max": 1
+    },
+    "http_req_failed": {
+      "passes": 0,
+      "fails": 9005,
+      "thresholds": {
+        "rate<0.01": false
+      },
+      "value": 0
+    },
+    "http_req_tls_handshaking": {
+      "avg": 0,
+      "min": 0,
+      "med": 0,
+      "p(95)": 0,
+      "p(99)": 0,
+      "max": 0
+    },
+    "checks": {
+      "passes": 9001,
+      "fails": 0,
+      "value": 1
+    },
+    "http_req_receiving": {
+      "avg": 0.08203773092726278,
+      "min": 0.024714,
+      "med": 0.06519,
+      "p(95)": 0.1706828,
+      "p(99)": 0.2779821999999999,
+      "max": 0.60592
+    },
+    "http_req_waiting": {
+      "avg": 1.4505016926152166,
+      "min": 0.641852,
+      "med": 1.390064,
+      "p(95)": 1.987689199999999,
+      "p(99)": 2.5320466399999972,
+      "max": 56.525983
+    },
+    "data_received": {
+      "count": 48459214,
+      "rate": 806680.3461949833
+    },
+    "vus_max": {
+      "min": 38,
+      "max": 38,
+      "value": 38
+    },
+    "data_sent": {
+      "count": 5803573,
+      "rate": 96609.66182422724
+    },
+    "http_reqs": {
+      "count": 9005,
+      "rate": 149.9024833024701
+    },
+    "iteration_duration": {
+      "p(95)": 2.353852,
+      "p(99)": 2.971232,
+      "max": 4.338359,
+      "avg": 1.7547990773247393,
+      "min": 0.856957,
+      "med": 1.697137
+    }
+  },
+  "setup_data": {
+    "pools": {
+      "site_openings": {
+        "ids": [
+          "764d4d2e-ecfa-4d59-bf84-56932e91fa36",
+          "a7c1a87e-0f2c-4063-8bbe-4a987aa72c97",
+          "9cf2c6a3-59a6-4a39-a0c0-2315fb0d296c",
+          "fc1e7305-081b-439c-be69-12409ce8977f",
+          "f286e2a5-2949-4ed9-a121-1a45435780c3",
+          "d6565301-c64c-4245-bd06-09f81a887f80",
+          "fafcd651-378c-4f6c-9189-471b639f539e",
+          "c632121c-ecec-49d0-a482-deef8789f20a",
+          "7364a712-ecf4-4271-9325-c3a173b7fe7e",
+          "699c5ef4-b3dd-4360-874c-040622025f3f"
+        ],
+        "slugs": [
+          "site_openings-9-onyx",
+          "site_openings-8-pulse",
+          "site_openings-7-lumen",
+          "site_openings-6-delta",
+          "site_openings-5-flux",
+          "site_openings-4-ember",
+          "site_openings-3-pulse",
+          "site_openings-2-edge",
+          "site_openings-1-delta",
+          "site_openings-0-atlas"
+        ]
+      },
+      "site_pages": {
+        "ids": [
+          "d3cccb22-dc1e-4021-bd0c-3f23bfeb2c00",
+          "382de28d-3d87-405a-8490-462cc1be8fc8",
+          "cab4ecd7-4f2c-4951-bc30-a773614d1c64",
+          "f89e46c1-a43d-4fdb-b21b-ae17aa708b28",
+          "9e2d5eec-3812-4d60-a9e0-30050b172768",
+          "c3916c93-cfe4-41cc-9b49-01fff2b0807e",
+          "ed0dfc91-9494-42c3-9f39-abd0d6147427",
+          "68c4e89f-90e9-443f-8d79-0e76672f30f8",
+          "54bb7f54-5f1d-44b0-b64d-282b5e6e23bc",
+          "8b6f87cf-3bfc-4f71-8c45-41ee7f921ae1",
+          "1f1ae938-51a0-47cd-9f51-7a7da238387b",
+          "fd61bc17-b407-4033-a305-c6c5c4abb68e",
+          "46892313-8403-41e9-93c6-73ca1d93cd55",
+          "399f90dd-099b-4d36-b488-7ad147eae404",
+          "242b95de-c31f-42a0-869a-b145c93defb4",
+          "f857066e-7a08-4648-8474-5c5b10b0773b",
+          "1b736b87-d411-4c71-b93d-7c8d3b0885a1",
+          "ce90d81f-ee05-43b7-8988-4d3b6fa684ff",
+          "a4c964c8-ef2d-4b88-8711-f493c0310050",
+          "e6819203-c445-4a9e-8094-d2cd0f4f398a",
+          "f36213fa-0d6d-43dd-85d9-bd5c1966e488",
+          "200c4746-38c9-4ebf-9c41-6a6b66aed18f",
+          "b3b4af2a-1071-4597-a5a9-a89c2899f18d",
+          "be55196c-f1ed-4a61-88eb-c14c5650727c",
+          "756f3b1c-19cd-4f8a-8219-3777100c9d08",
+          "eeaef9a5-0c9b-4818-894e-136249c6f17b",
+          "ac90ef3f-f1f2-470f-807a-3e1b4b074640",
+          "237a598d-93f9-4646-8613-f50d35757149",
+          "fc9000a7-8b89-4989-aa65-f8f7312f7826",
+          "cbd60ee4-5fa0-406e-a644-565f2d372b07"
+        ],
+        "slugs": [
+          "site_pages-29-edge",
+          "site_pages-28-ember",
+          "site_pages-27-zephyr",
+          "site_pages-26-nova",
+          "site_pages-25-edge",
+          "site_pages-24-pulse",
+          "site_pages-23-edge",
+          "site_pages-22-lumen",
+          "site_pages-21-edge",
+          "site_pages-20-cobalt",
+          "site_pages-19-delta",
+          "site_pages-18-edge",
+          "site_pages-17-lumen",
+          "site_pages-16-onyx",
+          "site_pages-15-ember",
+          "site_pages-14-nova",
+          "site_pages-13-pulse",
+          "site_pages-12-onyx",
+          "site_pages-11-cobalt",
+          "site_pages-10-nova",
+          "site_pages-9-delta",
+          "site_pages-8-cobalt",
+          "site_pages-7-lumen",
+          "site_pages-6-pulse",
+          "site_pages-5-ember",
+          "site_pages-4-nova",
+          "site_pages-3-onyx",
+          "site_pages-2-cobalt",
+          "site_pages-1-delta",
+          "site_pages-0-lumen"
+        ]
+      },
+      "site_team": {
+        "ids": [
+          "fc2bf414-14f3-420f-b408-a909979c0320",
+          "44c3f1ac-9d05-41d4-88bc-6bda18a7d9b7",
+          "e7adf563-5c00-4237-9386-3e3a55ef55d1",
+          "c2c5f528-6331-47f6-a8d6-e9490d62462e",
+          "f593dae5-21ea-4d88-91a0-a9d4b1709912",
+          "dad78280-fc6c-4b54-ad43-97deeec56764",
+          "7c74795c-40ed-4e34-bbcd-bdbee536ee36",
+          "84f87223-2b22-44a7-85f5-e714ed9975de",
+          "ae81a1ec-9dd2-43b5-9d09-eb07570c8d9a",
+          "6492ddaa-35ca-4116-b932-c3ce23074c80",
+          "9b3b840d-5bb0-4767-94f2-08ee308c3a77",
+          "ce9223ad-55a2-442e-b942-076ae79afc13",
+          "e13bcc22-f4a7-4db1-b274-b587b28b4e31",
+          "b47222cb-cb78-4504-8c7c-e672f9fb242f",
+          "f9257c02-9c6f-4a2e-b2f7-f7ed362492d1"
+        ],
+        "slugs": [
+          "site_team-14-flux",
+          "site_team-13-flux",
+          "site_team-12-flux",
+          "site_team-11-onyx",
+          "site_team-10-edge",
+          "site_team-9-pulse",
+          "site_team-8-ember",
+          "site_team-7-onyx",
+          "site_team-6-nova",
+          "site_team-5-nova",
+          "site_team-4-ember",
+          "site_team-3-edge",
+          "site_team-2-pulse",
+          "site_team-1-delta",
+          "site_team-0-nova"
+        ]
+      }
+    }
+  }
+}
