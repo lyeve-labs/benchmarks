@@ -1,4 +1,6 @@
 # The encryption key of the benchmark stack's engine. It is a fixed value that
 # names its use, every run boots the stack from it and throws the stack away,
-# and it protects no data. Listed by finding, so a new key is still caught.
+# and it protects no data. Listed by finding, once for each copy of the commit
+# that carries it, so a new key is still caught.
 9cac00150576c506117938f58eec07981d33119f:harness/compose/lyeve.yml:generic-api-key:53
+8ca6bd93155b1b51b3fabee75108c567d4b2c739:harness/compose/lyeve.yml:generic-api-key:53
