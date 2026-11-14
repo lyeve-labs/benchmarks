@@ -1,0 +1,11 @@
+# The harness builds this app as its own pnpm project, apart from the
+# repository root, so its policy lives here.
+minimumReleaseAgeStrict: true
+
+# Every dependency that ships an install script, and whether it may run. A
+# frozen install fails on a script that is not listed here. esbuild and sharp
+# load their prebuilt platform binaries from optional dependencies, so their
+# scripts only check for those binaries and the app needs neither.
+allowBuilds:
+  esbuild: false
+  sharp: false
