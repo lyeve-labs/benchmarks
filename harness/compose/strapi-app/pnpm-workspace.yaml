@@ -1,0 +1,14 @@
+# The harness builds this app as its own pnpm project, apart from the
+# repository root, so its policy lives here.
+minimumReleaseAgeStrict: true
+
+# Every dependency that ships an install script, and whether it may run. A
+# frozen install fails on a script that is not listed here. sharp 0.32 fetches
+# libvips and its native binding in its script, so the upload plugin needs it.
+# esbuild and @swc/core load their prebuilt binaries from optional
+# dependencies, and core-js-pure only prints a message.
+allowBuilds:
+  '@swc/core': false
+  core-js-pure: false
+  esbuild: false
+  sharp: true

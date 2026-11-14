@@ -3,14 +3,20 @@
   "private": true,
   "version": "0.1.0",
   "description": "Minimal Strapi 5 app used by the LyEve benchmark harness. Ships the article and category content types the scenarios need.",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
+    "preinstall": "node -e \"if(!/^pnpm\\//.test(process.env.npm_config_user_agent||'')){console.error('Use pnpm: this repository installs with pnpm only.');process.exit(1)}\"",
     "build": "strapi build",
     "start": "strapi start"
   },
   "dependencies": {
     "@strapi/plugin-users-permissions": "5.6.0",
     "@strapi/strapi": "5.6.0",
-    "pg": "8.13.1"
+    "pg": "8.13.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.30.6",
+    "styled-components": "6.6.0"
   },
   "engines": {
     "node": ">=18.0.0 <=22.x.x",

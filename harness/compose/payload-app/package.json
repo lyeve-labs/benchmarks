@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
+    "preinstall": "node -e \"if(!/^pnpm\\//.test(process.env.npm_config_user_agent||'')){console.error('Use pnpm: this repository installs with pnpm only.');process.exit(1)}\"",
     "build": "next build",
     "start": "payload migrate && next start -p 3000",
     "dev": "next dev -p 3000"
